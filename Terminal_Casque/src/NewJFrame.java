@@ -19,50 +19,18 @@ public class NewJFrame extends javax.swing.JFrame {
     //Definition informations relatives a l'autentification et a la connection.
     String host = env("ACTIVEMQ_HOST", "localhost");
     int port = Integer.parseInt(env("ACTIVEMQ_PORT", "1883"));
-    final String TOPIC = "/scal/scal_reponse_requete";
+    static final String TOPIC = "/scal/scal_reponse_requete";
+    static BlockingConnection connection;
+    static Topic[] subtopics = {new Topic(TOPIC, QoS.AT_LEAST_ONCE)};
+    static MQTT mqtt = new MQTT(); //Objet MQTT pour la communication.
     
     public NewJFrame()
     {
         initComponents();
-        MQTT mqtt = new MQTT(); //Objet MQTT pour la communication.
+        
         try
         {
             mqtt.setHost(host, port);
-        
-            BlockingConnection connection = mqtt.blockingConnection();
-            /*connection.connect();   //Debut de la conversation MQTT.
-            
-            //Subscribe au topic Scal
-            Topic[] subtopics = {new Topic(TOPIC, QoS.AT_LEAST_ONCE)};
-            connection.subscribe(subtopics);    //Ecoute...
-            /*
-            Thread t = new Thread(new Runnable()    //Déclaration du thread d'écoute du canal MQTT.
-            {
-                @Override
-                public void run()
-                {
-                    try
-                    {*/ /*
-                        while(true)    //Attente d'une reponse.
-                        {
-                            Message message = connection.receive(); //Aucun delais de timout.
-                            if(message!=null)   //Si le message recu detient un contenu:
-                            {
-                                JSONObject jo = new JSONObject();   //Declaration de l'objet JSON a envoyer.
-                                //Traitement.
-                                jo = new JSONObject(message.getPayload());  //Cast du message dans un format string.
-                                textBoxAffiche.setText(jo.toString());
-                            }
-                        }/*
-                    }
-                    catch(Exception ex)
-                    {
-                        
-                    }
-                }
-            }); //Définition du thread d'écoute.
-            t.start();
-            */
         }
         catch(Exception ex)
         {
@@ -121,7 +89,7 @@ public class NewJFrame extends javax.swing.JFrame {
         textBoxAffiche.setColumns(20);
         textBoxAffiche.setForeground(new java.awt.Color(255, 255, 255));
         textBoxAffiche.setRows(5);
-        textBoxAffiche.setText("Hello boiz\n");
+        textBoxAffiche.setText("\n");
         textBoxAffiche.setName("textBoxAffiche"); // NOI18N
         jScrollPane1.setViewportView(textBoxAffiche);
 
@@ -216,12 +184,44 @@ public class NewJFrame extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
+        java.awt.EventQueue.invokeLater(new Runnable()
+        {
+            public void run()
+            {
                 new NewJFrame().setVisible(true);
-                
+                //f_Couleur.getcolor;
             }
         });
+        try
+        {
+            connection = mqtt.blockingConnection();
+            connection.connect();   //Debut de la conversation MQTT.
+            connection.subscribe(subtopics);    //Ecoute...
+        }
+        catch(Exception ex)
+        {
+            System.out.println("Échec de la connection MQTT");
+            System.out.println("" + ex.toString());
+        }
+        while(true)
+        {
+            try
+            {
+                Message message = connection.receive(); //Aucun delais de timout.
+                if(message!=null)   //Si le message recu detient un contenu:
+                    {
+                    JSONObject jo = new JSONObject();   //Declaration de l'objet JSON a envoyer.
+                    //Traitement.
+                    jo = new JSONObject(message.getPayload());  
+                    String payload = new String(message.getPayload());  //Cast du message dans un format string.
+                    textBoxAffiche.setText(textBoxAffiche.getText() + "\n\r" + payload);    //Ajoute le message plus récent sur une nouvelle ligne.
+                }
+            }
+            catch(Exception ex)
+            {
+
+            }
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -230,9 +230,9 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JMenu db_Edit;
     private javax.swing.JMenu db_Menu;
     private javax.swing.JFrame f_Couleur;
-    private javax.swing.JColorChooser jColorChooser;
+    private static javax.swing.JColorChooser jColorChooser;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
-    public javax.swing.JTextArea textBoxAffiche;
+    public static javax.swing.JTextArea textBoxAffiche;
     // End of variables declaration//GEN-END:variables
 }
