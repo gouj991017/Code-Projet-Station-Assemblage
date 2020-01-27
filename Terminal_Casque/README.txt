@@ -1,8 +1,7 @@
 Guillaume Beaudoin
-2020-01-22
+2020-01-27
 
 Ce projet inclut le code pour l'interface usager du casque de réalité virtuelle.
 
 FONCTIONNALIÉE MANQUANTES:
-- réception MQTT.
 - traitement du message reçu.
