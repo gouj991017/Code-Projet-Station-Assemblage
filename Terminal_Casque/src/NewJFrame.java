@@ -3,6 +3,7 @@
  * @author Guim
  */
 
+import java.awt.Color;
 import org.fusesource.mqtt.client.BlockingConnection;
 import org.fusesource.mqtt.client.MQTT;
 import org.fusesource.mqtt.client.Message;
@@ -27,7 +28,6 @@ public class NewJFrame extends javax.swing.JFrame {
     public NewJFrame()
     {
         initComponents();
-        
         try
         {
             mqtt.setHost(host, port);
@@ -49,6 +49,9 @@ public class NewJFrame extends javax.swing.JFrame {
 
         f_Couleur = new javax.swing.JFrame();
         jColorChooser = new javax.swing.JColorChooser();
+        jIp = new javax.swing.JFrame();
+        textboxIp = new javax.swing.JTextField();
+        jBoutonValide = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         textBoxAffiche = new javax.swing.JTextArea();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -56,6 +59,7 @@ public class NewJFrame extends javax.swing.JFrame {
         b_Quitter = new javax.swing.JMenu();
         db_Edit = new javax.swing.JMenu();
         b_couleur = new javax.swing.JMenu();
+        b_ip = new javax.swing.JMenu();
 
         f_Couleur.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         f_Couleur.setAlwaysOnTop(true);
@@ -82,14 +86,52 @@ public class NewJFrame extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jIp.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        jIp.setSize(new java.awt.Dimension(298, 125));
+        jIp.setType(java.awt.Window.Type.POPUP);
+
+        textboxIp.setText("localhost");
+
+        jBoutonValide.setText("OK");
+        jBoutonValide.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jBoutonValideMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jIpLayout = new javax.swing.GroupLayout(jIp.getContentPane());
+        jIp.getContentPane().setLayout(jIpLayout);
+        jIpLayout.setHorizontalGroup(
+            jIpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jIpLayout.createSequentialGroup()
+                .addGroup(jIpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jIpLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(textboxIp, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jIpLayout.createSequentialGroup()
+                        .addGap(120, 120, 120)
+                        .addComponent(jBoutonValide)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jIpLayout.setVerticalGroup(
+            jIpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jIpLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(textboxIp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jBoutonValide)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setName("FramePrincipale"); // NOI18N
 
         textBoxAffiche.setBackground(new java.awt.Color(0, 0, 0));
         textBoxAffiche.setColumns(20);
+        textBoxAffiche.setFont(new java.awt.Font("Monospaced", 0, 24)); // NOI18N
         textBoxAffiche.setForeground(new java.awt.Color(255, 255, 255));
         textBoxAffiche.setRows(5);
-        textBoxAffiche.setText("\n");
+        textBoxAffiche.setText("allo");
         textBoxAffiche.setName("textBoxAffiche"); // NOI18N
         jScrollPane1.setViewportView(textBoxAffiche);
 
@@ -116,6 +158,14 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
         db_Edit.add(b_couleur);
+
+        b_ip.setText("Adresse IP: localhost");
+        b_ip.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                b_ipMouseClicked(evt);
+            }
+        });
+        db_Edit.add(b_ip);
 
         jMenuBar1.add(db_Edit);
 
@@ -146,8 +196,31 @@ public class NewJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_b_QuitterMouseClicked
 
     private void b_couleurMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_b_couleurMouseClicked
-        f_Couleur.setVisible(true);
+        f_Couleur.setVisible(true); //popup de la fenêtre de sélection des couleurs.
     }//GEN-LAST:event_b_couleurMouseClicked
+
+    private void jBoutonValideMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jBoutonValideMouseClicked
+        try
+        {
+            connection.disconnect();    //Déconnection...
+            
+            mqtt.setHost(textboxIp.getText(), port);    //Changement de l'addresse ip.
+            b_ip.setText("Adresse IP: " +textboxIp.getText());
+            
+            connection = mqtt.blockingConnection(); //Reconnection...
+            connection.connect();   //Debut de la conversation MQTT.
+            connection.subscribe(subtopics);    //Ecoute...
+        }
+        catch(Exception ex)
+        {
+            System.out.println("Erreur: " + ex.getMessage());
+        }
+        jIp.setVisible(false);
+    }//GEN-LAST:event_jBoutonValideMouseClicked
+
+    private void b_ipMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_b_ipMouseClicked
+        jIp.setVisible(true);   //popup de la fenêtre de sélection de l'adresse ip.
+    }//GEN-LAST:event_b_ipMouseClicked
 
     private static String env(String key, String defaultValue) {
         String rc = System.getenv(key);
@@ -189,7 +262,6 @@ public class NewJFrame extends javax.swing.JFrame {
             public void run()
             {
                 new NewJFrame().setVisible(true);
-                //f_Couleur.getcolor;
             }
         });
         try
@@ -205,16 +277,32 @@ public class NewJFrame extends javax.swing.JFrame {
         }
         while(true)
         {
+            String source = "";
+            int numetape = 0;
+            String payload = "";
+            textBoxAffiche.setForeground(jColorChooser.getColor());
             try
             {
                 Message message = connection.receive(); //Aucun delais de timout.
                 if(message!=null)   //Si le message recu detient un contenu:
                     {
-                    JSONObject jo = new JSONObject();   //Declaration de l'objet JSON a envoyer.
+                    JSONObject jo;
                     //Traitement.
-                    jo = new JSONObject(message.getPayload());  
-                    String payload = new String(message.getPayload());  //Cast du message dans un format string.
-                    textBoxAffiche.setText(textBoxAffiche.getText() + "\n\r" + payload);    //Ajoute le message plus récent sur une nouvelle ligne.
+                    payload = new String(message.getPayload());
+                    jo = new JSONObject(payload);   //Definition de l'objet JSON reçu.
+                    
+                    source = jo.getString("Source");
+                    numetape = jo.getInt("Numetape");
+                    payload = jo.getString("Message");
+                    
+                    if(numetape == 0) //L'étape 0 est le message d'introduction.
+                    {
+                        textBoxAffiche.setText(textBoxAffiche.getText() + "\n\r["+ source +"]  " + payload);    //Ajoute le message plus récent sur une nouvelle ligne.
+                    }
+                    else
+                    {
+                        textBoxAffiche.setText(textBoxAffiche.getText() + "\n\r["+ source +"] [Étape # "+ numetape +"]  " + payload);    //Ajoute le message plus récent sur une nouvelle ligne.
+                    }
                 }
             }
             catch(Exception ex)
@@ -227,12 +315,16 @@ public class NewJFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu b_Quitter;
     private javax.swing.JMenu b_couleur;
+    private javax.swing.JMenu b_ip;
     private javax.swing.JMenu db_Edit;
     private javax.swing.JMenu db_Menu;
     private javax.swing.JFrame f_Couleur;
+    private javax.swing.JButton jBoutonValide;
     private static javax.swing.JColorChooser jColorChooser;
+    private javax.swing.JFrame jIp;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     public static javax.swing.JTextArea textBoxAffiche;
+    private javax.swing.JTextField textboxIp;
     // End of variables declaration//GEN-END:variables
 }
