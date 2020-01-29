@@ -65,7 +65,6 @@ public class NewJFrame extends javax.swing.JFrame {
         f_Couleur.setAlwaysOnTop(true);
         f_Couleur.setBackground(new java.awt.Color(100, 100, 100));
         f_Couleur.setSize(new java.awt.Dimension(877, 551));
-        f_Couleur.setType(java.awt.Window.Type.POPUP);
 
         jColorChooser.setBackground(new java.awt.Color(100, 100, 100));
 
@@ -88,7 +87,6 @@ public class NewJFrame extends javax.swing.JFrame {
 
         jIp.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         jIp.setSize(new java.awt.Dimension(298, 125));
-        jIp.setType(java.awt.Window.Type.POPUP);
 
         textboxIp.setText("localhost");
 
@@ -131,7 +129,7 @@ public class NewJFrame extends javax.swing.JFrame {
         textBoxAffiche.setFont(new java.awt.Font("Monospaced", 0, 24)); // NOI18N
         textBoxAffiche.setForeground(new java.awt.Color(255, 255, 255));
         textBoxAffiche.setRows(5);
-        textBoxAffiche.setText("allo");
+        textBoxAffiche.setText("Auteur: Guillaume Beaudoin\n============================\nTerminal casque   v1.0\n============================\n");
         textBoxAffiche.setName("textBoxAffiche"); // NOI18N
         jScrollPane1.setViewportView(textBoxAffiche);
 
@@ -280,9 +278,9 @@ public class NewJFrame extends javax.swing.JFrame {
             String source = "";
             int numetape = 0;
             String payload = "";
-            textBoxAffiche.setForeground(jColorChooser.getColor());
             try
             {
+                textBoxAffiche.setForeground(jColorChooser.getColor());
                 Message message = connection.receive(); //Aucun delais de timout.
                 if(message!=null)   //Si le message recu detient un contenu:
                     {
