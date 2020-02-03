@@ -252,6 +252,7 @@
         </Component>
         <Component class="java.awt.TextField" name="tbProduit">
           <Properties>
+            <Property name="editable" type="boolean" value="false"/>
             <Property name="name" type="java.lang.String" value="tbProduit" noResource="true"/>
           </Properties>
           <AuxValues>
@@ -260,6 +261,7 @@
         </Component>
         <Component class="java.awt.TextField" name="tbBase">
           <Properties>
+            <Property name="editable" type="boolean" value="false"/>
             <Property name="name" type="java.lang.String" value="tbBase" noResource="true"/>
           </Properties>
           <AuxValues>
@@ -268,6 +270,7 @@
         </Component>
         <Component class="java.awt.TextField" name="tbCouleur">
           <Properties>
+            <Property name="editable" type="boolean" value="false"/>
             <Property name="name" type="java.lang.String" value="tbCrayon" noResource="true"/>
           </Properties>
           <AuxValues>
@@ -276,6 +279,7 @@
         </Component>
         <Component class="java.awt.TextField" name="tbCrayon">
           <Properties>
+            <Property name="editable" type="boolean" value="false"/>
             <Property name="name" type="java.lang.String" value="tbSupports" noResource="true"/>
           </Properties>
           <AuxValues>
@@ -284,6 +288,7 @@
         </Component>
         <Component class="java.awt.TextField" name="tbSupports">
           <Properties>
+            <Property name="editable" type="boolean" value="false"/>
             <Property name="name" type="java.lang.String" value="tbQuantite" noResource="true"/>
           </Properties>
           <AuxValues>
@@ -292,6 +297,7 @@
         </Component>
         <Component class="java.awt.TextField" name="tbQuantite">
           <Properties>
+            <Property name="editable" type="boolean" value="false"/>
             <Property name="name" type="java.lang.String" value="tbCouleur" noResource="true"/>
           </Properties>
           <AuxValues>
@@ -1078,6 +1084,9 @@
           </Properties>
         </Component>
         <Component class="java.awt.TextField" name="tbPoids_Bac2">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>
@@ -1131,6 +1140,9 @@
           </Properties>
         </Component>
         <Component class="java.awt.TextField" name="tbEtapes">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+          </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
           </AuxValues>
@@ -1195,6 +1207,9 @@
           </Properties>
         </Component>
         <Component class="java.awt.TextField" name="tbPoids_Bac1">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>
@@ -1240,6 +1255,9 @@
           </Properties>
         </Component>
         <Component class="java.awt.TextField" name="tbPoids_Bac5">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>
@@ -1285,6 +1303,9 @@
           </Properties>
         </Component>
         <Component class="java.awt.TextField" name="tbPoids_Bac6">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>
@@ -1330,6 +1351,9 @@
           </Properties>
         </Component>
         <Component class="java.awt.TextField" name="tbPoids_Bac3">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>
@@ -1375,6 +1399,9 @@
           </Properties>
         </Component>
         <Component class="java.awt.TextField" name="tbPoids_Bac7">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>
@@ -1420,6 +1447,9 @@
           </Properties>
         </Component>
         <Component class="java.awt.TextField" name="tbPoids_Bac9">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>
@@ -1457,6 +1487,9 @@
           </Properties>
         </Component>
         <Component class="java.awt.TextField" name="tbPoids_Bac8">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+          </Properties>
         </Component>
         <Component class="java.awt.Label" name="label29">
           <Properties>
@@ -1510,6 +1543,9 @@
           </Properties>
         </Component>
         <Component class="java.awt.TextField" name="tbPoids_Bac4">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>
