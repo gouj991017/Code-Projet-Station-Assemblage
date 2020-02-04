@@ -70,7 +70,7 @@ public class Interface_Usager extends javax.swing.JFrame {
     static int choixCrayon = 0; //Contient les informations concernant les portes-crayons du produit selon la commande reçue
     static int choixSupports = 0; //Contient les informations concernant les supports du produit selon la commande reçue
     static int choixCouleur = 0; //Contient les informations concernant la couleur du produit selon la commande reçue
-    static int quantite = 1; //Contient la quantité de produit à assembler dans une commande
+    static int quantite = 0; //Contient la quantité de produit à assembler dans une commande
     static int i = 0;
     static String produit = ""; //Indique quel produit il faut assembler
     static String base = ""; //Contient les informations du type de base à utiliser pour l'assemblage d'un produit
@@ -248,16 +248,16 @@ public class Interface_Usager extends javax.swing.JFrame {
                     .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(label4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(75, 75, 75)
-                .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tbQuantite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tbBase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tbCouleur, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tbCrayon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tbSupports, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tbProduit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(tbSupports, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
+                    .addComponent(tbProduit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(tbQuantite, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(tbCrayon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(tbCouleur, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(tbBase, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(131, Short.MAX_VALUE)
                 .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(124, 124, 124))
         );
@@ -268,29 +268,30 @@ public class Interface_Usager extends javax.swing.JFrame {
                 .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(40, 40, 40)
                 .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(tbSupports, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(panel1Layout.createSequentialGroup()
                         .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tbProduit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panel1Layout.createSequentialGroup()
+                                .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(tbProduit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(tbBase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(tbBase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(label4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tbQuantite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(label5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tbCouleur, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(label6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tbCrayon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(label4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tbCouleur, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(label5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tbCrayon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(label6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(label7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tbSupports, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tbQuantite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
@@ -298,6 +299,10 @@ public class Interface_Usager extends javax.swing.JFrame {
 
         label10.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
         label10.setText("État des bacs");
+
+        panelBorder1.setBackground(new java.awt.Color(246, 246, 246));
+
+        panelCenter1.setBackground(new java.awt.Color(246, 246, 246));
 
         javax.swing.GroupLayout panelCenter1Layout = new javax.swing.GroupLayout(panelCenter1);
         panelCenter1.setLayout(panelCenter1Layout);
@@ -330,6 +335,10 @@ public class Interface_Usager extends javax.swing.JFrame {
         label8.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         label8.setText("Bac 1");
 
+        panelBorder2.setBackground(new java.awt.Color(246, 246, 246));
+
+        panelCenter2.setBackground(new java.awt.Color(246, 246, 246));
+
         javax.swing.GroupLayout panelCenter2Layout = new javax.swing.GroupLayout(panelCenter2);
         panelCenter2.setLayout(panelCenter2Layout);
         panelCenter2Layout.setHorizontalGroup(
@@ -360,6 +369,10 @@ public class Interface_Usager extends javax.swing.JFrame {
 
         label12.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         label12.setText("Bac 2");
+
+        panelBorder3.setBackground(new java.awt.Color(246, 246, 246));
+
+        panelCenter3.setBackground(new java.awt.Color(246, 246, 246));
 
         javax.swing.GroupLayout panelCenter3Layout = new javax.swing.GroupLayout(panelCenter3);
         panelCenter3.setLayout(panelCenter3Layout);
@@ -392,6 +405,10 @@ public class Interface_Usager extends javax.swing.JFrame {
         label11.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         label11.setText("Bac 3");
 
+        panelBorder4.setBackground(new java.awt.Color(246, 246, 246));
+
+        panelCenter4.setBackground(new java.awt.Color(246, 246, 246));
+
         javax.swing.GroupLayout panelCenter4Layout = new javax.swing.GroupLayout(panelCenter4);
         panelCenter4.setLayout(panelCenter4Layout);
         panelCenter4Layout.setHorizontalGroup(
@@ -422,6 +439,10 @@ public class Interface_Usager extends javax.swing.JFrame {
 
         label13.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         label13.setText("Bac 4");
+
+        panelBorder5.setBackground(new java.awt.Color(246, 246, 246));
+
+        panelCenter5.setBackground(new java.awt.Color(246, 246, 246));
 
         javax.swing.GroupLayout panelCenter5Layout = new javax.swing.GroupLayout(panelCenter5);
         panelCenter5.setLayout(panelCenter5Layout);
@@ -456,6 +477,10 @@ public class Interface_Usager extends javax.swing.JFrame {
         label14.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         label14.setText("Bac 5");
 
+        panelBorder6.setBackground(new java.awt.Color(246, 246, 246));
+
+        panelCenter6.setBackground(new java.awt.Color(246, 246, 246));
+
         javax.swing.GroupLayout panelCenter6Layout = new javax.swing.GroupLayout(panelCenter6);
         panelCenter6.setLayout(panelCenter6Layout);
         panelCenter6Layout.setHorizontalGroup(
@@ -486,6 +511,10 @@ public class Interface_Usager extends javax.swing.JFrame {
 
         label15.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         label15.setText("Bac 6");
+
+        panelBorder7.setBackground(new java.awt.Color(246, 246, 246));
+
+        panelCenter7.setBackground(new java.awt.Color(246, 246, 246));
 
         javax.swing.GroupLayout panelCenter7Layout = new javax.swing.GroupLayout(panelCenter7);
         panelCenter7.setLayout(panelCenter7Layout);
@@ -518,6 +547,10 @@ public class Interface_Usager extends javax.swing.JFrame {
         label16.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         label16.setText("Bac 7");
 
+        panelBorder8.setBackground(new java.awt.Color(246, 246, 246));
+
+        panelCenter8.setBackground(new java.awt.Color(246, 246, 246));
+
         javax.swing.GroupLayout panelCenter8Layout = new javax.swing.GroupLayout(panelCenter8);
         panelCenter8.setLayout(panelCenter8Layout);
         panelCenter8Layout.setHorizontalGroup(
@@ -549,6 +582,10 @@ public class Interface_Usager extends javax.swing.JFrame {
         label18.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         label18.setText("Bac 8");
 
+        panelBorder9.setBackground(new java.awt.Color(246, 246, 246));
+
+        panelCenter9.setBackground(new java.awt.Color(246, 246, 246));
+
         javax.swing.GroupLayout panelCenter9Layout = new javax.swing.GroupLayout(panelCenter9);
         panelCenter9.setLayout(panelCenter9Layout);
         panelCenter9Layout.setHorizontalGroup(
@@ -579,6 +616,10 @@ public class Interface_Usager extends javax.swing.JFrame {
 
         label20.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         label20.setText("Bac 9");
+
+        panelBorder10.setBackground(new java.awt.Color(246, 246, 246));
+
+        panelCenter10.setBackground(new java.awt.Color(246, 246, 246));
 
         javax.swing.GroupLayout panelCenter10Layout = new javax.swing.GroupLayout(panelCenter10);
         panelCenter10.setLayout(panelCenter10Layout);
@@ -752,9 +793,9 @@ public class Interface_Usager extends javax.swing.JFrame {
             panel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(label19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tbPoids_Bac2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(panel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(label19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(tbPoids_Bac2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(46, Short.MAX_VALUE))
         );
         panel4Layout.setVerticalGroup(
@@ -770,6 +811,8 @@ public class Interface_Usager extends javax.swing.JFrame {
         label17.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
         label17.setText("Contrôle des étapes");
 
+        tbEtapes.setCaretPosition(3);
+        tbEtapes.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         tbEtapes.setEditable(false);
 
         button_Next.setLabel("Next");
@@ -799,7 +842,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel5Layout.createSequentialGroup()
                         .addComponent(button_Previous, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(66, 66, 66)
-                        .addComponent(tbEtapes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tbEtapes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(58, 58, 58)
                         .addComponent(button_Next, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(81, 81, 81))))
@@ -830,10 +873,10 @@ public class Interface_Usager extends javax.swing.JFrame {
             panel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(label21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tbPoids_Bac1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(panel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(label21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(tbPoids_Bac1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
         panel6Layout.setVerticalGroup(
             panel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -860,7 +903,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(panel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(label23, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tbPoids_Bac5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tbPoids_Bac5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(46, Short.MAX_VALUE))
         );
         panel7Layout.setVerticalGroup(
@@ -888,7 +931,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(panel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(label25, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tbPoids_Bac6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tbPoids_Bac6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(46, Short.MAX_VALUE))
         );
         panel8Layout.setVerticalGroup(
@@ -916,7 +959,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(panel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(label26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tbPoids_Bac3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tbPoids_Bac3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(46, Short.MAX_VALUE))
         );
         panel9Layout.setVerticalGroup(
@@ -944,7 +987,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(panel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(label27, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tbPoids_Bac7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tbPoids_Bac7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(46, Short.MAX_VALUE))
         );
         panel10Layout.setVerticalGroup(
@@ -972,7 +1015,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(panel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(label28, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tbPoids_Bac9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tbPoids_Bac9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(46, Short.MAX_VALUE))
         );
         panel11Layout.setVerticalGroup(
@@ -999,7 +1042,7 @@ public class Interface_Usager extends javax.swing.JFrame {
             .addGroup(panel12Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tbPoids_Bac8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tbPoids_Bac8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(label29, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(46, Short.MAX_VALUE))
         );
@@ -1028,7 +1071,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(panel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(label30, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tbPoids_Bac4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tbPoids_Bac4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(46, Short.MAX_VALUE))
         );
         panel13Layout.setVerticalGroup(
@@ -1134,6 +1177,10 @@ public class Interface_Usager extends javax.swing.JFrame {
             numPageCourante++;
             tbEtapes.setText(Integer.toString(numPageCourante));
         }
+        else {
+            numPageCourante = 1;
+            tbEtapes.setText(Integer.toString(numPageCourante));
+        }
     }//GEN-LAST:event_button_NextMouseClicked
     
     /*
@@ -1184,188 +1231,201 @@ public class Interface_Usager extends javax.swing.JFrame {
 
                 String TOPIC_REPONSE = "/scal/scal_requete_acces";
                 
-                //Met à jour la liste des instructions de l'assemblage du produit
-                list1.removeAll();
-                for (int i = 0; i < m_listeObjList.size(); i++) {
-                    list1.add(m_listeObjList.get(i));
-                }
-                
-                //Envoi les informations d'une commande à l'interface
-                tbProduit.setText(produit);
-                tbBase.setText(base);
-                tbCouleur.setText(couleur);
-                tbCrayon.setText(qteCrayon + crayon);
-                tbSupports.setText(supports);
-                tbQuantite.setText(Integer.toString(quantite));
-                tbEtapes.setText(Integer.toString(numPageCourante));
-                /*
-                t_outputIOs[bacActif].high(); //Allume la LED du bac courant
-                
-                if(t_inputIOs[0].isHigh()) //Bac #1
+                try
                 {
-                    panelBorder1.setBackground(Color.yellow); //Couleur déclarant la détection d'une manipulation de la part d'un opérateur dans un bac
-                    if(bacActif != 1) //S'il ne s'agit pas du bac indiqué dans les instructions
-                    {
-                        panelCenter1.setBackground(Color.red);
-                        messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
-                        m_listeObjList.add("Ce n'est pas le bon bac!!!");
-                        m_listeObjList.add("Allez au bac #" + bacActif);
+                    //Met à jour la liste des instructions de l'assemblage du produit
+                    list1.removeAll();
+                    for (int i = 0; i < m_listeObjList.size(); i++) {
+                        list1.add(m_listeObjList.get(i));
                     }
-                    else
+
+                    //Envoi les informations d'une commande à l'interface
+                    tbProduit.setText(produit);
+                    tbBase.setText(base);
+                    tbCouleur.setText(couleur);
+                    tbCrayon.setText(qteCrayon + crayon);
+                    tbSupports.setText(supports);
+                    tbQuantite.setText(Integer.toString(quantite));
+                    tbEtapes.setText(Integer.toString(numPageCourante));
+                    /*
+                    t_outputIOs[bacActif].high(); //Allume la LED du bac courant
+
+                    if(t_inputIOs[0].isHigh()) //Bac #1
                     {
-                        t_outputIOs[bacActif].low(); //Éteind la LED du bac courant
-                        numPageCourante++; //On incrémente la variable et on passe à l'étape suivante
-                        messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                        panelBorder1.setBackground(Color.yellow); //Couleur déclarant la détection d'une manipulation de la part d'un opérateur dans un bac
+                        if(bacActif != 1) //S'il ne s'agit pas du bac indiqué dans les instructions
+                        {
+                            panelCenter1.setBackground(Color.red);
+                            messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
+                            m_listeObjList.add("Ce n'est pas le bon bac!!!");
+                            m_listeObjList.add("Allez au bac #" + bacActif);
+                        }
+                        else
+                        {
+                            t_outputIOs[bacActif].low(); //Éteind la LED du bac courant
+                            numPageCourante++; //On incrémente la variable et on passe à l'étape suivante
+                            messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                            m_listeObjList.add("Poursuivez avec l'étape numéro " + numPageCourante);
+                        }
+                        while(t_inputIOs[0].isHigh()); //On attend que l'opérateur ait retiré sa main du bac avant de poursuivre l'assemblage
+                        panelBorder1.setBackground(Color.white);
+                        resetBac(bacActif);
                     }
-                    while(t_inputIOs[0].isHigh()); //On attend que l'opérateur ait retiré sa main du bac avant de poursuivre l'assemblage
-                    panelBorder1.setBackground(Color.white);
-                    panelCenter1.setBackground(Color.white);
-                }
-                else if(t_inputIOs[1].isHigh()) //Bac #2
-                {
-                    panelBorder2.setBackground(Color.yellow);
-                    if(bacActif != 2)
+                    else if(t_inputIOs[1].isHigh()) //Bac #2
                     {
-                        panelCenter2.setBackground(Color.red);
-                        messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
-                        m_listeObjList.add("Ce n'est pas le bon bac!!!");
-                        m_listeObjList.add("Allez au bac #" + bacActif);
+                        panelBorder2.setBackground(Color.yellow);
+                        if(bacActif != 2)
+                        {
+                            panelCenter2.setBackground(Color.red);
+                            messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
+                            m_listeObjList.add("Ce n'est pas le bon bac!!!");
+                            m_listeObjList.add("Allez au bac #" + bacActif);
+                        }
+                        else
+                        {
+                            t_outputIOs[bacActif].low();
+                            numPageCourante++;
+                            messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                            m_listeObjList.add("Poursuivez avec l'étape numéro " + numPageCourante);
+                        }
+                        while(t_inputIOs[1].isHigh());
+                        panelBorder2.setBackground(Color.white);
+                        resetBac(bacActif);
                     }
-                    else
+                    else if(t_inputIOs[2].isHigh()) //Bac #3
                     {
-                        t_outputIOs[bacActif].low();
-                        numPageCourante++;
-                        messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                        panelBorder3.setBackground(Color.yellow);
+                        if(bacActif != 3)
+                        {
+                            panelCenter3.setBackground(Color.red);
+                            messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
+                            m_listeObjList.add("Ce n'est pas le bon bac!!!");
+                            m_listeObjList.add("Allez au bac #" + bacActif);
+                        }
+                        else
+                        {
+                            t_outputIOs[bacActif].low();
+                            numPageCourante++;
+                            messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                            m_listeObjList.add("Poursuivez avec l'étape numéro " + numPageCourante);
+                        }
+                        while(t_inputIOs[2].isHigh());
+                        panelBorder3.setBackground(Color.white);
+                        resetBac(bacActif);
                     }
-                    while(t_inputIOs[1].isHigh());
-                    panelBorder2.setBackground(Color.white);
-                    panelCenter2.setBackground(Color.white);
-                }
-                else if(t_inputIOs[2].isHigh()) //Bac #3
-                {
-                    panelBorder3.setBackground(Color.yellow);
-                    if(bacActif != 3)
+                    else if(t_inputIOs[3].isHigh()) //Bac #4
                     {
-                        panelCenter3.setBackground(Color.red);
-                        messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
-                        m_listeObjList.add("Ce n'est pas le bon bac!!!");
-                        m_listeObjList.add("Allez au bac #" + bacActif);
+                        panelBorder4.setBackground(Color.yellow);
+                        if(bacActif != 4)
+                        {
+                            panelCenter4.setBackground(Color.red);
+                            messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
+                            m_listeObjList.add("Ce n'est pas le bon bac!!!");
+                            m_listeObjList.add("Allez au bac #" + bacActif);
+                        }
+                        else
+                        {
+                            t_outputIOs[bacActif].low();
+                            numPageCourante++;
+                            messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                            m_listeObjList.add("Poursuivez avec l'étape numéro " + numPageCourante);
+                        }
+                        while(t_inputIOs[3].isHigh());
+                        panelBorder4.setBackground(Color.white);
+                        resetBac(bacActif);
                     }
-                    else
+                    else if(t_inputIOs[4].isHigh()) //Bac #5
                     {
-                        t_outputIOs[bacActif].low();
-                        numPageCourante++;
-                        messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                        panelBorder5.setBackground(Color.yellow);
+                        if(bacActif != 5)
+                        {
+                            panelCenter5.setBackground(Color.red);
+                            messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
+                            m_listeObjList.add("Ce n'est pas le bon bac!!!");
+                            m_listeObjList.add("Allez au bac #" + bacActif);
+                        }
+                        else
+                        {
+                            t_outputIOs[bacActif].low();
+                            numPageCourante++;
+                            messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                            m_listeObjList.add("Poursuivez avec l'étape numéro " + numPageCourante);
+                        }
+                        while(t_inputIOs[4].isHigh());
+                        panelBorder5.setBackground(Color.white);
+                        resetBac(bacActif);
                     }
-                    while(t_inputIOs[2].isHigh());
-                    panelBorder3.setBackground(Color.white);
-                    panelCenter3.setBackground(Color.white);
-                }
-                else if(t_inputIOs[3].isHigh()) //Bac #4
-                {
-                    panelBorder4.setBackground(Color.yellow);
-                    if(bacActif != 4)
+                    else if(t_inputIOs[5].isHigh()) //Bac #6
                     {
-                        panelCenter4.setBackground(Color.red);
-                        messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
-                        m_listeObjList.add("Ce n'est pas le bon bac!!!");
-                        m_listeObjList.add("Allez au bac #" + bacActif);
+                        panelBorder6.setBackground(Color.yellow);
+                        if(bacActif != 6)
+                        {
+                            panelCenter6.setBackground(Color.red);
+                            messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
+                            m_listeObjList.add("Ce n'est pas le bon bac!!!");
+                            m_listeObjList.add("Allez au bac #" + bacActif);
+                        }
+                        else
+                        {
+                            t_outputIOs[bacActif].low();
+                            numPageCourante++;
+                            messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                            m_listeObjList.add("Poursuivez avec l'étape numéro " + numPageCourante);
+                        }
+                        while(t_inputIOs[5].isHigh());
+                        panelBorder6.setBackground(Color.white);
+                        resetBac(bacActif);
                     }
-                    else
+                    else if(t_inputIOs[6].isHigh()) //Bac #7
                     {
-                        t_outputIOs[bacActif].low();
-                        numPageCourante++;
-                        messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                        panelBorder7.setBackground(Color.yellow);
+                        if(bacActif != 7)
+                        {
+                            panelCenter7.setBackground(Color.red);
+                            messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
+                            m_listeObjList.add("Ce n'est pas le bon bac!!!");
+                            m_listeObjList.add("Allez au bac #" + bacActif);
+                        }
+                        else
+                        {
+                            t_outputIOs[bacActif].low();
+                            numPageCourante++;
+                            messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                            m_listeObjList.add("Poursuivez avec l'étape numéro " + numPageCourante);
+                        }
+                        while(t_inputIOs[6].isHigh());
+                        panelBorder7.setBackground(Color.white);
+                        resetBac(bacActif);
                     }
-                    while(t_inputIOs[3].isHigh());
-                    panelBorder4.setBackground(Color.white);
-                    panelCenter4.setBackground(Color.white);
-                }
-                else if(t_inputIOs[4].isHigh()) //Bac #5
-                {
-                    panelBorder5.setBackground(Color.yellow);
-                    if(bacActif != 5)
+                    else if(t_inputIOs[7].isHigh()) //Bac #8
                     {
-                        panelCenter5.setBackground(Color.red);
-                        messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
-                        m_listeObjList.add("Ce n'est pas le bon bac!!!");
-                        m_listeObjList.add("Allez au bac #" + bacActif);
+                        panelBorder8.setBackground(Color.yellow);
+                        if(bacActif != 8)
+                        {
+                            panelCenter8.setBackground(Color.red);
+                            messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
+                            m_listeObjList.add("Ce n'est pas le bon bac!!!");
+                            m_listeObjList.add("Allez au bac #" + bacActif);
+                        }
+                        else
+                        {
+                            t_outputIOs[bacActif].low();
+                            numPageCourante++;
+                            messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                            m_listeObjList.add("Poursuivez avec l'étape numéro " + numPageCourante);
+                        }
+                        while(t_inputIOs[7].isHigh());
+                        panelBorder8.setBackground(Color.white);
+                        resetBac(bacActif);
                     }
-                    else
-                    {
-                        t_outputIOs[bacActif].low();
-                        numPageCourante++;
-                        messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
-                    }
-                    while(t_inputIOs[4].isHigh());
-                    panelBorder5.setBackground(Color.white);
-                    panelCenter5.setBackground(Color.white);
-                }
-                else if(t_inputIOs[5].isHigh()) //Bac #6
-                {
-                    panelBorder6.setBackground(Color.yellow);
-                    if(bacActif != 6)
-                    {
-                        panelCenter6.setBackground(Color.red);
-                        messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
-                        m_listeObjList.add("Ce n'est pas le bon bac!!!");
-                        m_listeObjList.add("Allez au bac #" + bacActif);
-                    }
-                    else
-                    {
-                        t_outputIOs[bacActif].low();
-                        numPageCourante++;
-                        messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
-                    }
-                    while(t_inputIOs[5].isHigh());
-                    panelBorder6.setBackground(Color.white);
-                    panelCenter6.setBackground(Color.white);
-                }
-                else if(t_inputIOs[6].isHigh()) //Bac #7
-                {
-                    panelBorder7.setBackground(Color.yellow);
-                    if(bacActif != 7)
-                    {
-                        panelCenter7.setBackground(Color.red);
-                        messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
-                        m_listeObjList.add("Ce n'est pas le bon bac!!!");
-                        m_listeObjList.add("Allez au bac #" + bacActif);
-                    }
-                    else
-                    {
-                        t_outputIOs[bacActif].low();
-                        numPageCourante++;
-                        messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
-                    }
-                    while(t_inputIOs[6].isHigh());
-                    panelBorder7.setBackground(Color.white);
-                    panelCenter7.setBackground(Color.white);
-                }
-                else if(t_inputIOs[7].isHigh()) //Bac #8
-                {
-                    panelBorder8.setBackground(Color.yellow);
-                    if(bacActif != 8)
-                    {
-                        panelCenter8.setBackground(Color.red);
-                        messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
-                        m_listeObjList.add("Ce n'est pas le bon bac!!!");
-                        m_listeObjList.add("Allez au bac #" + bacActif);
-                    }
-                    else
-                    {
-                        t_outputIOs[bacActif].low();
-                        numPageCourante++;
-                        messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
-                    }
-                    while(t_inputIOs[7].isHigh());
-                    panelBorder8.setBackground(Color.white);
-                    panelCenter8.setBackground(Color.white);
-                }
-                String DATA = messageBaseJsonObj.toString(2);
-                Buffer msgErreur = new AsciiBuffer(DATA);
-                UTF8Buffer topic = new UTF8Buffer(destination);
-                connection.publish(topic, msgErreur, QoS.AT_LEAST_ONCE, false);
-                */
+                    String DATA = messageBaseJsonObj.toString(2);
+                    Buffer msgErreur = new AsciiBuffer(DATA);
+                    UTF8Buffer topic = new UTF8Buffer(destination);
+                    connection.publish(topic, msgErreur, QoS.AT_LEAST_ONCE, false);
+                    */
+                    
+                    Thread.sleep(1000);
+                }catch(Exception ex){}
             }
         }
     };
@@ -1403,12 +1463,15 @@ public class Interface_Usager extends javax.swing.JFrame {
         //Note: Trouver comment mettre des accents*******************************************************************************************
         messageBaseJsonObj.put("Source", new String[] { "Base"});
         messageBaseJsonObj.put("Numetape", numPageCourante);
-        messageBaseJsonObj.put("Message", new String[] { "Début de la communication", "Suivez attentivement les instructions de votre guide a l'étape indiquée"});
+        messageBaseJsonObj.put("Message", new String[] { "Début de la communication", "Suivez attentivement les instructions de votre guide à l'étape indiquée"});
         String DATA = messageBaseJsonObj.toString(3);
         Buffer msg = new AsciiBuffer(DATA);
 
         UTF8Buffer topic = new UTF8Buffer(destination);
         connection.publish(topic, msg, QoS.AT_LEAST_ONCE, false);
+        
+        m_listeObjList.add("Début de la communication");
+        m_listeObjList.add("Suivez attentivement les instructions de votre guide a l'étape indiquée");
 
         numPageCourante = 1;
         // **********************Préparation de la publication du message de sélection des bacs********************** 
@@ -1485,193 +1548,217 @@ public class Interface_Usager extends javax.swing.JFrame {
                 try
                 {
                     Message message = connection.receive(150, TimeUnit.SECONDS);
+                    if (message.getPayload() != null) {
+                        Str = new String(message.getPayload());
+                        JSONObject messageJsonObject = new JSONObject(Str);
+                        
+                        resetBac(bacActif);
+                        choixProduit = messageJsonObject.getInt("Produit"); //Choix du produit
+                        choixBase = messageJsonObject.getInt("Base");    //Choix de la base
+                        choixCouleur = messageJsonObject.getInt("Couleur"); //Choix de la couleur
+                        choixCrayon = messageJsonObject.getInt("Crayon");  //Choix porte Crayon
+                        choixSupports = messageJsonObject.getInt("Supports"); //Choix des supports
+                        quantite = messageJsonObject.getInt("Quantite");     //Quantite
 
-                    Str = new String(message.getPayload());
-                    JSONObject messageJsonObject = new JSONObject(Str);
-
-                    choixProduit = messageJsonObject.getInt(""); //Choix du produit
-                    choixBase = messageJsonObject.getInt("");    //Choix de la base
-                    choixCouleur = messageJsonObject.getInt(""); //Choix de la couleur
-                    choixCrayon = messageJsonObject.getInt("");  //Choix porte Crayon
-                    choixSupports = messageJsonObject.getInt(""); //Choix des supports
-                    quantite = messageJsonObject.getInt("");     //Quantite
-
-                    //<editor-fold defaultstate="collapsed" desc=" Initialisation des infos de la commandes (optional) ">
-                    if(choixProduit == 1) //Porte-cellulaire
-                    {
-                        produit = "Porte-cellulaire";
-                    }
-                    else if(choixProduit == 2) //Porte-carte d'affaire
-                    {
-                        produit = "Porte-carte d'affaire";
-                    }
-                    if(choixBase == 1) //Base type 1
-                    {
-                        multiCrayon = false;
-                        base = "Base de type 1 ";
-                    }
-                    else if(choixBase == 2) //Base type 2
-                    {
-                        multiCrayon = true;
-                        base = "Base de type 2 ";
-                    }
-                    if(choixCouleur == 1)
-                    {
-                        couleur = "couleur blanche ";
-                    }
-                    else if(choixCouleur == 2)
-                    {
-                        couleur = "couleur noir ";
-                    }
-                    if(multiCrayon){
-                        qteCrayon = "deux ";
-                    }
-                    else{
-                        qteCrayon = "un seul ";
-                    }  
-                    if(choixSupports == 1) //Supports courts
-                    {
-                        supports = "Supports courts ";
-                    }
-                    else if(choixSupports == 2) //Supports moyens
-                    {
-                        supports = "Supports moyens ";
-                    }
-                    else //Aucun support
-                    {
-                        supports = "Aucun support ";
-                    }
-                    //</editor-fold>
-                    
-                    while(i < quantite)
-                    {
-                        switch (numPageCourante) {
+                        //<editor-fold defaultstate="collapsed" desc=" Initialisation des infos de la commandes (optional) ">
+                        if(choixProduit == 1) //Porte-cellulaire
+                        {
+                            produit = "Porte-cellulaire";
+                        }
+                        else if(choixProduit == 2) //Porte-carte d'affaire
+                        {
+                            produit = "Porte-carte d'affaire";
+                        }
+                        if(choixBase == 1) //Base type 1
+                        {
+                            multiCrayon = false;
+                            base = "Base de type 1 ";
+                        }
+                        else if(choixBase == 2) //Base type 2
+                        {
+                            multiCrayon = true;
+                            base = "Base de type 2 ";
+                        }
+                        if(choixCouleur == 1)
+                        {
+                            couleur = "couleur blanche ";
+                        }
+                        else if(choixCouleur == 2)
+                        {
+                            couleur = "couleur noir ";
+                        }
+                        if(multiCrayon){
+                            qteCrayon = "deux ";
+                        }
+                        else{
+                            qteCrayon = "un seul ";
+                        }  
+                        switch (choixCrayon) {
                             case 1:
-                                if (varTampon != numPageCourante) {
-                                    etapeTermine = true;
-                                    varTampon = numPageCourante;
-                                }
-                                messageBaseJsonObj.put("Numetape", numPageCourante);
-                                if(choixBase == 1) //Base type 1
-                                {
-                                    multiCrayon = false;
-                                    base = "Base de type 1 ";
-                                    if(choixCouleur == 1)
-                                    {
-                                        bacActif = enumBacs.baseType1Couleur1.ordinal();
-                                        couleur = "couleur blanche ";
-                                        detectBac(bacActif);
-                                        messageBaseJsonObj.put("Message", baseProd(base,couleur,bacActif,numPageCourante));
-                                    }
-                                    else if(choixCouleur == 2)
-                                    {
-                                        bacActif = enumBacs.baseType1Couleur2.ordinal();
-                                        couleur = "couleur noir ";
-                                        detectBac(bacActif);
-                                        messageBaseJsonObj.put("Message", baseProd(base,couleur,bacActif,numPageCourante));
-                                    }
-                                }
-                                else if(choixBase == 2) //Base type 2
-                                {
-                                    multiCrayon = true;
-                                    base = "Base de type 2 ";
-                                    if(choixCouleur == 1)
-                                    {
-                                        bacActif = enumBacs.baseType2Couleur1.ordinal();
-                                        couleur = "couleur blanche ";
-                                        detectBac(bacActif);
-                                        messageBaseJsonObj.put("Message", baseProd(base,couleur,bacActif,numPageCourante));
-                                    }
-                                    else if(choixCouleur == 2)
-                                    {
-                                        bacActif = enumBacs.baseType2Couleur2.ordinal();
-                                        couleur = "couleur noir ";
-                                        detectBac(bacActif);
-                                        messageBaseJsonObj.put("Message", baseProd(base,couleur,bacActif,numPageCourante));
-                                    }
-                                }   break;
+                                crayon = "Porte-crayon de type 1 ";
+                                break;
                             case 2:
-                                if (varTampon != numPageCourante) {
-                                    etapeTermine = true;
-                                    varTampon = numPageCourante;
-                                }
-                                messageBaseJsonObj.put("Numetape", numPageCourante);
-                                if(multiCrayon){
-                                    qteCrayon = "deux ";
-                                }
-                                else{
-                                    qteCrayon = "un seul ";
-                                }   
-                                switch (choixCrayon) {
-                                //Porte-crayon type 1
-                                    case 1:
-                                        crayon = "Porte-crayon type 1 ";
-                                        bacActif = enumBacs.crayonType1.ordinal();
-                                        detectBac(bacActif);
-                                        messageBaseJsonObj.put("Message", crayonProd(qteCrayon,crayon,bacActif,numPageCourante));
-                                        break;
-                                //Porte-crayon type 2
-                                    case 2:
-                                        crayon = "Porte-crayon type 2 ";
-                                        bacActif = enumBacs.crayonType2.ordinal();
-                                        detectBac(bacActif);
-                                        messageBaseJsonObj.put("Message", crayonProd(qteCrayon,crayon,bacActif,numPageCourante));
-                                        break;
-                                //Porte-crayon type 3
-                                    case 3:
-                                        crayon = "Porte-crayon type 3 ";
-                                        bacActif = enumBacs.crayonType3.ordinal();
-                                        detectBac(bacActif);
-                                        messageBaseJsonObj.put("Message", crayonProd(qteCrayon,crayon,bacActif,numPageCourante));
-                                        break;
-                                    default:
-                                        break;
-                                }   break;
+                                crayon = "Porte-crayon de type 2 ";
+                                break;
                             case 3:
-                                numPageCourante = 0;
-                                
-                                if (varTampon != numPageCourante) {
-                                    etapeTermine = true;
-                                    varTampon = numPageCourante;
-                                    i++;
-                                }
-                                messageBaseJsonObj.put("Numetape", numPageCourante);
-                                switch (choixSupports) {
-                                //Supports courts
-                                    case 1:
-                                        supports = "Supports courts ";
-                                        bacActif = enumBacs.supportCourt.ordinal();
-                                        detectBac(bacActif);
-                                        messageBaseJsonObj.put("Message", supportsProd(supports,bacActif));
-                                        break;
-                                //Supports moyen
-                                    case 2:
-                                        supports = "Supports moyens ";
-                                        bacActif = enumBacs.supportMoyen.ordinal();
-                                        detectBac(bacActif);
-                                        messageBaseJsonObj.put("Message", supportsProd(supports,bacActif));
-                                        break;
-                                //Aucun support
-                                    default:
-                                        supports = "aucun support";
-                                        messageBaseJsonObj.put("Message", new String[] { "Ce produit ne comporte " + supports,
-                                            "Assurez-vous que le produit est bien assemblé et passez au prochain produit"});
-                                        m_listeObjList.add("Ce produit ne comporte aucun support");
-                                        m_listeObjList.add("Assurez-vous que le produit est bien assemblé et passez au prochain produit");
-                                        break;
-                                }   break;
+                                crayon = "Porte-crayon de type 3 ";
+                                break;
                             default:
                                 break;
                         }
-                        if (etapeTermine) {
-                            etapeTermine = false;
-                            DATA = messageBaseJsonObj.toString(2);
-                            Buffer msgBacs = new AsciiBuffer(DATA);
-                            connection.publish(topic, msgBacs, QoS.AT_LEAST_ONCE, false);
+                        if(choixSupports == 1) //Supports courts
+                        {
+                            supports = "Supports courts ";
                         }
+                        else if(choixSupports == 2) //Supports moyens
+                        {
+                            supports = "Supports moyens ";
+                        }
+                        else //Aucun support
+                        {
+                            supports = "Aucun support ";
+                        }
+                        //</editor-fold>
+
+                        while(i < quantite)
+                        {
+                            switch (numPageCourante) {
+                                case 1:
+                                    if (varTampon != 1 && varTampon != numPageCourante) {
+                                        etapeTermine = true;
+                                        resetBac(bacActif);
+                                        varTampon = numPageCourante;
+                                    }
+                                    messageBaseJsonObj.put("Numetape", numPageCourante);
+                                    if(choixBase == 1) //Base type 1
+                                    {
+                                        if(choixCouleur == 1)
+                                        {
+                                            bacActif = enumBacs.baseType1Couleur1.ordinal();
+                                            if (etapeTermine){
+                                                detectBac(bacActif);
+                                                messageBaseJsonObj.put("Message", baseProd(base,couleur,bacActif));
+                                            }
+                                        }
+                                        else if(choixCouleur == 2)
+                                        {
+                                            bacActif = enumBacs.baseType1Couleur2.ordinal();
+                                            if (etapeTermine){
+                                                detectBac(bacActif);
+                                                messageBaseJsonObj.put("Message", baseProd(base,couleur,bacActif));
+                                            }
+                                        }
+                                    }
+                                    else if(choixBase == 2) //Base type 2
+                                    {
+                                        if(choixCouleur == 1)
+                                        {
+                                            bacActif = enumBacs.baseType2Couleur1.ordinal();
+                                            if (etapeTermine){
+                                                detectBac(bacActif);
+                                                messageBaseJsonObj.put("Message", baseProd(base,couleur,bacActif));
+                                            }
+                                        }
+                                        else if(choixCouleur == 2)
+                                        {
+                                            bacActif = enumBacs.baseType2Couleur2.ordinal();
+                                            if (etapeTermine){
+                                                detectBac(bacActif);
+                                                messageBaseJsonObj.put("Message", baseProd(base,couleur,bacActif));
+                                            }
+                                        }
+                                    }   break;
+                                case 2:
+                                    if (varTampon != 1 && varTampon != numPageCourante) {
+                                        etapeTermine = true;
+                                        resetBac(bacActif);
+                                        varTampon = numPageCourante;
+                                    }
+                                    messageBaseJsonObj.put("Numetape", numPageCourante);
+                                      
+                                    switch (choixCrayon) {
+                                    //Porte-crayon type 1
+                                        case 1:
+                                            bacActif = enumBacs.crayonType1.ordinal();
+                                            if (etapeTermine){
+                                                detectBac(bacActif);
+                                                messageBaseJsonObj.put("Message", crayonProd(qteCrayon,crayon,bacActif));
+                                            }
+                                            break;
+                                    //Porte-crayon type 2
+                                        case 2:
+                                            bacActif = enumBacs.crayonType2.ordinal();
+                                            if (etapeTermine){
+                                                detectBac(bacActif);
+                                                messageBaseJsonObj.put("Message", crayonProd(qteCrayon,crayon,bacActif));
+                                            }
+                                            break;
+                                    //Porte-crayon type 3
+                                        case 3:
+                                            bacActif = enumBacs.crayonType3.ordinal();
+                                            if (etapeTermine){
+                                                detectBac(bacActif);
+                                                messageBaseJsonObj.put("Message", crayonProd(qteCrayon,crayon,bacActif));
+                                            }
+                                            break;
+                                        default:
+                                            break;
+                                    }   break;
+                                case 3:
+                                    messageBaseJsonObj.put("Numetape", numPageCourante);
+                                    if (varTampon != 1 && varTampon != numPageCourante) {
+                                        etapeTermine = true;
+                                        resetBac(bacActif);
+                                        i++;
+                                        varTampon = numPageCourante;
+                                    }
+                                    switch (choixSupports) {
+                                    //Supports courts
+                                        case 1:
+                                            bacActif = enumBacs.supportCourt.ordinal();
+                                            if (etapeTermine){
+                                                detectBac(bacActif);
+                                                messageBaseJsonObj.put("Message", supportsProd(supports,bacActif));
+                                            }
+                                            break;
+                                    //Supports moyen
+                                        case 2:
+                                            bacActif = enumBacs.supportMoyen.ordinal();
+                                            if (etapeTermine){
+                                                detectBac(bacActif);
+                                                messageBaseJsonObj.put("Message", supportsProd(supports,bacActif));
+                                            }
+                                            break;
+                                    //Aucun support
+                                        default:
+                                            if (etapeTermine) {
+                                                messageBaseJsonObj.put("Message", new String[] { "Ce produit ne comporte " + supports,
+                                                "Assurez-vous que le produit est bien assemblé et passez au prochain produit"});
+                                                m_listeObjList.add("Ce produit ne comporte aucun support");
+                                                m_listeObjList.add("Assurez-vous que le produit est bien assemblé et passez au prochain produit");
+                                            }
+                                            
+                                            break;
+                                    }   break;
+                                default:
+                                    /*if (varTampon != numPageCourante) {
+                                        i++;
+                                        numPageCourante = 1;
+                                    }*/
+                                    break;
+                            }
+                            if (etapeTermine) {
+                                etapeTermine = false;
+                                DATA = messageBaseJsonObj.toString(2);
+                                Buffer msgBacs = new AsciiBuffer(DATA);
+                                connection.publish(topic, msgBacs, QoS.AT_LEAST_ONCE, false);
+                            }
+                        }
+                        varTampon = 0;
+                        resetBac(bacActif);
+                        i = 0;
+                        exit = true;
                     }
-                    i = 0;
-                    exit = true;
                 }
                 catch(Exception e)
                 {
@@ -1688,11 +1775,10 @@ public class Interface_Usager extends javax.swing.JFrame {
                 iBacActif: Contient le numéro du bac actuellement en cours d'utilisation
                 etape: Contient l'étape courante d'assemblage
     */
-    private static String[] baseProd(String iBase, String iCouleur, int iBacActif, int etape)
+    private static String[] baseProd(String iBase, String iCouleur, int iBacActif)
     {
-        String[] statement = new String[] { "Prenez la " + iBase + "de " + iCouleur + "se trouvant dans le bac #" + iBacActif, "Poursuivez avec l'étape numéro " + (etape + 1)};
+        String[] statement = new String[] { "Prenez la " + iBase + "de " + iCouleur + "se trouvant dans le bac #" + iBacActif};
         m_listeObjList.add("Prenez la " + iBase + "de " + iCouleur + "se trouvant dans le bac #" + iBacActif);
-        m_listeObjList.add("Poursuivez avec l'étape numéro " + (etape + 1));
         return statement;
     }
     
@@ -1703,11 +1789,10 @@ public class Interface_Usager extends javax.swing.JFrame {
                 iBacActif: Contient le numéro du bac actuellement en cours d'utilisation
                 etape: Contient l'étape courante d'assemblage
     */
-    private static String[] crayonProd(String iqteCrayon, String iCrayon, int iBacActif, int etape)
+    private static String[] crayonProd(String iqteCrayon, String iCrayon, int iBacActif)
     {
-        String[] statement = new String[] { "Prenez " + iqteCrayon + iCrayon + "dans le bac #" + iBacActif, "Poursuivez avec l'étape numéro " + (etape + 1)};
+        String[] statement = new String[] { "Prenez " + iqteCrayon + iCrayon + "dans le bac #" + iBacActif};
         m_listeObjList.add("Prenez " + iqteCrayon + iCrayon + "dans le bac #" + iBacActif);
-        m_listeObjList.add("Poursuivez avec l'étape numéro " + (etape + 1));
         return statement;
     }
     
@@ -1762,6 +1847,50 @@ public class Interface_Usager extends javax.swing.JFrame {
         //Bac #8
             case 8:
                 panelCenter8.setBackground(Color.green);
+                break;
+            default:
+                break;
+        }
+    }
+    
+    /*
+    @brief: Remet la section des bacs à son état normale suite à l'accomplissement de l'étape en cours.
+    @variables: iBacActif: Contient le numéro du bac actuellement en cours d'utilisation
+    */
+    private static void resetBac(int iBacActif)
+    {
+        switch (iBacActif) {
+        //Bac #1
+            case 1:
+                panelCenter1.setBackground(Color.white);
+                break;
+        //Bac #2
+            case 2:
+                panelCenter2.setBackground(Color.white);
+                break;
+        //Bac #3
+            case 3:
+                panelCenter3.setBackground(Color.white);
+                break;
+        //Bac #4
+            case 4:
+                panelCenter4.setBackground(Color.white);
+                break;
+        //Bac #5
+            case 5:
+                panelCenter5.setBackground(Color.white);
+                break;
+        //Bac #6
+            case 6:
+                panelCenter6.setBackground(Color.white);
+                break;
+        //Bac #7
+            case 7:
+                panelCenter7.setBackground(Color.white);
+                break;
+        //Bac #8
+            case 8:
+                panelCenter8.setBackground(Color.white);
                 break;
             default:
                 break;
