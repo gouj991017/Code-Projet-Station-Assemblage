@@ -1669,7 +1669,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                                         }
                                     }   break;
                                 case 2:
-                                    if (varTampon != 1 && varTampon != numPageCourante) {
+                                    if (varTampon != 2 && varTampon != numPageCourante) {
                                         etapeTermine = true;
                                         resetBac(bacActif);
                                         varTampon = numPageCourante;
@@ -1706,7 +1706,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                                     }   break;
                                 case 3:
                                     messageBaseJsonObj.put("Numetape", numPageCourante);
-                                    if (varTampon != 1 && varTampon != numPageCourante) {
+                                    if (varTampon != 3 && varTampon != numPageCourante) {
                                         etapeTermine = true;
                                         resetBac(bacActif);
                                         i++;
