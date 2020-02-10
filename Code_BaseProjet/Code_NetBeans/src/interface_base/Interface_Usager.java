@@ -24,6 +24,8 @@ import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.*;
 */
+import com.phidget22.PhidgetException;
+import com.phidget22.*;
 
 import java.awt.Color;
 import java.net.URISyntaxException;
@@ -40,10 +42,13 @@ import org.json.JSONObject;
 import java.util.concurrent.TimeUnit;
 import java.util.*;
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Interface_Usager extends javax.swing.JFrame {
 
     static final int NB_BACS = 8; //Constante du nombre de bacs relié au Raspberry pi.
+    static final double TRIGGER_INFRAROUGE = 2.00; //Constante du trigger faisant varier la tension du capteur infrarouge.
     //static GpioPinDigitalOutput t_outputIOs[] = new GpioPinDigitalOutput[NB_BACS]; //***********************************************
     //static GpioPinDigitalInput t_inputIOs[] = new GpioPinDigitalInput[NB_BACS]; //***********************************************
     
@@ -78,15 +83,28 @@ public class Interface_Usager extends javax.swing.JFrame {
     static String qteCrayon = ""; //Contient les informations du type de supports à utiliser pour l'assemblage d'un produit
     static String supports = ""; //Contient les informations du type de supports à utiliser pour l'assemblage d'un produit
     static String couleur = ""; //Contient les informations de la couleur du composant à utiliser pour l'assemblage d'un produit
-    static boolean multiCrayon = false;
-    static int bacActif = 0;
-     
+    static boolean multiCrayon = false; //Indique si le produit possède plusieurs porte-crayon
+    static int bacActif = 0; //Indique quel bac est actuellement sélectionné
+    static boolean messageBac1 = false; //Empêche les capteurs infrarouges du bac 1 d'envoyer plusieurs fois le même message.
+    
+    //Create your Phidget channels
+    static VoltageInput vInput0;
+    static VoltageInput vInput1;
+    static DigitalOutput digitalOut0;
+    
     /**
      * Constructor for objects of class Interface_Usager
      * Creates new form Interface_Usager
      */
     public Interface_Usager() {
         initComponents();
+        try {
+            vInput0 = new VoltageInput(); //Capteur infrarouge du bac 1
+            vInput1 = new VoltageInput(); //Capteur infrarouge du bac 1
+            digitalOut0 = new DigitalOutput(); //LED du bac 1
+        } catch (PhidgetException ex) {
+            
+        }
     }
 
     /**
@@ -192,6 +210,11 @@ public class Interface_Usager extends javax.swing.JFrame {
         tbPoids_Bac4 = new java.awt.TextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         label1.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
         label1.setText("Infos Commande");
@@ -1182,35 +1205,32 @@ public class Interface_Usager extends javax.swing.JFrame {
             tbEtapes.setText(Integer.toString(numPageCourante));
         }
     }//GEN-LAST:event_button_NextMouseClicked
+
+    /*
+    brief : Ferme tous les ports et canaux avant d'éteindre le reste du programme.
+    */
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        try {
+            //Close your Phidgets once the program is done.
+            vInput0.close();
+            vInput1.close();
+            digitalOut0.close();
+        } catch (PhidgetException ex) {
+            //We will catch Phidget Exceptions here, and print the error informaiton.
+            ex.printStackTrace();
+            System.out.println("");
+            System.out.println("PhidgetException " + ex.getErrorCode() + " (" + ex.getDescription() + "): " + ex.getDetail());
+        }
+    }//GEN-LAST:event_formWindowClosing
     
     /*
-    brief : S'occupe de mettre à jour l'interface usager
+    brief : S'occupe des capteurs infrarouges du bac #1
     */
-    static Runnable runnable = new Runnable(){
+    public static VoltageInputVoltageChangeListener onBac1_VoltageChange = new VoltageInputVoltageChangeListener() {
         @Override
-        public void run() {
-            while(true){
-                
-                //Create gpio controller
-                //GpioController gpio = GpioFactory.getInstance(); //*************************************************************************
-
-                try
-                {
-                    /*
-                    //Provision gpio pin 12,3,5,7 as an output pin
-                    t_outputIOs[0] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "LED1", PinState.HIGH);   //pin 12 du header
-                    t_outputIOs[1] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_09, "LED2", PinState.LOW);    //pin 5 du header
-                    t_outputIOs[2] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_21, "LED3", PinState.LOW);    //pin 29 du header
-                    t_outputIOs[3] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_11, "LED4", PinState.LOW);    //pin 26 du header
-
-                    //Provision gpio pin 27,11,7,31 as an input pin with its internal pull down resistor enabled
-                    t_inputIOs[0] = gpio.provisionDigitalInputPin(RaspiPin.GPIO_30, "Bac1", PinPullResistance.OFF); //pin 27 du header
-                    t_inputIOs[1] = gpio.provisionDigitalInputPin(RaspiPin.GPIO_00, "Bac2", PinPullResistance.OFF); //pin 11 du header
-                    t_inputIOs[2] = gpio.provisionDigitalInputPin(RaspiPin.GPIO_07, "Bac3", PinPullResistance.OFF); //pin 7 du header
-                    t_inputIOs[3] = gpio.provisionDigitalInputPin(RaspiPin.GPIO_22, "Bac4", PinPullResistance.OFF); //pin 31 du header
-                    */
-                    //Pin  28,11,13 non-controlable
-                }catch(Exception ex){}
+        public void onVoltageChange(VoltageInputVoltageChangeEvent e) {
+            try {
+                double tensionCapteur = e.getVoltage();
                 
                 String user = "admin";
                 String password = "admin";
@@ -1219,18 +1239,149 @@ public class Interface_Usager extends javax.swing.JFrame {
                 final String destination = "/scal/scal_reponse_requete";
 
                 JSONObject messageBaseJsonObj = new JSONObject();
-                
 
-               /* MQTT mqtt = new MQTT();
+                MQTT mqtt = new MQTT();
                 mqtt.setHost(host, port);
                 mqtt.setUserName(user);
                 mqtt.setPassword(password);
-
                 BlockingConnection connectionThread = mqtt.blockingConnection();
-                connectionThread.connect();*/
 
                 String TOPIC_REPONSE = "/scal/scal_requete_acces";
                 
+                System.out.println("Voltage: " + e.getSource().getChannel() + tensionCapteur); //****************************************************************************************
+                digitalOut0.setState(true); //Allume la LED du bac courant
+                
+                if(tensionCapteur > 2.00) //Bac #1
+                {
+                    panelBorder1.setBackground(Color.yellow); //Couleur déclarant la détection d'une manipulation de la part d'un opérateur dans un bac
+                    if(messageBac1 == false)
+                    {
+                        if(bacActif != 1) //S'il ne s'agit pas du bac indiqué dans les instructions
+                        {
+                            panelCenter1.setBackground(Color.red);
+                            messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
+                            m_listeObjList.add("Ce n'est pas le bon bac!!!");
+                            m_listeObjList.add("Allez au bac #" + bacActif);
+                        }
+                        messageBac1 = true;
+                    }
+                }
+                else if(tensionCapteur < 2.00) //L'opérateur a retiré sa main du bac
+                {
+                    if(messageBac1)
+                    {
+                        if(bacActif == 1) //S'il s'agit du bac indiqué dans les instructions
+                        {
+                            digitalOut0.setState(false); //Éteind la LED du bac courant
+                            numPageCourante++; //On incrémente la variable et on passe à l'étape suivante
+                            messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                            m_listeObjList.add("Poursuivez avec l'étape numéro " + numPageCourante);
+                            panelBorder1.setBackground(Color.white);
+                            resetBac(bacActif);
+                        }
+                        messageBac1 = false;
+                    }
+                }
+                String DATA = messageBaseJsonObj.toString(2);
+                Buffer msgErreur = new AsciiBuffer(DATA);
+                UTF8Buffer topic = new UTF8Buffer(destination);
+                connectionThread.publish(topic, msgErreur, QoS.AT_LEAST_ONCE, false);
+            } catch (PhidgetException ex) {
+                //We will catch Phidget Exceptions here, and print the error informaiton.
+                ex.printStackTrace();
+                System.out.println("");
+                System.out.println("PhidgetException " + ex.getErrorCode() + " (" + ex.getDescription() + "): " + ex.getDetail());
+            } catch (Exception ex) {
+                Logger.getLogger(Interface_Usager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    };
+    
+    /*
+    brief : S'occupe de mettre à jour l'interface usager
+    */
+    static Runnable runnable = new Runnable(){
+        @Override
+        public void run() {
+            
+            try {
+                //Enable server discovery to allow your program to find other Phidgets on the local network.
+                Net.enableServerDiscovery(ServerType.DEVICE_REMOTE);
+
+                //Set addressing parameters to specify which channel to open (if any)
+                vInput0.setHubPort(0);
+                vInput0.setIsRemote(true);
+                vInput0.setDeviceSerialNumber(597862);
+                vInput0.setChannel(0);
+                vInput1.setHubPort(0);
+                vInput1.setIsRemote(true);
+                vInput1.setDeviceSerialNumber(597862);
+                vInput1.setChannel(1);
+                digitalOut0.setHubPort(1);
+		digitalOut0.setIsRemote(true);
+		digitalOut0.setDeviceSerialNumber(597862);
+
+                //Assign any event handlers you need before calling open so that no events are missed.
+                vInput0.addVoltageChangeListener(onBac1_VoltageChange);
+                vInput1.addVoltageChangeListener(onBac1_VoltageChange);
+
+                //Open your Phidgets and wait for attachment
+                vInput0.open(20000);
+                vInput1.open(20000);
+                digitalOut0.open(20000);
+                
+                vInput0.setVoltageChangeTrigger(TRIGGER_INFRAROUGE);
+                vInput1.setVoltageChangeTrigger(TRIGGER_INFRAROUGE);
+
+            } catch (PhidgetException ex) {
+                //We will catch Phidget Exceptions here, and print the error informaiton.
+                ex.printStackTrace();
+                System.out.println("");
+                System.out.println("PhidgetException " + ex.getErrorCode() + " (" + ex.getDescription() + "): " + ex.getDetail());
+            }
+
+            //Create gpio controller
+            //GpioController gpio = GpioFactory.getInstance(); //*************************************************************************
+
+            try
+            {
+                /*
+                //Provision gpio pin 12,3,5,7 as an output pin
+                t_outputIOs[0] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "LED1", PinState.HIGH);   //pin 12 du header
+                t_outputIOs[1] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_09, "LED2", PinState.LOW);    //pin 5 du header
+                t_outputIOs[2] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_21, "LED3", PinState.LOW);    //pin 29 du header
+                t_outputIOs[3] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_11, "LED4", PinState.LOW);    //pin 26 du header
+
+                //Provision gpio pin 27,11,7,31 as an input pin with its internal pull down resistor enabled
+                t_inputIOs[0] = gpio.provisionDigitalInputPin(RaspiPin.GPIO_30, "Bac1", PinPullResistance.OFF); //pin 27 du header
+                t_inputIOs[1] = gpio.provisionDigitalInputPin(RaspiPin.GPIO_00, "Bac2", PinPullResistance.OFF); //pin 11 du header
+                t_inputIOs[2] = gpio.provisionDigitalInputPin(RaspiPin.GPIO_07, "Bac3", PinPullResistance.OFF); //pin 7 du header
+                t_inputIOs[3] = gpio.provisionDigitalInputPin(RaspiPin.GPIO_22, "Bac4", PinPullResistance.OFF); //pin 31 du header
+                */
+                //Pin  28,11,13 non-controlable
+            }catch(Exception ex){}
+            
+            String user = "admin";
+            String password = "admin";
+            String host = "192.168.137.171"; // Possiblement a modifier  192.168.137.171********************************************************************************************
+            int port = Integer.parseInt("1883");
+            final String destination = "/scal/scal_reponse_requete";
+
+            JSONObject messageBaseJsonObj = new JSONObject();
+
+            MQTT mqtt = new MQTT();
+            try {
+                mqtt.setHost(host, port);
+            } catch (URISyntaxException ex) {
+                Logger.getLogger(Interface_Usager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            mqtt.setUserName(user);
+            mqtt.setPassword(password);
+            BlockingConnection connectionThread = mqtt.blockingConnection();
+
+            String TOPIC_REPONSE = "/scal/scal_requete_acces";
+            
+            while(true){
                 try
                 {
                     //Met à jour la liste des instructions de l'assemblage du produit
@@ -1238,7 +1389,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                     for (int i = 0; i < m_listeObjList.size(); i++) {
                         list1.add(m_listeObjList.get(i));
                     }
-
+                    
                     //Envoi les informations d'une commande à l'interface
                     tbProduit.setText(produit);
                     tbBase.setText(base);
@@ -1417,12 +1568,12 @@ public class Interface_Usager extends javax.swing.JFrame {
                         while(t_inputIOs[7].isHigh());
                         panelBorder8.setBackground(Color.white);
                         resetBac(bacActif);
-                    }
+                    }*/
                     String DATA = messageBaseJsonObj.toString(2);
                     Buffer msgErreur = new AsciiBuffer(DATA);
                     UTF8Buffer topic = new UTF8Buffer(destination);
-                    connection.publish(topic, msgErreur, QoS.AT_LEAST_ONCE, false);
-                    */
+                    connectionThread.publish(topic, msgErreur, QoS.AT_LEAST_ONCE, false);
+                    
                     
                     Thread.sleep(1000);
                 }catch(Exception ex){}
