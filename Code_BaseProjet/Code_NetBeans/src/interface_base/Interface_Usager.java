@@ -28,6 +28,7 @@ import com.phidget22.PhidgetException;
 import com.phidget22.*;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.net.URISyntaxException;
 import org.fusesource.hawtbuf.AsciiBuffer;
 import org.fusesource.hawtbuf.Buffer;
@@ -1410,7 +1411,8 @@ public class Interface_Usager extends javax.swing.JFrame {
     static Runnable runnable = new Runnable(){
         @Override
         public void run() {
-
+            int j = 0;
+            
             //Create gpio controller
             //GpioController gpio = GpioFactory.getInstance(); //*************************************************************************
 
@@ -1461,7 +1463,10 @@ public class Interface_Usager extends javax.swing.JFrame {
                         list1.removeAll();
                         for (int i = 0; i < m_listeObjList.size(); i++) {
                             list1.add(m_listeObjList.get(i));
+                            j++;
                         }
+                        list1.select(j-1);
+                        j = 0;
                     }
                     
                     //Envoi les informations d'une commande à l'interface
@@ -1659,7 +1664,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                     connectionThread.publish(topic, msgErreur, QoS.AT_LEAST_ONCE, false);*/
                     
                     
-                    Thread.sleep(500);
+                    Thread.sleep(750);
                 }catch(Exception ex){}
             }
         }
@@ -1794,8 +1799,7 @@ public class Interface_Usager extends javax.swing.JFrame {
 
             //Assign any event handlers you need before calling open so that no events are missed.
             vInput0.addVoltageChangeListener(onBac1_VoltageChange);
-            //vInput1.addVoltageChangeListener(onBac1_VoltageChange);
-            vInput1.addVoltageChangeListener(onBac2_VoltageChange);
+            vInput1.addVoltageChangeListener(onBac1_VoltageChange);
             vInput2.addVoltageChangeListener(onBac2_VoltageChange);
             vInput3.addVoltageChangeListener(onBac2_VoltageChange);
 
@@ -1873,6 +1877,8 @@ public class Interface_Usager extends javax.swing.JFrame {
                         
                         message = null;
                         
+                        numPageCourante = 1;
+                        
                         //<editor-fold defaultstate="collapsed" desc=" Initialisation des infos de la commandes (optional) ">
                         if(choixProduit == 1) //Porte-cellulaire
                         {
@@ -1948,16 +1954,17 @@ public class Interface_Usager extends javax.swing.JFrame {
                                         if(choixCouleur == 1)
                                         {
                                             bacActif = enumBacs.baseType1Couleur1.ordinal();
+                                            detectBac(bacActif);
                                             if (etapeTermine){
-                                                detectBac(bacActif);
+                                                
                                                 messageBaseJsonObj.put("Message", baseProd(base,couleur,bacActif));
                                             }
                                         }
                                         else if(choixCouleur == 2)
                                         {
                                             bacActif = enumBacs.baseType1Couleur2.ordinal();
+                                            detectBac(bacActif);
                                             if (etapeTermine){
-                                                detectBac(bacActif);
                                                 messageBaseJsonObj.put("Message", baseProd(base,couleur,bacActif));
                                             }
                                         }
@@ -1967,16 +1974,18 @@ public class Interface_Usager extends javax.swing.JFrame {
                                         if(choixCouleur == 1)
                                         {
                                             bacActif = enumBacs.baseType2Couleur1.ordinal();
+                                            detectBac(bacActif);
                                             if (etapeTermine){
-                                                detectBac(bacActif);
+                                                
                                                 messageBaseJsonObj.put("Message", baseProd(base,couleur,bacActif));
                                             }
                                         }
                                         else if(choixCouleur == 2)
                                         {
                                             bacActif = enumBacs.baseType2Couleur2.ordinal();
+                                            detectBac(bacActif);
                                             if (etapeTermine){
-                                                detectBac(bacActif);
+                                                
                                                 messageBaseJsonObj.put("Message", baseProd(base,couleur,bacActif));
                                             }
                                         }
@@ -1993,24 +2002,25 @@ public class Interface_Usager extends javax.swing.JFrame {
                                     //Porte-crayon type 1
                                         case 1:
                                             bacActif = enumBacs.crayonType1.ordinal();
+                                            detectBac(bacActif);
                                             if (etapeTermine){
-                                                detectBac(bacActif);
                                                 messageBaseJsonObj.put("Message", crayonProd(qteCrayon,crayon,bacActif));
                                             }
                                             break;
                                     //Porte-crayon type 2
                                         case 2:
                                             bacActif = enumBacs.crayonType2.ordinal();
+                                            detectBac(bacActif);
                                             if (etapeTermine){
-                                                detectBac(bacActif);
                                                 messageBaseJsonObj.put("Message", crayonProd(qteCrayon,crayon,bacActif));
                                             }
                                             break;
                                     //Porte-crayon type 3
                                         case 3:
                                             bacActif = enumBacs.crayonType3.ordinal();
+                                            detectBac(bacActif);
                                             if (etapeTermine){
-                                                detectBac(bacActif);
+                                                
                                                 messageBaseJsonObj.put("Message", crayonProd(qteCrayon,crayon,bacActif));
                                             }
                                             break;
@@ -2022,23 +2032,24 @@ public class Interface_Usager extends javax.swing.JFrame {
                                     if (varTampon != 3 && varTampon != numPageCourante) {
                                         etapeTermine = true;
                                         resetBac();
-                                        i++;
                                         varTampon = numPageCourante;
                                     }
                                     switch (choixSupports) {
                                     //Supports courts
                                         case 1:
                                             bacActif = enumBacs.supportCourt.ordinal();
+                                            detectBac(bacActif);
                                             if (etapeTermine){
-                                                detectBac(bacActif);
+                                                
                                                 messageBaseJsonObj.put("Message", supportsProd(supports,bacActif));
                                             }
                                             break;
                                     //Supports moyen
                                         case 2:
                                             bacActif = enumBacs.supportMoyen.ordinal();
+                                            detectBac(bacActif);
                                             if (etapeTermine){
-                                                detectBac(bacActif);
+                                                
                                                 messageBaseJsonObj.put("Message", supportsProd(supports,bacActif));
                                             }
                                             break;
@@ -2075,7 +2086,6 @@ public class Interface_Usager extends javax.swing.JFrame {
                     }
                     
                     if (varTampon == 4) {
-                        numPageCourante = 1;
                         i = 0;
                         exit = true;
                     }
