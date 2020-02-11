@@ -49,6 +49,8 @@ public class Interface_Usager extends javax.swing.JFrame {
 
     static final int NB_BACS = 8; //Constante du nombre de bacs relié au Raspberry pi.
     static final double TRIGGER_INFRAROUGE = 2.00; //Constante du trigger faisant varier la tension du capteur infrarouge.
+    static final double PENTE_MOYENNE_CAPTEUR = 0.005231111; //Constante contenant la pente moyenne du capteur de poids
+    static final double TENSION_ORIGINE = 2.1; //Constante contenant la valeur de tension d'origine du capteur de poids lorsqu'aucun poids n'y est appliqué
     //static GpioPinDigitalOutput t_outputIOs[] = new GpioPinDigitalOutput[NB_BACS]; //***********************************************
     //static GpioPinDigitalInput t_inputIOs[] = new GpioPinDigitalInput[NB_BACS]; //***********************************************
     
@@ -85,12 +87,20 @@ public class Interface_Usager extends javax.swing.JFrame {
     static String couleur = ""; //Contient les informations de la couleur du composant à utiliser pour l'assemblage d'un produit
     static boolean multiCrayon = false; //Indique si le produit possède plusieurs porte-crayon
     static int bacActif = 0; //Indique quel bac est actuellement sélectionné
+    static boolean rechargeListe = true; //Indique que la liste d'instructions dans l'interface usager a besoin d'être rafraichit.
     static boolean messageBac1 = false; //Empêche les capteurs infrarouges du bac 1 d'envoyer plusieurs fois le même message.
+    static boolean messageBac2 = false; //Empêche les capteurs infrarouges du bac 2 d'envoyer plusieurs fois le même message.
+    
     
     //Create your Phidget channels
     static VoltageInput vInput0;
     static VoltageInput vInput1;
+    static VoltageInput vInput2;
+    static VoltageInput vInput3;
     static DigitalOutput digitalOut0;
+    static DigitalOutput digitalOut1;
+    static VoltageRatioInput vRatioInput0;
+    static VoltageRatioInput vRatioInput1;
     
     /**
      * Constructor for objects of class Interface_Usager
@@ -98,13 +108,7 @@ public class Interface_Usager extends javax.swing.JFrame {
      */
     public Interface_Usager() {
         initComponents();
-        try {
-            vInput0 = new VoltageInput(); //Capteur infrarouge du bac 1
-            vInput1 = new VoltageInput(); //Capteur infrarouge du bac 1
-            digitalOut0 = new DigitalOutput(); //LED du bac 1
-        } catch (PhidgetException ex) {
-            
-        }
+        
     }
 
     /**
@@ -1189,6 +1193,7 @@ public class Interface_Usager extends javax.swing.JFrame {
         if (numPageCourante > 1) {
             numPageCourante--;
             tbEtapes.setText(Integer.toString(numPageCourante));
+            resetBac();
         }
     }//GEN-LAST:event_button_PreviousMouseClicked
 
@@ -1196,13 +1201,10 @@ public class Interface_Usager extends javax.swing.JFrame {
     brief : Passe à l'étape d'assemblage suivante manuellement.
     */
     private void button_NextMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_NextMouseClicked
-        if (numPageCourante < 3) {
+        if (numPageCourante < 4) {
             numPageCourante++;
             tbEtapes.setText(Integer.toString(numPageCourante));
-        }
-        else {
-            numPageCourante = 1;
-            tbEtapes.setText(Integer.toString(numPageCourante));
+            resetBac();
         }
     }//GEN-LAST:event_button_NextMouseClicked
 
@@ -1215,6 +1217,7 @@ public class Interface_Usager extends javax.swing.JFrame {
             vInput0.close();
             vInput1.close();
             digitalOut0.close();
+            vRatioInput0.close();
         } catch (PhidgetException ex) {
             //We will catch Phidget Exceptions here, and print the error informaiton.
             ex.printStackTrace();
@@ -1226,15 +1229,17 @@ public class Interface_Usager extends javax.swing.JFrame {
     /*
     brief : S'occupe des capteurs infrarouges du bac #1
     */
-    public static VoltageInputVoltageChangeListener onBac1_VoltageChange = new VoltageInputVoltageChangeListener() {
+    public static VoltageInputVoltageChangeListener onBac1_VoltageChange =
+        new VoltageInputVoltageChangeListener() {
         @Override
         public void onVoltageChange(VoltageInputVoltageChangeEvent e) {
             try {
                 double tensionCapteur = e.getVoltage();
+                boolean envoieMessage = false;
                 
                 String user = "admin";
                 String password = "admin";
-                String host = "192.168.137.171"; // Possiblement a modifier  192.168.137.171********************************************************************************************
+                String host = "127.0.0.1"; // Possiblement a modifier  192.168.137.171********************************************************************************************
                 int port = Integer.parseInt("1883");
                 final String destination = "/scal/scal_reponse_requete";
 
@@ -1244,20 +1249,26 @@ public class Interface_Usager extends javax.swing.JFrame {
                 mqtt.setHost(host, port);
                 mqtt.setUserName(user);
                 mqtt.setPassword(password);
-                BlockingConnection connectionThread = mqtt.blockingConnection();
-
+                BlockingConnection connectionBac1 = mqtt.blockingConnection();
+                connectionBac1.connect();
+                
                 String TOPIC_REPONSE = "/scal/scal_requete_acces";
                 
-                System.out.println("Voltage: " + e.getSource().getChannel() + tensionCapteur); //****************************************************************************************
-                digitalOut0.setState(true); //Allume la LED du bac courant
+                messageBaseJsonObj.put("Source", new String[] { "Base"});
+                messageBaseJsonObj.put("Numetape", numPageCourante);
                 
-                if(tensionCapteur > 2.00) //Bac #1
+                System.out.println("Voltage: " + e.getSource().getChannel() + " " + tensionCapteur); //****************************************************************************************
+                
+                
+                if(tensionCapteur > 2.00)  //L'opérateur a mis sa main dans le bac
                 {
+                    //digitalOut0.setState(true); //Allume la LED rouge du bac courant //************************************************************************************
                     panelBorder1.setBackground(Color.yellow); //Couleur déclarant la détection d'une manipulation de la part d'un opérateur dans un bac
                     if(messageBac1 == false)
                     {
                         if(bacActif != 1) //S'il ne s'agit pas du bac indiqué dans les instructions
                         {
+                            envoieMessage = true;
                             panelCenter1.setBackground(Color.red);
                             messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
                             m_listeObjList.add("Ce n'est pas le bon bac!!!");
@@ -1272,20 +1283,116 @@ public class Interface_Usager extends javax.swing.JFrame {
                     {
                         if(bacActif == 1) //S'il s'agit du bac indiqué dans les instructions
                         {
-                            digitalOut0.setState(false); //Éteind la LED du bac courant
+                            envoieMessage = true;
                             numPageCourante++; //On incrémente la variable et on passe à l'étape suivante
                             messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
                             m_listeObjList.add("Poursuivez avec l'étape numéro " + numPageCourante);
-                            panelBorder1.setBackground(Color.white);
-                            resetBac(bacActif);
+                            resetBac();
                         }
                         messageBac1 = false;
                     }
+                    panelBorder1.setBackground(Color.white);
+                    //digitalOut0.setState(false); //Éteind la LED rouge du bac courant //**********************************************************************************
                 }
-                String DATA = messageBaseJsonObj.toString(2);
-                Buffer msgErreur = new AsciiBuffer(DATA);
-                UTF8Buffer topic = new UTF8Buffer(destination);
-                connectionThread.publish(topic, msgErreur, QoS.AT_LEAST_ONCE, false);
+                
+                if (envoieMessage) {
+                    envoieMessage = false;
+                    rechargeListe = true;
+                    String DATA = messageBaseJsonObj.toString(2);
+                    Buffer msgErreur = new AsciiBuffer(DATA);
+                    UTF8Buffer topic = new UTF8Buffer(destination);
+                    connectionBac1.publish(topic, msgErreur, QoS.AT_LEAST_ONCE, false);
+                }
+                
+            } catch (PhidgetException ex) {
+                //We will catch Phidget Exceptions here, and print the error informaiton.
+                ex.printStackTrace();
+                System.out.println("");
+                System.out.println("PhidgetException " + ex.getErrorCode() + " (" + ex.getDescription() + "): " + ex.getDetail());
+            } catch (Exception ex) {
+                Logger.getLogger(Interface_Usager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    };
+    
+    /*
+    brief : S'occupe des capteurs infrarouges du bac #2
+    */
+    public static VoltageInputVoltageChangeListener onBac2_VoltageChange =
+        new VoltageInputVoltageChangeListener() {
+        @Override
+        public void onVoltageChange(VoltageInputVoltageChangeEvent e) {
+            try {
+                double tensionCapteur = e.getVoltage();
+                boolean envoieMessage = false;
+                
+                String user = "admin";
+                String password = "admin";
+                String host = "127.0.0.1"; // Possiblement a modifier  192.168.137.171********************************************************************************************
+                int port = Integer.parseInt("1883");
+                final String destination = "/scal/scal_reponse_requete";
+
+                JSONObject messageBaseJsonObj = new JSONObject();
+
+                MQTT mqtt = new MQTT();
+                mqtt.setHost(host, port);
+                mqtt.setUserName(user);
+                mqtt.setPassword(password);
+                BlockingConnection connectionBac2 = mqtt.blockingConnection();
+                connectionBac2.connect();
+                
+                String TOPIC_REPONSE = "/scal/scal_requete_acces";
+                
+                messageBaseJsonObj.put("Source", new String[] { "Base"});
+                messageBaseJsonObj.put("Numetape", numPageCourante);
+                
+                System.out.println("Voltage: " + e.getSource().getChannel() + " " + tensionCapteur); //****************************************************************************************
+                
+                
+                if(tensionCapteur > 2.00)  //L'opérateur a mis sa main dans le bac
+                {
+                    //digitalOut1.setState(true); //Allume la LED rouge du bac courant //************************************************************************************
+                    panelBorder2.setBackground(Color.yellow); //Couleur déclarant la détection d'une manipulation de la part d'un opérateur dans un bac
+                    if(messageBac2 == false)
+                    {
+                        if(bacActif != 2) //S'il ne s'agit pas du bac indiqué dans les instructions
+                        {
+                            envoieMessage = true;
+                            panelCenter2.setBackground(Color.red);
+                            messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
+                            m_listeObjList.add("Ce n'est pas le bon bac!!!");
+                            m_listeObjList.add("Allez au bac #" + bacActif);
+                        }
+                        messageBac2 = true;
+                    }
+                }
+                else if(tensionCapteur < 2.00) //L'opérateur a retiré sa main du bac
+                {
+                    if(messageBac2)
+                    {
+                        if(bacActif == 2) //S'il s'agit du bac indiqué dans les instructions
+                        {
+                            envoieMessage = true;
+                            numPageCourante++; //On incrémente la variable et on passe à l'étape suivante
+                            messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                            m_listeObjList.add("Poursuivez avec l'étape numéro " + numPageCourante);
+                            resetBac();
+                        }
+                        messageBac2 = false;
+                    }
+                    panelBorder2.setBackground(Color.white);
+                    //digitalOut1.setState(false); //Éteind la LED rouge du bac courant //**********************************************************************************
+                }
+                
+                if (envoieMessage) {
+                    envoieMessage = false;
+                    rechargeListe = true;
+                    String DATA = messageBaseJsonObj.toString(2);
+                    Buffer msgErreur = new AsciiBuffer(DATA);
+                    UTF8Buffer topic = new UTF8Buffer(destination);
+                    connectionBac2.publish(topic, msgErreur, QoS.AT_LEAST_ONCE, false);
+                }
+                
             } catch (PhidgetException ex) {
                 //We will catch Phidget Exceptions here, and print the error informaiton.
                 ex.printStackTrace();
@@ -1303,42 +1410,6 @@ public class Interface_Usager extends javax.swing.JFrame {
     static Runnable runnable = new Runnable(){
         @Override
         public void run() {
-            
-            try {
-                //Enable server discovery to allow your program to find other Phidgets on the local network.
-                Net.enableServerDiscovery(ServerType.DEVICE_REMOTE);
-
-                //Set addressing parameters to specify which channel to open (if any)
-                vInput0.setHubPort(0);
-                vInput0.setIsRemote(true);
-                vInput0.setDeviceSerialNumber(597862);
-                vInput0.setChannel(0);
-                vInput1.setHubPort(0);
-                vInput1.setIsRemote(true);
-                vInput1.setDeviceSerialNumber(597862);
-                vInput1.setChannel(1);
-                digitalOut0.setHubPort(1);
-		digitalOut0.setIsRemote(true);
-		digitalOut0.setDeviceSerialNumber(597862);
-
-                //Assign any event handlers you need before calling open so that no events are missed.
-                vInput0.addVoltageChangeListener(onBac1_VoltageChange);
-                vInput1.addVoltageChangeListener(onBac1_VoltageChange);
-
-                //Open your Phidgets and wait for attachment
-                vInput0.open(20000);
-                vInput1.open(20000);
-                digitalOut0.open(20000);
-                
-                vInput0.setVoltageChangeTrigger(TRIGGER_INFRAROUGE);
-                vInput1.setVoltageChangeTrigger(TRIGGER_INFRAROUGE);
-
-            } catch (PhidgetException ex) {
-                //We will catch Phidget Exceptions here, and print the error informaiton.
-                ex.printStackTrace();
-                System.out.println("");
-                System.out.println("PhidgetException " + ex.getErrorCode() + " (" + ex.getDescription() + "): " + ex.getDetail());
-            }
 
             //Create gpio controller
             //GpioController gpio = GpioFactory.getInstance(); //*************************************************************************
@@ -1384,10 +1455,13 @@ public class Interface_Usager extends javax.swing.JFrame {
             while(true){
                 try
                 {
-                    //Met à jour la liste des instructions de l'assemblage du produit
-                    list1.removeAll();
-                    for (int i = 0; i < m_listeObjList.size(); i++) {
-                        list1.add(m_listeObjList.get(i));
+                    if (rechargeListe) {
+                        rechargeListe = false;
+                        //Met à jour la liste des instructions de l'assemblage du produit
+                        list1.removeAll();
+                        for (int i = 0; i < m_listeObjList.size(); i++) {
+                            list1.add(m_listeObjList.get(i));
+                        }
                     }
                     
                     //Envoi les informations d'une commande à l'interface
@@ -1398,6 +1472,16 @@ public class Interface_Usager extends javax.swing.JFrame {
                     tbSupports.setText(supports);
                     tbQuantite.setText(Integer.toString(quantite));
                     tbEtapes.setText(Integer.toString(numPageCourante));
+                    tbPoids_Bac1.setText(Double.toString((vRatioInput0.getVoltageRatio() * 100000 - TENSION_ORIGINE)/PENTE_MOYENNE_CAPTEUR));
+                    tbPoids_Bac2.setText(Double.toString(0.00));
+                    tbPoids_Bac3.setText(Double.toString(0.00));
+                    tbPoids_Bac4.setText(Double.toString(0.00));
+                    tbPoids_Bac5.setText(Double.toString(0.00));
+                    tbPoids_Bac6.setText(Double.toString(0.00));
+                    tbPoids_Bac7.setText(Double.toString(0.00));
+                    tbPoids_Bac8.setText(Double.toString(0.00));
+                    tbPoids_Bac9.setText(Double.toString(0.00));
+                    
                     /*
                     t_outputIOs[bacActif].high(); //Allume la LED du bac courant
 
@@ -1420,7 +1504,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                         }
                         while(t_inputIOs[0].isHigh()); //On attend que l'opérateur ait retiré sa main du bac avant de poursuivre l'assemblage
                         panelBorder1.setBackground(Color.white);
-                        resetBac(bacActif);
+                        resetBac();
                     }
                     else if(t_inputIOs[1].isHigh()) //Bac #2
                     {
@@ -1441,7 +1525,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                         }
                         while(t_inputIOs[1].isHigh());
                         panelBorder2.setBackground(Color.white);
-                        resetBac(bacActif);
+                        resetBac();
                     }
                     else if(t_inputIOs[2].isHigh()) //Bac #3
                     {
@@ -1462,7 +1546,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                         }
                         while(t_inputIOs[2].isHigh());
                         panelBorder3.setBackground(Color.white);
-                        resetBac(bacActif);
+                        resetBac();
                     }
                     else if(t_inputIOs[3].isHigh()) //Bac #4
                     {
@@ -1483,7 +1567,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                         }
                         while(t_inputIOs[3].isHigh());
                         panelBorder4.setBackground(Color.white);
-                        resetBac(bacActif);
+                        resetBac();
                     }
                     else if(t_inputIOs[4].isHigh()) //Bac #5
                     {
@@ -1504,7 +1588,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                         }
                         while(t_inputIOs[4].isHigh());
                         panelBorder5.setBackground(Color.white);
-                        resetBac(bacActif);
+                        resetBac();
                     }
                     else if(t_inputIOs[5].isHigh()) //Bac #6
                     {
@@ -1525,7 +1609,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                         }
                         while(t_inputIOs[5].isHigh());
                         panelBorder6.setBackground(Color.white);
-                        resetBac(bacActif);
+                        resetBac();
                     }
                     else if(t_inputIOs[6].isHigh()) //Bac #7
                     {
@@ -1546,7 +1630,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                         }
                         while(t_inputIOs[6].isHigh());
                         panelBorder7.setBackground(Color.white);
-                        resetBac(bacActif);
+                        resetBac();
                     }
                     else if(t_inputIOs[7].isHigh()) //Bac #8
                     {
@@ -1567,15 +1651,15 @@ public class Interface_Usager extends javax.swing.JFrame {
                         }
                         while(t_inputIOs[7].isHigh());
                         panelBorder8.setBackground(Color.white);
-                        resetBac(bacActif);
-                    }*/
+                        resetBac();
+                    }
                     String DATA = messageBaseJsonObj.toString(2);
                     Buffer msgErreur = new AsciiBuffer(DATA);
                     UTF8Buffer topic = new UTF8Buffer(destination);
-                    connectionThread.publish(topic, msgErreur, QoS.AT_LEAST_ONCE, false);
+                    connectionThread.publish(topic, msgErreur, QoS.AT_LEAST_ONCE, false);*/
                     
                     
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 }catch(Exception ex){}
             }
         }
@@ -1589,7 +1673,6 @@ public class Interface_Usager extends javax.swing.JFrame {
         
         boolean etapeTermine = false; //Variable servant à confirmer que l'étape courante est bien terminé
         int varTampon = 0; //Garde en mémoire l'étape de production courante 
-        
         
         String user = "admin";
         String password = "admin";
@@ -1660,6 +1743,85 @@ public class Interface_Usager extends javax.swing.JFrame {
             }
         });
         
+        //<editor-fold defaultstate="collapsed" desc=" Initialisation des appareils Phidget ">
+        try {
+            //Enable server discovery to allow your program to find other Phidgets on the local network.
+            Net.enableServerDiscovery(ServerType.DEVICE_REMOTE);
+
+            //Create your Phidget channels
+            vInput0 = new VoltageInput(); //Capteur infrarouge du bac 1
+            vInput1 = new VoltageInput(); //Capteur infrarouge du bac 1
+            vInput2 = new VoltageInput(); //Capteur infrarouge du bac 2
+            vInput3 = new VoltageInput(); //Capteur infrarouge du bac 2
+            digitalOut0 = new DigitalOutput(); //LED du bac 1
+            digitalOut1 = new DigitalOutput(); //LED du bac 1
+            vRatioInput0 = new VoltageRatioInput(); //Capteur de poids du bac 1
+            vRatioInput1 = new VoltageRatioInput(); //Capteur de poids du bac 2
+
+            //Set addressing parameters to specify which channel to open (if any)
+            vInput0.setHubPort(0);
+            vInput0.setIsRemote(true);
+            vInput0.setDeviceSerialNumber(597862);
+            vInput0.setChannel(0);
+            vInput1.setHubPort(0);
+            vInput1.setIsRemote(true);
+            vInput1.setDeviceSerialNumber(597862);
+            vInput1.setChannel(1);
+            vInput2.setHubPort(0);
+            vInput2.setIsRemote(true);
+            vInput2.setDeviceSerialNumber(597862);
+            vInput2.setChannel(2);
+            vInput3.setHubPort(0);
+            vInput3.setIsRemote(true);
+            vInput3.setDeviceSerialNumber(597862);
+            vInput3.setChannel(3);
+            digitalOut0.setHubPort(1);
+            digitalOut0.setIsRemote(true);
+            digitalOut0.setDeviceSerialNumber(597862);
+            digitalOut0.setChannel(0);
+            digitalOut1.setHubPort(1);
+            digitalOut1.setIsRemote(true);
+            digitalOut1.setDeviceSerialNumber(597862);
+            digitalOut0.setChannel(1);
+            vRatioInput0.setHubPort(2);
+            vRatioInput0.setIsRemote(true);
+            vRatioInput0.setDeviceSerialNumber(597862);
+            vRatioInput0.setChannel(0);
+            vRatioInput1.setHubPort(2);
+            vRatioInput1.setIsRemote(true);
+            vRatioInput1.setDeviceSerialNumber(597862);
+            vRatioInput1.setChannel(1);
+
+            //Assign any event handlers you need before calling open so that no events are missed.
+            vInput0.addVoltageChangeListener(onBac1_VoltageChange);
+            //vInput1.addVoltageChangeListener(onBac1_VoltageChange);
+            vInput1.addVoltageChangeListener(onBac2_VoltageChange);
+            vInput2.addVoltageChangeListener(onBac2_VoltageChange);
+            vInput3.addVoltageChangeListener(onBac2_VoltageChange);
+
+            //Open your Phidgets and wait for attachment
+            vInput0.open(5000);
+            vInput1.open(5000);
+            //vInput2.open(5000);
+            //vInput3.open(5000);
+            //digitalOut0.open(5000);
+            vRatioInput0.open(5000);
+            //vRatioInput1.open(5000);
+
+            vInput0.setVoltageChangeTrigger(TRIGGER_INFRAROUGE);
+            vInput1.setVoltageChangeTrigger(TRIGGER_INFRAROUGE);
+            vInput2.setVoltageChangeTrigger(TRIGGER_INFRAROUGE);
+            vInput3.setVoltageChangeTrigger(TRIGGER_INFRAROUGE);
+            vRatioInput0.setBridgeGain(BridgeGain.GAIN_64X);
+            vRatioInput1.setBridgeGain(BridgeGain.GAIN_64X);
+
+        } catch (PhidgetException ex) {
+            //We will catch Phidget Exceptions here, and print the error informaiton.
+            ex.printStackTrace();
+            System.out.println("");
+            System.out.println("PhidgetException " + ex.getErrorCode() + " (" + ex.getDescription() + "): " + ex.getDetail());
+        }
+        //</editor-fold>
         
         /*
         //Séquence test des GPIO's
@@ -1686,7 +1848,6 @@ public class Interface_Usager extends javax.swing.JFrame {
         
         Thread myThread = new Thread(runnable);
         myThread.start();
-        //runnable.run();
         
         while(true)
         {
@@ -1703,14 +1864,15 @@ public class Interface_Usager extends javax.swing.JFrame {
                         Str = new String(message.getPayload());
                         JSONObject messageJsonObject = new JSONObject(Str);
                         
-                        resetBac(bacActif);
                         choixProduit = messageJsonObject.getInt("Produit"); //Choix du produit
                         choixBase = messageJsonObject.getInt("Base");    //Choix de la base
                         choixCouleur = messageJsonObject.getInt("Couleur"); //Choix de la couleur
                         choixCrayon = messageJsonObject.getInt("Crayon");  //Choix porte Crayon
                         choixSupports = messageJsonObject.getInt("Supports"); //Choix des supports
                         quantite = messageJsonObject.getInt("Quantite");     //Quantite
-
+                        
+                        message = null;
+                        
                         //<editor-fold defaultstate="collapsed" desc=" Initialisation des infos de la commandes (optional) ">
                         if(choixProduit == 1) //Porte-cellulaire
                         {
@@ -1777,7 +1939,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                                 case 1:
                                     if (varTampon != 1 && varTampon != numPageCourante) {
                                         etapeTermine = true;
-                                        resetBac(bacActif);
+                                        resetBac();
                                         varTampon = numPageCourante;
                                     }
                                     messageBaseJsonObj.put("Numetape", numPageCourante);
@@ -1822,7 +1984,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                                 case 2:
                                     if (varTampon != 2 && varTampon != numPageCourante) {
                                         etapeTermine = true;
-                                        resetBac(bacActif);
+                                        resetBac();
                                         varTampon = numPageCourante;
                                     }
                                     messageBaseJsonObj.put("Numetape", numPageCourante);
@@ -1859,7 +2021,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                                     messageBaseJsonObj.put("Numetape", numPageCourante);
                                     if (varTampon != 3 && varTampon != numPageCourante) {
                                         etapeTermine = true;
-                                        resetBac(bacActif);
+                                        resetBac();
                                         i++;
                                         varTampon = numPageCourante;
                                     }
@@ -1891,22 +2053,29 @@ public class Interface_Usager extends javax.swing.JFrame {
                                             
                                             break;
                                     }   break;
-                                default:
-                                    /*if (varTampon != numPageCourante) {
+                                    case 4:
+                                    if (varTampon != 4 && varTampon != numPageCourante) {
+                                        resetBac();
                                         i++;
+                                        varTampon = numPageCourante;
                                         numPageCourante = 1;
-                                    }*/
+                                    }
+                                    break;
+                                default:
                                     break;
                             }
                             if (etapeTermine) {
                                 etapeTermine = false;
+                                rechargeListe = true;
                                 DATA = messageBaseJsonObj.toString(2);
                                 Buffer msgBacs = new AsciiBuffer(DATA);
                                 connection.publish(topic, msgBacs, QoS.AT_LEAST_ONCE, false);
                             }
                         }
-                        varTampon = 0;
-                        resetBac(bacActif);
+                    }
+                    
+                    if (varTampon == 4) {
+                        numPageCourante = 1;
                         i = 0;
                         exit = true;
                     }
@@ -2005,47 +2174,19 @@ public class Interface_Usager extends javax.swing.JFrame {
     }
     
     /*
-    @brief: Remet la section des bacs à son état normale suite à l'accomplissement de l'étape en cours.
-    @variables: iBacActif: Contient le numéro du bac actuellement en cours d'utilisation
+    @brief: Remet les bacs à leur état normale suite à l'accomplissement de l'étape en cours.
+    @variables: Aucun
     */
-    private static void resetBac(int iBacActif)
+    private static void resetBac()
     {
-        switch (iBacActif) {
-        //Bac #1
-            case 1:
-                panelCenter1.setBackground(Color.white);
-                break;
-        //Bac #2
-            case 2:
-                panelCenter2.setBackground(Color.white);
-                break;
-        //Bac #3
-            case 3:
-                panelCenter3.setBackground(Color.white);
-                break;
-        //Bac #4
-            case 4:
-                panelCenter4.setBackground(Color.white);
-                break;
-        //Bac #5
-            case 5:
-                panelCenter5.setBackground(Color.white);
-                break;
-        //Bac #6
-            case 6:
-                panelCenter6.setBackground(Color.white);
-                break;
-        //Bac #7
-            case 7:
-                panelCenter7.setBackground(Color.white);
-                break;
-        //Bac #8
-            case 8:
-                panelCenter8.setBackground(Color.white);
-                break;
-            default:
-                break;
-        }
+        panelCenter1.setBackground(Color.white);
+        panelCenter2.setBackground(Color.white);
+        panelCenter3.setBackground(Color.white);
+        panelCenter4.setBackground(Color.white);
+        panelCenter5.setBackground(Color.white);
+        panelCenter6.setBackground(Color.white);
+        panelCenter7.setBackground(Color.white);
+        panelCenter8.setBackground(Color.white);
     }
     
 
@@ -2120,15 +2261,15 @@ public class Interface_Usager extends javax.swing.JFrame {
     private static java.awt.TextField tbCouleur;
     private static java.awt.TextField tbCrayon;
     private static java.awt.TextField tbEtapes;
-    private java.awt.TextField tbPoids_Bac1;
-    private java.awt.TextField tbPoids_Bac2;
-    private java.awt.TextField tbPoids_Bac3;
-    private java.awt.TextField tbPoids_Bac4;
-    private java.awt.TextField tbPoids_Bac5;
-    private java.awt.TextField tbPoids_Bac6;
-    private java.awt.TextField tbPoids_Bac7;
-    private java.awt.TextField tbPoids_Bac8;
-    private java.awt.TextField tbPoids_Bac9;
+    private static java.awt.TextField tbPoids_Bac1;
+    private static java.awt.TextField tbPoids_Bac2;
+    private static java.awt.TextField tbPoids_Bac3;
+    private static java.awt.TextField tbPoids_Bac4;
+    private static java.awt.TextField tbPoids_Bac5;
+    private static java.awt.TextField tbPoids_Bac6;
+    private static java.awt.TextField tbPoids_Bac7;
+    private static java.awt.TextField tbPoids_Bac8;
+    private static java.awt.TextField tbPoids_Bac9;
     private static java.awt.TextField tbProduit;
     private static java.awt.TextField tbQuantite;
     private static java.awt.TextField tbSupports;
