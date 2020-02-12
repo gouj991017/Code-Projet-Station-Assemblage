@@ -210,8 +210,9 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
+            <Property name="lineWrap" type="boolean" value="true"/>
             <Property name="rows" type="int" value="5"/>
-            <Property name="text" type="java.lang.String" value="Auteur: Guillaume Beaudoin&#xa;============================&#xa;Terminal casque   v1.0&#xa;============================&#xa;"/>
+            <Property name="text" type="java.lang.String" value="Auteur: Guillaume Beaudoin&#xa;============================&#xa;Terminal casque   v1.2&#xa;============================&#xa;"/>
             <Property name="name" type="java.lang.String" value="textBoxAffiche" noResource="true"/>
           </Properties>
           <AuxValues>

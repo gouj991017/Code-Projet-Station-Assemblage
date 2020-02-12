@@ -128,8 +128,9 @@ public class NewJFrame extends javax.swing.JFrame {
         textBoxAffiche.setColumns(20);
         textBoxAffiche.setFont(new java.awt.Font("Monospaced", 0, 24)); // NOI18N
         textBoxAffiche.setForeground(new java.awt.Color(255, 255, 255));
+        textBoxAffiche.setLineWrap(true);
         textBoxAffiche.setRows(5);
-        textBoxAffiche.setText("Auteur: Guillaume Beaudoin\n============================\nTerminal casque   v1.0\n============================\n");
+        textBoxAffiche.setText("Auteur: Guillaume Beaudoin\n============================\nTerminal casque   v1.2\n============================\n");
         textBoxAffiche.setName("textBoxAffiche"); // NOI18N
         jScrollPane1.setViewportView(textBoxAffiche);
 
