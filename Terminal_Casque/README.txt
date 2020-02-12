@@ -5,6 +5,6 @@ Systèmes: developpé sur: Windows 10 Famille  deployé sur: raspbian buster ful
 Language: Java
 IDE: Netbeans
 
-Ce projet inclut le code pour l'interface usager du casque de réalité virtuelle.
+Ce projet inclut le code pour l'interface usager du casque de réalité augmentée.
 
 pour l'executer sans IDE: $java -jar [.../dist/Terminal_Casque.jar]
