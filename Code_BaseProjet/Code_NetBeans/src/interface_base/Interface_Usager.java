@@ -1,13 +1,13 @@
 /*
     PROJECT TITLE: Code de gestion pour la base d'une station d'assemblage
-    PURPOSE OF PROJECT: S'occupe d'envoyer les différentes informations liées aux étapes de montage d'un produit à une lunette de réalité augmenté via une communnication MQTT entre
+    Brief: S'occupe d'envoyer les différentes informations liées aux étapes de montage d'un produit à une lunette de réalité augmenté via une communnication MQTT entre
     deux RaspBerry Pi Zéro W et affiche l'étape actuel à laquelle l'opérateur est arrivé ainsi qu'une copie des étapes envoyées à la lunette sur une interface usager. Les bacs
     contenant les pièces nécessaires à la réalisation du produit sont mis en évidence selon l'étape de montage à laquelle l'opérateur se trouve, cette information sera également affiché
     sur l'interface usager.
     Les informations typiques d'une commande seront également affichées sur l'interface usager de la base (la commande sera, en d'autres mots, décortiquée selon ses spécifications).
     On peut passer à l'étape suivante ou revenir à l'étape précédente à l'aide de boutons sur l'interface usager.
     Les informations concernant le poids des bacs sont également affichées sur l'interface.
-    VERSION : V2.5
+    VERSION : V2.8
     AUTHORS: Jérémy Goulet
  */
 package interface_base;
@@ -50,8 +50,8 @@ public class Interface_Usager extends javax.swing.JFrame {
 
     static final int NB_BACS = 8; //Constante du nombre de bacs relié au Raspberry pi.
     static final double TRIGGER_INFRAROUGE = 2.00; //Constante du trigger faisant varier la tension du capteur infrarouge.
-    static final double PENTE_MOYENNE_CAPTEUR = 0.005231111; //Constante contenant la pente moyenne du capteur de poids
-    static final double TENSION_ORIGINE = 2.1; //Constante contenant la valeur de tension d'origine du capteur de poids lorsqu'aucun poids n'y est appliqué
+    static final double PENTE_MOYENNE_CAPTEUR = 0.0203; //Constante contenant la pente moyenne du capteur de poids
+    static final double TENSION_ORIGINE = -2.5; //Constante contenant la valeur de tension d'origine du capteur de poids lorsqu'aucun poids n'y est appliqué
     //static GpioPinDigitalOutput t_outputIOs[] = new GpioPinDigitalOutput[NB_BACS]; //***********************************************
     //static GpioPinDigitalInput t_inputIOs[] = new GpioPinDigitalInput[NB_BACS]; //***********************************************
     
@@ -91,7 +91,8 @@ public class Interface_Usager extends javax.swing.JFrame {
     static boolean rechargeListe = true; //Indique que la liste d'instructions dans l'interface usager a besoin d'être rafraichit.
     static boolean messageBac1 = false; //Empêche les capteurs infrarouges du bac 1 d'envoyer plusieurs fois le même message.
     static boolean messageBac2 = false; //Empêche les capteurs infrarouges du bac 2 d'envoyer plusieurs fois le même message.
-    
+    static double poidCellule0 = 0.00; //Contient la valeur en gramme du poids du bac 1.
+    static double poidCellule1 = 0.00; //Contient la valeur en gramme du poids du bac 2.
     
     //Create your Phidget channels
     static VoltageInput vInput0;
@@ -1433,7 +1434,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                 */
                 //Pin  28,11,13 non-controlable
             }catch(Exception ex){}
-            
+            /*
             String user = "admin";
             String password = "admin";
             String host = "192.168.137.171"; // Possiblement a modifier  192.168.137.171********************************************************************************************
@@ -1452,7 +1453,7 @@ public class Interface_Usager extends javax.swing.JFrame {
             mqtt.setPassword(password);
             BlockingConnection connectionThread = mqtt.blockingConnection();
 
-            String TOPIC_REPONSE = "/scal/scal_requete_acces";
+            String TOPIC_REPONSE = "/scal/scal_requete_acces";*/
             
             while(true){
                 try
@@ -1477,7 +1478,16 @@ public class Interface_Usager extends javax.swing.JFrame {
                     tbSupports.setText(supports);
                     tbQuantite.setText(Integer.toString(quantite));
                     tbEtapes.setText(Integer.toString(numPageCourante));
-                    tbPoids_Bac1.setText(Double.toString((vRatioInput0.getVoltageRatio() * 100000 - TENSION_ORIGINE)/PENTE_MOYENNE_CAPTEUR));
+                    
+                    //Envoi les informations des cellules de charge à l'interface
+                    poidCellule0 = ((vRatioInput0.getVoltageRatio() - TENSION_ORIGINE)/PENTE_MOYENNE_CAPTEUR)* 100;
+                    poidCellule1 = ((vRatioInput1.getVoltageRatio() - TENSION_ORIGINE)/PENTE_MOYENNE_CAPTEUR)* 100;
+                    if (poidCellule0 < 0 || poidCellule1 < 0) {
+                        poidCellule0 = 0;
+                        poidCellule1 = 0;
+                    }
+                    
+                    tbPoids_Bac1.setText(Double.toString(poidCellule));
                     tbPoids_Bac2.setText(Double.toString(0.00));
                     tbPoids_Bac3.setText(Double.toString(0.00));
                     tbPoids_Bac4.setText(Double.toString(0.00));
@@ -1810,14 +1820,14 @@ public class Interface_Usager extends javax.swing.JFrame {
             //vInput3.open(5000);
             //digitalOut0.open(5000);
             vRatioInput0.open(5000);
-            //vRatioInput1.open(5000);
+            vRatioInput1.open(5000);
 
             vInput0.setVoltageChangeTrigger(TRIGGER_INFRAROUGE);
             vInput1.setVoltageChangeTrigger(TRIGGER_INFRAROUGE);
             vInput2.setVoltageChangeTrigger(TRIGGER_INFRAROUGE);
             vInput3.setVoltageChangeTrigger(TRIGGER_INFRAROUGE);
-            vRatioInput0.setBridgeGain(BridgeGain.GAIN_64X);
-            vRatioInput1.setBridgeGain(BridgeGain.GAIN_64X);
+            vRatioInput0.setBridgeGain(BridgeGain.GAIN_128X);
+            vRatioInput1.setBridgeGain(BridgeGain.GAIN_128X);
 
         } catch (PhidgetException ex) {
             //We will catch Phidget Exceptions here, and print the error informaiton.
