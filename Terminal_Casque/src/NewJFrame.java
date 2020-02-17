@@ -1,6 +1,11 @@
 /**
- *
- * @author Guim
+ * @brief Il s'agit du programme présentant les instruction pour l'opérateur de la station d'assemblage.
+ * Les instructions sont présentées une à la fois. Il est possible de choisir la couleur du texte dans
+ * l'onglet Edit->Couleur du texte et de changer la source des messages dans Edit->Adresse IP:.
+ * Les messages sont reçus par MQTT sur le topic: /scal/scal_reponse_requete .
+ * @author Guillaume Beaudoin
+ * @version 1.2
+ * @date 16-02-20
  */
 
 import java.awt.Color;
