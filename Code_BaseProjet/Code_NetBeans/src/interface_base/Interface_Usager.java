@@ -50,8 +50,9 @@ public class Interface_Usager extends javax.swing.JFrame {
 
     static final int NB_BACS = 8; //Constante du nombre de bacs relié au Raspberry pi.
     static final double TRIGGER_INFRAROUGE = 2.00; //Constante du trigger faisant varier la tension du capteur infrarouge.
-    static final double PENTE_MOYENNE_CAPTEUR = 0.0203; //Constante contenant la pente moyenne du capteur de poids
-    static final double TENSION_ORIGINE = -2.5; //Constante contenant la valeur de tension d'origine du capteur de poids lorsqu'aucun poids n'y est appliqué
+    static final double PENTE_MOYENNE_CAPTEUR = 0.0204; //Constante contenant la pente moyenne du capteur de poids
+    static final double POID_OBJET_BAC1 = 200.0; //Constante contenant le poid d'un objet se trouvant dans le bac 1
+    static final double POID_OBJET_BAC2 = 100.0; //Constante contenant le poid d'un objet se trouvant dans le bac 2
     //static GpioPinDigitalOutput t_outputIOs[] = new GpioPinDigitalOutput[NB_BACS]; //***********************************************
     //static GpioPinDigitalInput t_inputIOs[] = new GpioPinDigitalInput[NB_BACS]; //***********************************************
     
@@ -93,6 +94,10 @@ public class Interface_Usager extends javax.swing.JFrame {
     static boolean messageBac2 = false; //Empêche les capteurs infrarouges du bac 2 d'envoyer plusieurs fois le même message.
     static double poidCellule0 = 0.00; //Contient la valeur en gramme du poids du bac 1.
     static double poidCellule1 = 0.00; //Contient la valeur en gramme du poids du bac 2.
+    static double tension_Origine0 = -2.5; //Contient la valeur de tension d'origine du capteur de poids du bac 1 lorsqu'aucun poids n'y est appliqué
+    static double tension_Origine1 = -2.5; //Contient contenant la valeur de tension d'origine du capteur de poids du bac 2 lorsqu'aucun poids n'y est appliqué
+    static double poidTamponBac1 = 0.00; //Contient le poid du bac 1 au moment où l'opérateur met sa main dans le bac.
+    static double poidTamponBac2 = 0.00; //Contient le poid du bac 2 au moment où l'opérateur met sa main dans le bac.
     
     //Create your Phidget channels
     static VoltageInput vInput0;
@@ -177,6 +182,7 @@ public class Interface_Usager extends javax.swing.JFrame {
         textField2 = new java.awt.TextField();
         label19 = new java.awt.Label();
         tbPoids_Bac2 = new java.awt.TextField();
+        label34 = new java.awt.Label();
         panel5 = new java.awt.Panel();
         label17 = new java.awt.Label();
         tbEtapes = new java.awt.TextField();
@@ -186,34 +192,42 @@ public class Interface_Usager extends javax.swing.JFrame {
         textField10 = new java.awt.TextField();
         label21 = new java.awt.Label();
         tbPoids_Bac1 = new java.awt.TextField();
+        label31 = new java.awt.Label();
         panel7 = new java.awt.Panel();
         textField3 = new java.awt.TextField();
         label23 = new java.awt.Label();
         tbPoids_Bac5 = new java.awt.TextField();
+        label32 = new java.awt.Label();
         panel8 = new java.awt.Panel();
         textField4 = new java.awt.TextField();
         label25 = new java.awt.Label();
         tbPoids_Bac6 = new java.awt.TextField();
+        label37 = new java.awt.Label();
         panel9 = new java.awt.Panel();
         textField5 = new java.awt.TextField();
         label26 = new java.awt.Label();
         tbPoids_Bac3 = new java.awt.TextField();
+        label35 = new java.awt.Label();
         panel10 = new java.awt.Panel();
         textField6 = new java.awt.TextField();
         label27 = new java.awt.Label();
         tbPoids_Bac7 = new java.awt.TextField();
+        label38 = new java.awt.Label();
         panel11 = new java.awt.Panel();
         textField7 = new java.awt.TextField();
         label28 = new java.awt.Label();
         tbPoids_Bac9 = new java.awt.TextField();
+        label33 = new java.awt.Label();
         panel12 = new java.awt.Panel();
         textField8 = new java.awt.TextField();
         tbPoids_Bac8 = new java.awt.TextField();
         label29 = new java.awt.Label();
+        label39 = new java.awt.Label();
         panel13 = new java.awt.Panel();
         textField9 = new java.awt.TextField();
         label30 = new java.awt.Label();
         tbPoids_Bac4 = new java.awt.TextField();
+        label36 = new java.awt.Label();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -755,7 +769,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                             .addComponent(label14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(label8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(label12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
                 .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(panelBorder7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -816,24 +830,33 @@ public class Interface_Usager extends javax.swing.JFrame {
 
         tbPoids_Bac2.setEditable(false);
 
+        label34.setText("g.");
+
         javax.swing.GroupLayout panel4Layout = new javax.swing.GroupLayout(panel4);
         panel4.setLayout(panel4Layout);
         panel4Layout.setHorizontalGroup(
             panel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(label19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(panel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panel4Layout.createSequentialGroup()
+                        .addComponent(label19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 12, Short.MAX_VALUE))
                     .addComponent(tbPoids_Bac2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(label34, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         panel4Layout.setVerticalGroup(
             panel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel4Layout.createSequentialGroup()
+            .addGroup(panel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(label19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(21, 21, 21)
-                .addComponent(tbPoids_Bac2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(label34, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panel4Layout.createSequentialGroup()
+                        .addComponent(label19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(21, 21, 21)
+                        .addComponent(tbPoids_Bac2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -896,16 +919,22 @@ public class Interface_Usager extends javax.swing.JFrame {
 
         tbPoids_Bac1.setEditable(false);
 
+        label31.setText("g.");
+
         javax.swing.GroupLayout panel6Layout = new javax.swing.GroupLayout(panel6);
         panel6.setLayout(panel6Layout);
         panel6Layout.setHorizontalGroup(
             panel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(label21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(panel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panel6Layout.createSequentialGroup()
+                        .addComponent(label21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(tbPoids_Bac1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(label31, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         panel6Layout.setVerticalGroup(
             panel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -913,7 +942,9 @@ public class Interface_Usager extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(label21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(21, 21, 21)
-                .addComponent(tbPoids_Bac1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tbPoids_Bac1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(label31, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -924,6 +955,8 @@ public class Interface_Usager extends javax.swing.JFrame {
 
         tbPoids_Bac5.setEditable(false);
 
+        label32.setText("g.");
+
         javax.swing.GroupLayout panel7Layout = new javax.swing.GroupLayout(panel7);
         panel7.setLayout(panel7Layout);
         panel7Layout.setHorizontalGroup(
@@ -932,8 +965,11 @@ public class Interface_Usager extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(panel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(label23, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tbPoids_Bac5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(46, Short.MAX_VALUE))
+                    .addGroup(panel7Layout.createSequentialGroup()
+                        .addComponent(tbPoids_Bac5, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(label32, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panel7Layout.setVerticalGroup(
             panel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -941,7 +977,9 @@ public class Interface_Usager extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(label23, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
-                .addComponent(tbPoids_Bac5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tbPoids_Bac5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(label32, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(24, 24, 24))
         );
 
@@ -952,6 +990,8 @@ public class Interface_Usager extends javax.swing.JFrame {
 
         tbPoids_Bac6.setEditable(false);
 
+        label37.setText("g.");
+
         javax.swing.GroupLayout panel8Layout = new javax.swing.GroupLayout(panel8);
         panel8.setLayout(panel8Layout);
         panel8Layout.setHorizontalGroup(
@@ -959,17 +999,24 @@ public class Interface_Usager extends javax.swing.JFrame {
             .addGroup(panel8Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(label25, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panel8Layout.createSequentialGroup()
+                        .addComponent(label25, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 12, Short.MAX_VALUE))
                     .addComponent(tbPoids_Bac6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(label37, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         panel8Layout.setVerticalGroup(
             panel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel8Layout.createSequentialGroup()
+            .addGroup(panel8Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(label25, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(21, 21, 21)
-                .addComponent(tbPoids_Bac6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(label37, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panel8Layout.createSequentialGroup()
+                        .addComponent(label25, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(21, 21, 21)
+                        .addComponent(tbPoids_Bac6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -980,6 +1027,8 @@ public class Interface_Usager extends javax.swing.JFrame {
 
         tbPoids_Bac3.setEditable(false);
 
+        label35.setText("g.");
+
         javax.swing.GroupLayout panel9Layout = new javax.swing.GroupLayout(panel9);
         panel9.setLayout(panel9Layout);
         panel9Layout.setHorizontalGroup(
@@ -987,17 +1036,26 @@ public class Interface_Usager extends javax.swing.JFrame {
             .addGroup(panel9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(label26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panel9Layout.createSequentialGroup()
+                        .addComponent(label26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 12, Short.MAX_VALUE))
                     .addComponent(tbPoids_Bac3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(label35, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         panel9Layout.setVerticalGroup(
             panel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel9Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(label26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
-                .addComponent(tbPoids_Bac3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panel9Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(label35, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panel9Layout.createSequentialGroup()
+                        .addComponent(label26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                        .addComponent(tbPoids_Bac3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(21, 21, 21))
         );
 
@@ -1008,6 +1066,8 @@ public class Interface_Usager extends javax.swing.JFrame {
 
         tbPoids_Bac7.setEditable(false);
 
+        label38.setText("g.");
+
         javax.swing.GroupLayout panel10Layout = new javax.swing.GroupLayout(panel10);
         panel10.setLayout(panel10Layout);
         panel10Layout.setHorizontalGroup(
@@ -1016,17 +1076,23 @@ public class Interface_Usager extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(panel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(label27, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tbPoids_Bac7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(46, Short.MAX_VALUE))
+                    .addGroup(panel10Layout.createSequentialGroup()
+                        .addComponent(tbPoids_Bac7, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(label38, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
         panel10Layout.setVerticalGroup(
             panel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel10Layout.createSequentialGroup()
+            .addGroup(panel10Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(label27, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(21, 21, 21)
-                .addComponent(tbPoids_Bac7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(panel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(label38, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panel10Layout.createSequentialGroup()
+                        .addComponent(label27, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(21, 21, 21)
+                        .addComponent(tbPoids_Bac7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         textField7.setText("textField2");
@@ -1036,6 +1102,8 @@ public class Interface_Usager extends javax.swing.JFrame {
 
         tbPoids_Bac9.setEditable(false);
 
+        label33.setText("g.");
+
         javax.swing.GroupLayout panel11Layout = new javax.swing.GroupLayout(panel11);
         panel11.setLayout(panel11Layout);
         panel11Layout.setHorizontalGroup(
@@ -1043,17 +1111,24 @@ public class Interface_Usager extends javax.swing.JFrame {
             .addGroup(panel11Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(label28, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panel11Layout.createSequentialGroup()
+                        .addComponent(label28, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 12, Short.MAX_VALUE))
                     .addComponent(tbPoids_Bac9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(label33, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         panel11Layout.setVerticalGroup(
             panel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel11Layout.createSequentialGroup()
+            .addGroup(panel11Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(label28, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(21, 21, 21)
-                .addComponent(tbPoids_Bac9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(label33, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panel11Layout.createSequentialGroup()
+                        .addComponent(label28, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(21, 21, 21)
+                        .addComponent(tbPoids_Bac9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(23, Short.MAX_VALUE))
         );
 
@@ -1064,6 +1139,8 @@ public class Interface_Usager extends javax.swing.JFrame {
         label29.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         label29.setText("Bac #8");
 
+        label39.setText("g.");
+
         javax.swing.GroupLayout panel12Layout = new javax.swing.GroupLayout(panel12);
         panel12.setLayout(panel12Layout);
         panel12Layout.setHorizontalGroup(
@@ -1071,17 +1148,26 @@ public class Interface_Usager extends javax.swing.JFrame {
             .addGroup(panel12Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tbPoids_Bac8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(label29, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(46, Short.MAX_VALUE))
+                    .addGroup(panel12Layout.createSequentialGroup()
+                        .addComponent(label29, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 12, Short.MAX_VALUE))
+                    .addComponent(tbPoids_Bac8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(label39, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         panel12Layout.setVerticalGroup(
             panel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel12Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(label29, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(tbPoids_Bac8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panel12Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(label39, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panel12Layout.createSequentialGroup()
+                        .addComponent(label29, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(tbPoids_Bac8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(24, 24, 24))
         );
 
@@ -1092,6 +1178,8 @@ public class Interface_Usager extends javax.swing.JFrame {
 
         tbPoids_Bac4.setEditable(false);
 
+        label36.setText("g.");
+
         javax.swing.GroupLayout panel13Layout = new javax.swing.GroupLayout(panel13);
         panel13.setLayout(panel13Layout);
         panel13Layout.setHorizontalGroup(
@@ -1099,17 +1187,24 @@ public class Interface_Usager extends javax.swing.JFrame {
             .addGroup(panel13Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(label30, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panel13Layout.createSequentialGroup()
+                        .addComponent(label30, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 12, Short.MAX_VALUE))
                     .addComponent(tbPoids_Bac4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(label36, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         panel13Layout.setVerticalGroup(
             panel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel13Layout.createSequentialGroup()
+            .addGroup(panel13Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(label30, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20)
-                .addComponent(tbPoids_Bac4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(label36, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panel13Layout.createSequentialGroup()
+                        .addComponent(label30, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(20, 20, 20)
+                        .addComponent(tbPoids_Bac4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1147,7 +1242,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                                         .addComponent(panel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(panel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 5, Short.MAX_VALUE))))
+                                .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(panel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1217,7 +1312,8 @@ public class Interface_Usager extends javax.swing.JFrame {
         try {
             //Close your Phidgets once the program is done.
             vInput0.close();
-            vInput1.close();
+            //vInput1.close();
+            vInput2.close();
             digitalOut0.close();
             vRatioInput0.close();
         } catch (PhidgetException ex) {
@@ -1243,7 +1339,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                 String password = "admin";
                 String host = "127.0.0.1"; // Possiblement a modifier  192.168.137.171********************************************************************************************
                 int port = Integer.parseInt("1883");
-                final String destination = "/scal/scal_reponse_requete";
+                final String destination = "/com/station_reponse";
 
                 JSONObject messageBaseJsonObj = new JSONObject();
 
@@ -1254,7 +1350,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                 BlockingConnection connectionBac1 = mqtt.blockingConnection();
                 connectionBac1.connect();
                 
-                String TOPIC_REPONSE = "/scal/scal_requete_acces";
+                String TOPIC_REPONSE = "/com/station_requete_message";
                 
                 messageBaseJsonObj.put("Source", new String[] { "Base"});
                 messageBaseJsonObj.put("Numetape", numPageCourante);
@@ -1266,6 +1362,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                 {
                     //digitalOut0.setState(true); //Allume la LED rouge du bac courant //************************************************************************************
                     panelBorder1.setBackground(Color.yellow); //Couleur déclarant la détection d'une manipulation de la part d'un opérateur dans un bac
+                    poidTamponBac1 = poidCellule0;
                     if(messageBac1 == false)
                     {
                         if(bacActif != 1) //S'il ne s'agit pas du bac indiqué dans les instructions
@@ -1285,11 +1382,20 @@ public class Interface_Usager extends javax.swing.JFrame {
                     {
                         if(bacActif == 1) //S'il s'agit du bac indiqué dans les instructions
                         {
-                            envoieMessage = true;
-                            numPageCourante++; //On incrémente la variable et on passe à l'étape suivante
-                            messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
-                            m_listeObjList.add("Poursuivez avec l'étape numéro " + numPageCourante);
-                            resetBac();
+                            if (poidCellule0 >= (poidTamponBac1 - (POID_OBJET_BAC1 + 3 * poidCellule0/100)) &&  poidCellule0 <= (poidTamponBac1 - (POID_OBJET_BAC1 - 3 * poidCellule0/100))) {
+                                envoieMessage = true;
+                                numPageCourante++; //On incrémente la variable et on passe à l'étape suivante
+                                messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                                m_listeObjList.add("Poursuivez avec l'étape numéro " + numPageCourante);
+                                resetBac();
+                            }
+                            else if (poidCellule0 <= (poidTamponBac1 - (POID_OBJET_BAC1 + 3 * poidCellule0/100))) {
+                                envoieMessage = true;
+                                messageBaseJsonObj.put("Message", "Vous avez pris trop de pièces! Remettez les toutes dans le bac #" + bacActif +
+                                        ", retirez votre main et refaite l'étape numéro " + numPageCourante);
+                                m_listeObjList.add("Vous avez pris trop de pièces! Remettez les toutes dans le bac #" + bacActif +
+                                        ", retirez votre main et refaite l'étape numéro " + numPageCourante);
+                            }
                         }
                         messageBac1 = false;
                     }
@@ -1332,7 +1438,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                 String password = "admin";
                 String host = "127.0.0.1"; // Possiblement a modifier  192.168.137.171********************************************************************************************
                 int port = Integer.parseInt("1883");
-                final String destination = "/scal/scal_reponse_requete";
+                final String destination = "/com/station_reponse";
 
                 JSONObject messageBaseJsonObj = new JSONObject();
 
@@ -1343,7 +1449,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                 BlockingConnection connectionBac2 = mqtt.blockingConnection();
                 connectionBac2.connect();
                 
-                String TOPIC_REPONSE = "/scal/scal_requete_acces";
+                String TOPIC_REPONSE = "/com/station_requete_message";
                 
                 messageBaseJsonObj.put("Source", new String[] { "Base"});
                 messageBaseJsonObj.put("Numetape", numPageCourante);
@@ -1354,13 +1460,14 @@ public class Interface_Usager extends javax.swing.JFrame {
                 if(tensionCapteur > 2.00)  //L'opérateur a mis sa main dans le bac
                 {
                     //digitalOut1.setState(true); //Allume la LED rouge du bac courant //************************************************************************************
-                    panelBorder2.setBackground(Color.yellow); //Couleur déclarant la détection d'une manipulation de la part d'un opérateur dans un bac
+                    panelBorder7.setBackground(Color.yellow); //Couleur déclarant la détection d'une manipulation de la part d'un opérateur dans un bac
+                    poidTamponBac2 = poidCellule1;
                     if(messageBac2 == false)
                     {
-                        if(bacActif != 2) //S'il ne s'agit pas du bac indiqué dans les instructions
+                        if(bacActif != 7) //S'il ne s'agit pas du bac indiqué dans les instructions
                         {
                             envoieMessage = true;
-                            panelCenter2.setBackground(Color.red);
+                            panelCenter7.setBackground(Color.red);
                             messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
                             m_listeObjList.add("Ce n'est pas le bon bac!!!");
                             m_listeObjList.add("Allez au bac #" + bacActif);
@@ -1372,17 +1479,26 @@ public class Interface_Usager extends javax.swing.JFrame {
                 {
                     if(messageBac2)
                     {
-                        if(bacActif == 2) //S'il s'agit du bac indiqué dans les instructions
+                        if(bacActif == 7) //S'il s'agit du bac indiqué dans les instructions
                         {
-                            envoieMessage = true;
-                            numPageCourante++; //On incrémente la variable et on passe à l'étape suivante
-                            messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
-                            m_listeObjList.add("Poursuivez avec l'étape numéro " + numPageCourante);
-                            resetBac();
+                            if (poidCellule1 >= (poidTamponBac2 - (POID_OBJET_BAC2 + 3 * poidCellule1/100)) && poidCellule1 <= (poidTamponBac2 - (POID_OBJET_BAC2 - 3 * poidCellule1/100))) {
+                                envoieMessage = true;
+                                numPageCourante++; //On incrémente la variable et on passe à l'étape suivante
+                                messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                                m_listeObjList.add("Poursuivez avec l'étape numéro " + numPageCourante);
+                                resetBac();
+                            }
+                            else if (poidCellule1 <= (poidTamponBac2 - (POID_OBJET_BAC2 + 3 * poidCellule1/100))) {
+                                envoieMessage = true;
+                                messageBaseJsonObj.put("Message", "Vous avez pris trop de pièces! Remettez les toutes dans le bac #" + bacActif +
+                                        ", retirez votre main et refaite l'étape numéro " + numPageCourante);
+                                m_listeObjList.add("Vous avez pris trop de pièces! Remettez les toutes dans le bac #" + bacActif +
+                                        ", retirez votre main et refaite l'étape numéro " + numPageCourante);
+                            }
                         }
                         messageBac2 = false;
                     }
-                    panelBorder2.setBackground(Color.white);
+                    panelBorder7.setBackground(Color.white);
                     //digitalOut1.setState(false); //Éteind la LED rouge du bac courant //**********************************************************************************
                 }
                 
@@ -1439,7 +1555,7 @@ public class Interface_Usager extends javax.swing.JFrame {
             String password = "admin";
             String host = "192.168.137.171"; // Possiblement a modifier  192.168.137.171********************************************************************************************
             int port = Integer.parseInt("1883");
-            final String destination = "/scal/scal_reponse_requete";
+            final String destination = "/com/station_reponse";
 
             JSONObject messageBaseJsonObj = new JSONObject();
 
@@ -1453,7 +1569,7 @@ public class Interface_Usager extends javax.swing.JFrame {
             mqtt.setPassword(password);
             BlockingConnection connectionThread = mqtt.blockingConnection();
 
-            String TOPIC_REPONSE = "/scal/scal_requete_acces";*/
+            String TOPIC_REPONSE = "/com/station_requete_message";*/
             
             while(true){
                 try
@@ -1480,15 +1596,19 @@ public class Interface_Usager extends javax.swing.JFrame {
                     tbEtapes.setText(Integer.toString(numPageCourante));
                     
                     //Envoi les informations des cellules de charge à l'interface
-                    poidCellule0 = ((vRatioInput0.getVoltageRatio() - TENSION_ORIGINE)/PENTE_MOYENNE_CAPTEUR)* 100;
-                    poidCellule1 = ((vRatioInput1.getVoltageRatio() - TENSION_ORIGINE)/PENTE_MOYENNE_CAPTEUR)* 100;
-                    if (poidCellule0 < 0 || poidCellule1 < 0) {
+                    poidCellule0 = ((vRatioInput0.getVoltageRatio() - tension_Origine0)/PENTE_MOYENNE_CAPTEUR)* 100000;
+                    poidCellule0 = poidCellule0 - (poidCellule0 % 1); //Enlève les décimales du résultat
+                    poidCellule1 = ((vRatioInput1.getVoltageRatio() - tension_Origine1)/PENTE_MOYENNE_CAPTEUR)* 100000;
+                    poidCellule1 = poidCellule1 - (poidCellule1 % 1); //Enlève les décimales du résultat
+                    if (poidCellule0 < 0) {
                         poidCellule0 = 0;
+                    }
+                    if (poidCellule1 < 0) {
                         poidCellule1 = 0;
                     }
                     
-                    tbPoids_Bac1.setText(Double.toString(poidCellule));
-                    tbPoids_Bac2.setText(Double.toString(0.00));
+                    tbPoids_Bac1.setText(Double.toString(poidCellule0));
+                    tbPoids_Bac2.setText(Double.toString(poidCellule1));
                     tbPoids_Bac3.setText(Double.toString(0.00));
                     tbPoids_Bac4.setText(Double.toString(0.00));
                     tbPoids_Bac5.setText(Double.toString(0.00));
@@ -1674,7 +1794,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                     connectionThread.publish(topic, msgErreur, QoS.AT_LEAST_ONCE, false);*/
                     
                     
-                    Thread.sleep(750);
+                    Thread.sleep(500);
                 }catch(Exception ex){}
             }
         }
@@ -1693,7 +1813,7 @@ public class Interface_Usager extends javax.swing.JFrame {
         String password = "admin";
         String host = "127.0.0.1"; // Possiblement a modifier  192.168.137.171********************************************************************************************
         int port = Integer.parseInt("1883");
-        final String destination = "/scal/scal_reponse_requete";
+        final String destination = "/com/station_reponse";
 
         JSONObject messageBaseJsonObj = new JSONObject();
         
@@ -1706,7 +1826,7 @@ public class Interface_Usager extends javax.swing.JFrame {
         BlockingConnection connection = mqtt.blockingConnection();
         connection.connect();
 
-        String TOPIC_REPONSE = "/scal/scal_requete_acces";
+        String TOPIC_REPONSE = "/com/station_requete_message";
 
         // *********************Publishing du message d'initialisation******************* 
         //Note: Trouver comment mettre des accents*******************************************************************************************
@@ -1809,25 +1929,25 @@ public class Interface_Usager extends javax.swing.JFrame {
 
             //Assign any event handlers you need before calling open so that no events are missed.
             vInput0.addVoltageChangeListener(onBac1_VoltageChange);
-            vInput1.addVoltageChangeListener(onBac1_VoltageChange);
+            //vInput1.addVoltageChangeListener(onBac1_VoltageChange);
             vInput2.addVoltageChangeListener(onBac2_VoltageChange);
             vInput3.addVoltageChangeListener(onBac2_VoltageChange);
 
             //Open your Phidgets and wait for attachment
             vInput0.open(5000);
-            vInput1.open(5000);
-            //vInput2.open(5000);
+            //vInput1.open(5000);
+            vInput2.open(5000);
             //vInput3.open(5000);
             //digitalOut0.open(5000);
             vRatioInput0.open(5000);
             vRatioInput1.open(5000);
 
-            vInput0.setVoltageChangeTrigger(TRIGGER_INFRAROUGE);
-            vInput1.setVoltageChangeTrigger(TRIGGER_INFRAROUGE);
-            vInput2.setVoltageChangeTrigger(TRIGGER_INFRAROUGE);
-            vInput3.setVoltageChangeTrigger(TRIGGER_INFRAROUGE);
-            vRatioInput0.setBridgeGain(BridgeGain.GAIN_128X);
-            vRatioInput1.setBridgeGain(BridgeGain.GAIN_128X);
+            vInput0.setVoltageChangeTrigger(TRIGGER_INFRAROUGE); //Met le «Trigger» à 2v
+            //vInput1.setVoltageChangeTrigger(TRIGGER_INFRAROUGE); //Met le «Trigger» à 2v
+            vInput2.setVoltageChangeTrigger(TRIGGER_INFRAROUGE); //Met le «Trigger» à 2v
+            vInput3.setVoltageChangeTrigger(TRIGGER_INFRAROUGE); //Met le «Trigger» à 2v
+            vRatioInput0.setBridgeGain(BridgeGain.GAIN_128X); //Met le gain à 128
+            vRatioInput1.setBridgeGain(BridgeGain.GAIN_128X); //Met le gain à 128
 
         } catch (PhidgetException ex) {
             //We will catch Phidget Exceptions here, and print the error informaiton.
@@ -1837,6 +1957,9 @@ public class Interface_Usager extends javax.swing.JFrame {
         }
         //</editor-fold>
         
+        tension_Origine0 = vRatioInput0.getVoltageRatio(); //Fait la calibration du niveau de tension du capteur #1
+        tension_Origine1 = vRatioInput1.getVoltageRatio(); //Fait la calibration du niveau de tension du capteur #2
+                
         /*
         //Séquence test des GPIO's
         System.out.println(t_inputIOs[2].isHigh());
@@ -2237,6 +2360,15 @@ public class Interface_Usager extends javax.swing.JFrame {
     private java.awt.Label label29;
     private java.awt.Label label3;
     private java.awt.Label label30;
+    private java.awt.Label label31;
+    private java.awt.Label label32;
+    private java.awt.Label label33;
+    private java.awt.Label label34;
+    private java.awt.Label label35;
+    private java.awt.Label label36;
+    private java.awt.Label label37;
+    private java.awt.Label label38;
+    private java.awt.Label label39;
     private java.awt.Label label4;
     private java.awt.Label label5;
     private java.awt.Label label6;
