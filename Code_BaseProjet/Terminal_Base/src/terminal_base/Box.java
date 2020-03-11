@@ -8,7 +8,7 @@ import java.util.logging.Logger;
  */
 public class Box
 {
-    final double TRIGGER_IR = 1.5;   //Constante de trigger pour les capteurs infrarouges.
+    double TRIGGER_IR = 1.5;   //Constante de trigger pour les capteurs infrarouges.
     int poidItem = 100;
     double erreurcell = 1.0;
     int boxNumber;
@@ -19,12 +19,14 @@ public class Box
     VoltageRatioInput Cell;
     VoltageOutput DEL;
 
-    Box(int HubSerialNumber, int BoxNumber, VoltageInputVoltageChangeListener event)
+    Box(int HubSerialNumber, int BoxNumber, VoltageInputVoltageChangeListener event, double trigger, int poidPiece)
     {
         try
         {   //Instanciation des variables membres utiles à l'éxterieur de la classe.
             boxNumber = BoxNumber;
             hubSerialNumber = HubSerialNumber;
+            TRIGGER_IR = trigger;
+            poidItem = poidPiece;
             //Instanciation des capteurs et témoins du bac.
             Ir1 = new VoltageInput();
             Ir2 = new VoltageInput();
