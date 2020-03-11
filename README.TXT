@@ -11,7 +11,7 @@ FOLDER OF PROJECT:
 -Le Dossier «Terminal_Casque» contient la version fonctionnel du code du casque dans lequel sera affiché les instructions de la station d'assemblage. De plus amples informations sont disponibles à l'intérieur du dossier.
 -Le Dossier «Tests_Phidget» contient des codes de tests servant à tester la fonctionnalité des différents appareils Phidgets utilisé lors de la réalisation du projet. De plus amples informations sont disponibles à l'intérieur du dossier.
 MATERIAL NEEDED:
--(2x) RaspBerry Pi Zéro W
+-(1x) RaspBerry Pi Zéro W et (1x) RaspBerry Pi 3 / (OU 1x Raspberry Pi Zéro W et un ordinateur)
 -Des appareils Phidgets (capteurs infrarouges, capteur de poids, ports digital, etc...):
 	- 1 Wireless VINT Hub
 	- 2 Power Supply-12VDC 2A
