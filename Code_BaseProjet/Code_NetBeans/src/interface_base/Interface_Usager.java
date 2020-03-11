@@ -1314,8 +1314,9 @@ public class Interface_Usager extends javax.swing.JFrame {
             vInput0.close();
             //vInput1.close();
             vInput2.close();
-            digitalOut0.close();
+            //digitalOut0.close();
             vRatioInput0.close();
+            vRatioInput1.close();
         } catch (PhidgetException ex) {
             //We will catch Phidget Exceptions here, and print the error informaiton.
             ex.printStackTrace();
@@ -1337,7 +1338,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                 
                 String user = "admin";
                 String password = "admin";
-                String host = "127.0.0.1"; // Possiblement a modifier  192.168.137.171********************************************************************************************
+                String host = "10.240.9.254"; // Possiblement a modifier  192.168.137.171********************************************************************************************
                 int port = Integer.parseInt("1883");
                 final String destination = "/com/station_reponse";
 
@@ -1436,7 +1437,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                 
                 String user = "admin";
                 String password = "admin";
-                String host = "127.0.0.1"; // Possiblement a modifier  192.168.137.171********************************************************************************************
+                String host = "10.240.9.254"; // Possiblement a modifier  192.168.137.171********************************************************************************************
                 int port = Integer.parseInt("1883");
                 final String destination = "/com/station_reponse";
 
@@ -1811,7 +1812,7 @@ public class Interface_Usager extends javax.swing.JFrame {
         
         String user = "admin";
         String password = "admin";
-        String host = "127.0.0.1"; // Possiblement a modifier  192.168.137.171********************************************************************************************
+        String host = "10.240.9.254"; // Possiblement a modifier  192.168.137.171********************************************************************************************
         int port = Integer.parseInt("1883");
         final String destination = "/com/station_reponse";
 
@@ -1945,7 +1946,7 @@ public class Interface_Usager extends javax.swing.JFrame {
             vInput0.setVoltageChangeTrigger(TRIGGER_INFRAROUGE); //Met le «Trigger» à 2v
             //vInput1.setVoltageChangeTrigger(TRIGGER_INFRAROUGE); //Met le «Trigger» à 2v
             vInput2.setVoltageChangeTrigger(TRIGGER_INFRAROUGE); //Met le «Trigger» à 2v
-            vInput3.setVoltageChangeTrigger(TRIGGER_INFRAROUGE); //Met le «Trigger» à 2v
+            //vInput3.setVoltageChangeTrigger(TRIGGER_INFRAROUGE); //Met le «Trigger» à 2v
             vRatioInput0.setBridgeGain(BridgeGain.GAIN_128X); //Met le gain à 128
             vRatioInput1.setBridgeGain(BridgeGain.GAIN_128X); //Met le gain à 128
 
