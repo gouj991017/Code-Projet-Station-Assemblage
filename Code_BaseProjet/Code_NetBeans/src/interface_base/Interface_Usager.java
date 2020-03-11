@@ -7,7 +7,7 @@
     Les informations typiques d'une commande seront également affichées sur l'interface usager de la base (la commande sera, en d'autres mots, décortiquée selon ses spécifications).
     On peut passer à l'étape suivante ou revenir à l'étape précédente à l'aide de boutons sur l'interface usager.
     Les informations concernant le poids des bacs sont également affichées sur l'interface.
-    VERSION : V2.8
+    VERSION : V2.9
     AUTHORS: Jérémy Goulet
  */
 package interface_base;
