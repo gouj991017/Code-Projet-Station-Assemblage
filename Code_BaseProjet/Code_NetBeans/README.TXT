@@ -5,6 +5,9 @@ Il s'agit de la version de code la plus avancé du projet en ce qui concerne la 
 Contient le code nécessaire à la création et à la gestion de l'interface usager de la base.
 Le code a été programmé en Java.
 
+Emplacement et nom du fichier contenant le corps du code:
+-Code_NetBeans\src\interface_base\Interface_Usager.java
+
 Le logiciel NetBeans:
 -Permet la création d'interface.
 -Possède un intellisense de base permettant de repérer les erreurs plus facilement.

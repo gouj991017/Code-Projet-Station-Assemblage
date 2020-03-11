@@ -1,7 +1,8 @@
 
 /**
  * Write a description of class AppBase here.
- * 
+ * Brief: Code lié aux tests de communication MQTT entre deux Raspberry Pi. Introduit les fondations de la logique de la base de la station d'assemblage. Ne possède pas d'interface
+ * et utilise la librairie de WiringPi pour le contrôle des GPIO's.
  * @author (Jeremy Goulet) 
  * @version (29-11-2019)
  */

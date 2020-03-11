@@ -1,0 +1,11 @@
+Auteur: Guillaume Beaudoin
+ATTENTION: Ne pas renommer les paramètres ni changer leur emplacement dans le fichier.
+
+NUMBOXPERHUB =
+2
+WeigthConvertionRatio =
+0.0204
+
+Hubs =
+597862
+

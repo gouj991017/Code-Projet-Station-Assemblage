@@ -3,6 +3,9 @@ TITLE: Première version du code de la base
 DESCRIPTION: Il s'agit de la version de code servant de fondations au code sur NetBeans. Il a servi à tester la communication MQTT entre les deux Raspberry Pi ainsi que la logique entourant le fonctionnement de la base de la station d'assemblage.
 Le code a été programmé en Java.
 
+Emplacement et nom du fichier contenant le corps du code:
+-Code_BlueJ\AppBase.java
+
 Le logiciel BlueJ:
 -Est disponible et utilisable automatiquement dans un environnement Raspbian sur Raspberry Pi.
 -Ne contient pas de code nécessaire à la création et à la gestion de l'interface usager de la base.

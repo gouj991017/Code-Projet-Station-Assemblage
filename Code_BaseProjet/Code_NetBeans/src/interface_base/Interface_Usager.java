@@ -1352,7 +1352,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                 
                 String TOPIC_REPONSE = "/com/station_requete_message";
                 
-                messageBaseJsonObj.put("Source", new String[] { "Base"});
+                messageBaseJsonObj.put("Source", "Base");
                 messageBaseJsonObj.put("Numetape", numPageCourante);
                 
                 System.out.println("Voltage: " + e.getSource().getChannel() + " " + tensionCapteur); //****************************************************************************************
@@ -1369,7 +1369,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                         {
                             envoieMessage = true;
                             panelCenter1.setBackground(Color.red);
-                            messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
+                            messageBaseJsonObj.put("Message", "Ce n'est pas le bon bac!!!/r/nAllez au bac #" + bacActif);
                             m_listeObjList.add("Ce n'est pas le bon bac!!!");
                             m_listeObjList.add("Allez au bac #" + bacActif);
                         }
@@ -1451,7 +1451,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                 
                 String TOPIC_REPONSE = "/com/station_requete_message";
                 
-                messageBaseJsonObj.put("Source", new String[] { "Base"});
+                messageBaseJsonObj.put("Source", "Base");
                 messageBaseJsonObj.put("Numetape", numPageCourante);
                 
                 System.out.println("Voltage: " + e.getSource().getChannel() + " " + tensionCapteur); //****************************************************************************************
@@ -1468,7 +1468,7 @@ public class Interface_Usager extends javax.swing.JFrame {
                         {
                             envoieMessage = true;
                             panelCenter7.setBackground(Color.red);
-                            messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
+                            messageBaseJsonObj.put("Message", "Ce n'est pas le bon bac!!!/r/nAllez au bac #" + bacActif);
                             m_listeObjList.add("Ce n'est pas le bon bac!!!");
                             m_listeObjList.add("Allez au bac #" + bacActif);
                         }
@@ -1632,9 +1632,9 @@ public class Interface_Usager extends javax.swing.JFrame {
 
         // *********************Publishing du message d'initialisation******************* 
         //Note: Trouver comment mettre des accents*******************************************************************************************
-        messageBaseJsonObj.put("Source", new String[] { "Base"});
+        messageBaseJsonObj.put("Source", "Base");
         messageBaseJsonObj.put("Numetape", numPageCourante);
-        messageBaseJsonObj.put("Message", new String[] { "Début de la communication", "Suivez attentivement les instructions de votre guide à l'étape indiquée"});
+        messageBaseJsonObj.put("Message", "Début de la communication/r/nSuivez attentivement les instructions de votre guide à l'étape indiquée");
         String DATA = messageBaseJsonObj.toString(3);
         Buffer msg = new AsciiBuffer(DATA);
 
@@ -1968,8 +1968,8 @@ public class Interface_Usager extends javax.swing.JFrame {
                                     //Aucun support
                                         default:
                                             if (etapeTermine) {
-                                                messageBaseJsonObj.put("Message", new String[] { "Ce produit ne comporte " + supports,
-                                                "Assurez-vous que le produit est bien assemblé et passez au prochain produit"});
+                                                messageBaseJsonObj.put("Message", "Ce produit ne comporte " + supports +
+                                                "/r/nAssurez-vous que le produit est bien assemblé et passez au prochain produit");
                                                 m_listeObjList.add("Ce produit ne comporte aucun support");
                                                 m_listeObjList.add("Assurez-vous que le produit est bien assemblé et passez au prochain produit");
                                             }
@@ -2017,9 +2017,9 @@ public class Interface_Usager extends javax.swing.JFrame {
                 iBacActif: Contient le numéro du bac actuellement en cours d'utilisation
                 etape: Contient l'étape courante d'assemblage
     */
-    private static String[] baseProd(String iBase, String iCouleur, int iBacActif)
+    private static String baseProd(String iBase, String iCouleur, int iBacActif)
     {
-        String[] statement = new String[] { "Prenez la " + iBase + "de " + iCouleur + "se trouvant dans le bac #" + iBacActif};
+        String statement = "Prenez la " + iBase + "de " + iCouleur + "se trouvant dans le bac #" + iBacActif;
         m_listeObjList.add("Prenez la " + iBase + "de " + iCouleur + "se trouvant dans le bac #" + iBacActif);
         return statement;
     }
@@ -2031,9 +2031,9 @@ public class Interface_Usager extends javax.swing.JFrame {
                 iBacActif: Contient le numéro du bac actuellement en cours d'utilisation
                 etape: Contient l'étape courante d'assemblage
     */
-    private static String[] crayonProd(String iqteCrayon, String iCrayon, int iBacActif)
+    private static String crayonProd(String iqteCrayon, String iCrayon, int iBacActif)
     {
-        String[] statement = new String[] { "Prenez " + iqteCrayon + iCrayon + "dans le bac #" + iBacActif};
+        String statement = "Prenez " + iqteCrayon + iCrayon + "dans le bac #" + iBacActif;
         m_listeObjList.add("Prenez " + iqteCrayon + iCrayon + "dans le bac #" + iBacActif);
         return statement;
     }
@@ -2043,9 +2043,9 @@ public class Interface_Usager extends javax.swing.JFrame {
     @variables: iSupports: Contient le type de supports à utiliser
                 iBacActif: Contient le numéro du bac actuellement en cours d'utilisation
     */
-    private static String[] supportsProd(String iSupports, int iBacActif)
+    private static String supportsProd(String iSupports, int iBacActif)
     {
-        String[] statement = new String[] { "Prenez deux " + iSupports + "dans le bac #" + iBacActif, "Assurez-vous que le produit est bien assemblé et passez au prochain produit"};
+        String statement = "Prenez deux " + iSupports + "dans le bac #" + iBacActif + "/r/nAssurez-vous que le produit est bien assemblé et passez au prochain produit";
         m_listeObjList.add("Prenez deux " + iSupports + "dans le bac #" + iBacActif);
         m_listeObjList.add("Assurez-vous que le produit est bien assemblé et passez au prochain produit");
         return statement;
