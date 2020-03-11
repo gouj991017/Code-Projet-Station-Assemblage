@@ -4,8 +4,11 @@ ATTENTION: Ne pas renommer les paramètres ni changer leur emplacement dans le f
 NUMBOXPERHUB =
 2
 WeigthConvertionRatio =
-0.0204
-
+0.0203
+TRIGGER_IR =
+1.5
+ITEM_WEIGHT =
+100
 Hubs =
 597862
 
