@@ -1,6 +1,5 @@
 package terminal_base;
 import com.phidget22.*; //Librairies pour la communication avec le kit Phidget.
-import com.sun.jndi.ldap.Connection;
 import java.awt.Color;
 import java.awt.Panel;
 import java.awt.TextField;
@@ -13,8 +12,6 @@ import org.json.JSONObject;
 import java.util.*;
 import java.io.*;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.fusesource.hawtbuf.AsciiBuffer;
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.UTF8Buffer;
@@ -41,10 +38,12 @@ public class UI_Base extends javax.swing.JFrame
 
     //Constantes.
     static final int NB_BACS_INTERFACE = 10; //Nombre de bacs portrayé dans l'interface usager.
+    static final String EXT_IMAGE = ".png";
     
     //Variables globales.
     static ObjCommande commande;
-    static List<Box> l_Box = new ArrayList<Box>();
+    static List<Box> l_Box = new ArrayList<Box>();  //Liste d'objets de bacs.
+    static List<javax.swing.ImageIcon> l_images = new ArrayList<javax.swing.ImageIcon>();  //Liste d'images.
     static Panel[] t_panelInterne = new Panel[NB_BACS_INTERFACE];   //Tableau des panels internes pour l'état des bacs.
     static Panel[] t_panelExterne = new Panel[NB_BACS_INTERFACE];   //Tableau des panels externes pour l'état des bacs.
     static TextField[] t_tfPoid = new TextField[NB_BACS_INTERFACE]; //Tableau de textfields affichant le poid des bacs.
@@ -58,7 +57,7 @@ public class UI_Base extends javax.swing.JFrame
     static MQTT mqtt = new MQTT(); //Objet MQTT pour la communication.
     static double weightConvertionRatio = 0.0203; //Valeur par défaut: 0.0203v/v*10e-5 / g.
     static int nb_pieces_temp;
-    static boolean erreur = false;
+    static boolean erreur = false;  //Si il y a erreur, cette variable sera fausse.
     
     /**
      * Creates new form UI_Base
@@ -114,56 +113,52 @@ public class UI_Base extends javax.swing.JFrame
         }
         connection = mqtt.blockingConnection();
         //Setup dynamique de la taille du panneau d'image et de la fenêtre.
-        p_image.setSize(p_image.getPreferredSize());
-        UI_Base.t_image.setSize(p_image.getPreferredSize().width, p_image.getPreferredSize().height);
+        UI_Base.t_image.setSize(UI_Base.t_image.getPreferredSize());
+        
     }
     /*
         Méthode d'intérruption (event) des capteurs IR.
     */
     public static VoltageInputVoltageChangeListener iR_Change =
-            new VoltageInputVoltageChangeListener() {
-            @Override
-            public void onVoltageChange(VoltageInputVoltageChangeEvent e){
-                try
+        new VoltageInputVoltageChangeListener() {
+        @Override
+        public void onVoltageChange(VoltageInputVoltageChangeEvent e){
+            try
+            {
+                if(etape_courante != 0) //La logique d'étape n'est active que si l'étape vaut plus que 0.
                 {
-                    if(etape_courante != 0) //La logique d'étape n'est active que si l'étape vaut plus que 0.
+                    int bacCourant = logiqueEtape(commande, false);
+                    if(e.getVoltage() > l_Box.get(0).TRIGGER_IR)  //Si niveau haut...
                     {
-                        int bacCourant = logiqueEtape(commande, false);
-                        if(e.getVoltage() > l_Box.get(0).TRIGGER_IR)  //Si niveau haut...
+                        nb_pieces_temp = 0; //Remise à zero.
+                        bacActif = 0;   //Remise à zero.
+                        while(!l_Box.get(bacActif).update_IR()) {bacActif++;}  //Recherche de la boîte concernée.
+                        t_panelExterne[bacActif].setBackground(Color.yellow);//Allumer le bac concerné en jaune.
+                        if(checkErreurBac(bacCourant))    //Vérification bon bac.
                         {
-                            bacActif = 0;   //Remise à zero.
-                            while(!l_Box.get(bacActif).update_IR()) {bacActif++;}  //Recherche de la boîte concernée.
-                            t_panelExterne[bacActif].setBackground(Color.yellow);//Allumer le bac concerné en jaune.
-                            if(checkErreurBac(bacCourant))    //Vérification bon bac.
-                            {
-                                //Mauvaise étape, message
-                                erreur = true;
-                            }
-                        }
-                        else    //Si niveau bas...
-                        {
-                            if(checkErreurPoid(bacCourant) && erreur) //Vérification du bon nombre de pièces pigés et si une erreur a d'abord été commise.
-                            {
-                                //Bonne étape, prochine étape + message.
-                                etape_courante++;
-                                resetBac(); //Remise des panels internes à défault (blanc).
-                                logiqueEtape(commande, true);
-                                try
-                                {
-                                    //Nouvelle image.
-                                    UI_Base.l_image.setIcon(new javax.swing.ImageIcon(getClass().getResource("/terminal_base/images/"+ etape_courante +".png")));
-                                    //Setup dynamique de la taille du panneau d'image et de la fenêtre.
-                                    p_image.setSize(p_image.getPreferredSize());
-                                    UI_Base.t_image.setSize(p_image.getPreferredSize().width, p_image.getPreferredSize().height);
-                                }catch(Exception ex){System.out.println("[Erreur] ");}
-                            }
-                            t_panelExterne[bacActif].setBackground(Color.white);    //Dé-jauner le bac.
-                            erreur = false;
+                            erreur = true;  //Bon bac.
+                            try
+                            {   //Ligne plus suceptible de causer des exeptions (durant le développement).
+                                nb_pieces_temp = l_Box.get(bacActif).getItemCount(weightConvertionRatio);  //Sauvegarde le nombre de pièces pour une comparaison ultérieure.
+                            }catch (Exception ex){System.out.println("[Error] Impossible de récupérer le nombre d'items: "+ ex.getMessage());}
                         }
                     }
-                }catch(Exception ex){}
-            }
-	};
+                    else    //Si niveau bas...
+                    {
+                        if(checkErreurPoid(bacCourant) && erreur) //Vérification du bon nombre de pièces pigés et si une erreur a d'abord été commise.
+                        {
+                            //Bonne étape, prochine étape + message.
+                            etape_courante++;
+                            resetBac(); //Remise des panels internes à défault (blanc).
+                            logiqueEtape(commande, true);
+                        }
+                        t_panelExterne[bacActif].setBackground(Color.white);    //Dé-jauner le bac.
+                        erreur = false; //Remise à défaut.
+                    }
+                }
+            }catch(Exception ex){}
+        }
+    };
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -274,7 +269,6 @@ public class UI_Base extends javax.swing.JFrame
         tbPoids_Bac2 = new java.awt.TextField();
         jLabel3 = new javax.swing.JLabel();
         t_image = new javax.swing.JFrame();
-        p_image = new javax.swing.JPanel();
         l_image = new javax.swing.JLabel();
         panel5 = new java.awt.Panel();
         label17 = new java.awt.Label();
@@ -986,7 +980,7 @@ public class UI_Base extends javax.swing.JFrame
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
-        t_inv.setMinimumSize(new java.awt.Dimension(500, 400));
+        t_inv.setMinimumSize(new java.awt.Dimension(500, 444));
 
         textField13.setText("textField2");
 
@@ -1001,8 +995,8 @@ public class UI_Base extends javax.swing.JFrame
             panel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel17Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(label50, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(label50, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(tbPoids_Bac6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(46, Short.MAX_VALUE))
         );
@@ -1057,8 +1051,8 @@ public class UI_Base extends javax.swing.JFrame
             panel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel19Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(label51, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(label51, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(tbPoids_Bac5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -1169,9 +1163,9 @@ public class UI_Base extends javax.swing.JFrame
             panel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel23Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(label55, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(tbPoids_Bac10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(panel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(label55, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tbPoids_Bac10, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panel23Layout.setVerticalGroup(
@@ -1277,32 +1271,28 @@ public class UI_Base extends javax.swing.JFrame
             t_invLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(t_invLayout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(t_invLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(panel25, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(t_invLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(panel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(panel18, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(t_invLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
                     .addGroup(t_invLayout.createSequentialGroup()
-                        .addGroup(t_invLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(panel25, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(t_invLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(panel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(panel18, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(panel26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(t_invLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(t_invLayout.createSequentialGroup()
-                                .addComponent(panel26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(panel22, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(panel24, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(t_invLayout.createSequentialGroup()
-                                .addGroup(t_invLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(panel23, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(panel17, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(panel20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(panel21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(panel22, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(panel24, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(t_invLayout.createSequentialGroup()
-                        .addGap(44, 44, 44)
-                        .addComponent(jLabel3)))
+                        .addGroup(t_invLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(panel23, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(panel17, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(panel20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(panel21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         t_invLayout.setVerticalGroup(
@@ -1329,42 +1319,28 @@ public class UI_Base extends javax.swing.JFrame
                 .addGap(55, 55, 55))
         );
 
-        t_image.setMinimumSize(new java.awt.Dimension(400, 300));
+        t_image.setMinimumSize(new java.awt.Dimension(1920, 1080));
+        t_image.setPreferredSize(new java.awt.Dimension(1600, 1106));
 
+        l_image.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         l_image.setIcon(new javax.swing.ImageIcon(getClass().getResource("/terminal_base/images/0.PNG"))); // NOI18N
-
-        javax.swing.GroupLayout p_imageLayout = new javax.swing.GroupLayout(p_image);
-        p_image.setLayout(p_imageLayout);
-        p_imageLayout.setHorizontalGroup(
-            p_imageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(p_imageLayout.createSequentialGroup()
-                .addGap(137, 137, 137)
-                .addComponent(l_image)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        p_imageLayout.setVerticalGroup(
-            p_imageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(p_imageLayout.createSequentialGroup()
-                .addGap(129, 129, 129)
-                .addComponent(l_image)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        l_image.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         javax.swing.GroupLayout t_imageLayout = new javax.swing.GroupLayout(t_image.getContentPane());
         t_image.getContentPane().setLayout(t_imageLayout);
         t_imageLayout.setHorizontalGroup(
             t_imageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(t_imageLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(p_image, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, t_imageLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(l_image, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         t_imageLayout.setVerticalGroup(
             t_imageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(t_imageLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(p_image, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(l_image, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -1446,11 +1422,10 @@ public class UI_Base extends javax.swing.JFrame
         panel3Layout.setVerticalGroup(
             panel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel3Layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(20, Short.MAX_VALUE)
                 .addComponent(label9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tb_affiche, javax.swing.GroupLayout.PREFERRED_SIZE, 436, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(38, Short.MAX_VALUE))
+                .addComponent(tb_affiche, javax.swing.GroupLayout.PREFERRED_SIZE, 436, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jMenu1.setText("Menu");
@@ -1531,7 +1506,7 @@ public class UI_Base extends javax.swing.JFrame
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(67, 67, 67)
+                .addGap(105, 105, 105)
                 .addComponent(panel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(panel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1546,20 +1521,21 @@ public class UI_Base extends javax.swing.JFrame
     }//GEN-LAST:event_formWindowClosing
 
     private void button_NextMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_NextMouseClicked
-        if (etape_courante < nb_etapes-1) {
+        if (etape_courante < nb_etapes)
+        {
             etape_courante++;
-            tbEtapes.setText(Integer.toString(etape_courante+1));
-            logiqueEtape(commande, false);
+            tbEtapes.setText(Integer.toString(etape_courante+1));          
             resetBac();
+            logiqueEtape(commande, true);
         }
     }//GEN-LAST:event_button_NextMouseClicked
 
     private void button_PreviousMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_PreviousMouseClicked
         if (etape_courante > 1) {
             etape_courante--;
-            tbEtapes.setText(Integer.toString(etape_courante+1));
-            logiqueEtape(commande, false);
+            tbEtapes.setText(Integer.toString(etape_courante));
             resetBac();
+            logiqueEtape(commande, true);
         }
     }//GEN-LAST:event_button_PreviousMouseClicked
 
@@ -1572,6 +1548,7 @@ public class UI_Base extends javax.swing.JFrame
         {   //Calibration de tous les bacs.
             l_Box.get(i).calibrer();
         }
+        //nb_pieces_temp = l_Box.get(logiqueEtape(commande, false)).getItemCount(weightConvertionRatio);
         d_calib.setVisible(false);  //Faire disparaitre la fenêtre de calibration
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -1589,7 +1566,6 @@ public class UI_Base extends javax.swing.JFrame
 
     private void b_etape0_okActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_etape0_okActionPerformed
         d_etape0.setVisible(false);
-        logiqueEtape(commande, true);   //Charge l'étape 1.
     }//GEN-LAST:event_b_etape0_okActionPerformed
 
     private void b_IcommandeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_IcommandeActionPerformed
@@ -1709,7 +1685,7 @@ public class UI_Base extends javax.swing.JFrame
         
         d_etape0.setVisible(true);  //Affiche la boîte de dialogue pour commencer le programme.
         
-        while(true) //Lecture des capteurs de poid.
+        while(true) //Boucle infinie
         {
             //Lecture des capteurs de poid.
             for(int i=0;i<l_Box.size();i++)
@@ -1757,7 +1733,7 @@ public class UI_Base extends javax.swing.JFrame
         return true;
     }
     
-    private static boolean checkErreurPoid(int BacCourant)
+    public static boolean checkErreurPoid(int BacCourant)
     {
         try
         {
@@ -1771,7 +1747,11 @@ public class UI_Base extends javax.swing.JFrame
             {
                 return false;
             }
-            return true;
+            else if(nb_pieces == nb_pieces_temp-1)
+            {
+                return true;
+            }
+            return false;
         }catch(Exception ex)
         {
             System.out.println("[Error] checkErreurPoid: "+ ex.getMessage());
@@ -1785,7 +1765,7 @@ public class UI_Base extends javax.swing.JFrame
             publish: détermine si un message sera émit vers le casque ou non. À utiliser si on désire seulement recevoir la valeur de retour.
     @return: Position du bac où il faut prendre la pièce.
     */
-    private static int logiqueEtape(ObjCommande cmd, boolean publish)
+    public static int logiqueEtape(ObjCommande cmd, boolean publish)
     {
         JSONObject messageBaseJsonObj = new JSONObject();
         int bacCourant = 0;
@@ -1853,7 +1833,7 @@ public class UI_Base extends javax.swing.JFrame
                         break;
                 //Aucun support
                     default:
-                        messageBaseJsonObj.put("Message", "Ce produit comporte ne aucun supports. Assurez-vous que le produit est bien assemble et passez au prochain produit");
+                        messageBaseJsonObj.put("Message", "Ce produit ne comporte aucun supports. Assurez-vous que le produit est bien assemble et passez au prochain produit");
                         break;
                 }
                 if (cmd.typeSupport_ != 0)
@@ -1868,10 +1848,7 @@ public class UI_Base extends javax.swing.JFrame
         {
             if (publish)
             {
-                try
-                {   //Ligne plus suceptible de causer des exeptions (durant le développement).
-                    nb_pieces_temp = l_Box.get(bacCourant).getItemCount(weightConvertionRatio);  //Sauvegarde le nombre de pièces pour une comparaison ultérieure.
-                }catch (Exception ex1){System.out.println("[Error] logiqueEtape: "+ ex1.getMessage());}
+                changeImage(etape_courante);
                 mqttPublish(messageBaseJsonObj);
                 tb_affiche.add(messageBaseJsonObj.getString("Message"));    //Affiche l'instruction dans la textbox.
             }
@@ -1939,6 +1916,17 @@ public class UI_Base extends javax.swing.JFrame
         return statement;
     }
     
+    private static void changeImage(int numImage)
+    {
+        try
+        {
+            //Affichage d'une nouvelle image.
+            l_image.setIcon(l_images.get(numImage));
+            //Correction dynamique de la taille de la fenêtre d'image.
+            t_image.setSize(UI_Base.t_image.getSize());
+        }catch(Exception ex){System.out.println("[Erreur] Changement d'image impossible: " + ex.getMessage());}
+    }
+    
     private static String env(String key, String defaultValue) {
         String rc = System.getenv(key);
         if( rc== null )
@@ -1968,7 +1956,7 @@ public class UI_Base extends javax.swing.JFrame
                         JSONObject joTemp = new JSONObject(str);
                         String couleur = "";
                         String produit = "";
-                        int nb_crayon = 1;  //Minimum d'un porte crayon.
+                        int nb_crayon = 1;  //Minimum de porte crayons.
                         if(joTemp.getInt("Couleur") == 1)
                         {
                             couleur = "blanc";
@@ -2000,9 +1988,13 @@ public class UI_Base extends javax.swing.JFrame
                         tbSupports.setText(Integer.toString(commande.typeSupport_));
                         tbQuantite.setText(Integer.toString(commande.qte_));
                         etape_courante = 1;
-                        logiqueEtape(commande, true);
+                        for (int i = 0; i < nb_etapes+1; i++) //Intégration des images du package à la liste d'images
+                        {
+                            l_images.add(new javax.swing.ImageIcon(getClass().getResource("/terminal_base/images/"+ i + EXT_IMAGE)));
+                        }
+                        logiqueEtape(commande, true);   //Chargement de l'étape 1.
                     }
-                }catch(Exception ex){/*System.out.println("[Error] Erreur de réception de la commande: "+ ex.getMessage());*/}  //Message d'érreur.
+                }catch(Exception ex){/*System.out.println("[Error] Erreur de réception de la commande: "+ ex.getMessage());*/}  //Message d'erreur.
             }
         }
     };
@@ -2061,7 +2053,6 @@ public class UI_Base extends javax.swing.JFrame
     private java.awt.Label label56;
     private java.awt.Label label57;
     private java.awt.Label label9;
-    private static javax.swing.JPanel p_image;
     private java.awt.Panel panel15;
     private java.awt.Panel panel16;
     public java.awt.Panel panel17;
