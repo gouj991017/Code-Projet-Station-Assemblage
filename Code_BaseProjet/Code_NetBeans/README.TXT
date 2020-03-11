@@ -13,14 +13,19 @@ Le logiciel NetBeans:
 -Possède un intellisense de base permettant de repérer les erreurs plus facilement.
 -Pour compiler, il suffit de sauvegarder le code ou d'exécuter le programme en mode de dépannage (dans les options du menus en haut de la fenêtre).
 -Le programme s'exécute normalement en appuyant sur la flèche verte près de l'option de dépannage dans les options du menus en haut de la fenêtre.
--Pour exécuter le programme, il faut les librairies:
+-Pour exécuter le programme sous Windows, il faut les librairies:
 	-json-20180813.jar
 	-mqtt-client-1.7-uber.jar
 	-mysql.jar
 	-mysql-connector.jar
 	-phidget22.jar
+-Pour exécuter le programme sous Linux (Raspberry Pi), il faut les « drivers » de Phidgets compatible avec Linux:
+	-libphidget22 (Obligatoire)
+	-libphidget22extra (librairie obligatoire si l'on veut ajouter les options de serveurs réseau et d'outils administrateurs)
+	-phidget22networkserver (Permet l'utilisation d'appareils Phidgets sur ton réseau)
+	-libphidget22java (libraries java pour Phidget22)
 MATERIAL NEEDED:
--(2x) RaspBerry Pi Zéro W
+-(1x) RaspBerry Pi Zéro W et (1x) RaspBerry Pi 3 / (OU 1x Raspberry Pi Zéro W et un ordinateur)
 -Des appareils Phidgets (capteurs infrarouges, capteur de poids, ports digital, etc...):
 	- 1 Wireless VINT Hub
 	- 2 Power Supply-12VDC 2A
@@ -32,6 +37,6 @@ MATERIAL NEEDED:
 	- 1 Isolated 12-bit Voltage Output Phidget
 	- 1 8x Voltage Input Phidget
 -(1x) Lunette VUFINE (lunette et/ou casque pour l'opérateur)
-VERSION: V2.8
-DATE: 15-02-20
+VERSION: V2.9
+DATE: 11-03-20
 AUTHORS: Jérémy Goulet
