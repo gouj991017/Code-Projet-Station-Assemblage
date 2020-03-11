@@ -1530,6 +1530,27 @@ public class Interface_Usager extends javax.swing.JFrame {
         @Override
         public void run() {
             int j = 0;
+            
+            //Create gpio controller
+            //GpioController gpio = GpioFactory.getInstance(); //*************************************************************************
+
+            try
+            {
+                /*
+                //Provision gpio pin 12,3,5,7 as an output pin
+                t_outputIOs[0] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "LED1", PinState.HIGH);   //pin 12 du header
+                t_outputIOs[1] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_09, "LED2", PinState.LOW);    //pin 5 du header
+                t_outputIOs[2] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_21, "LED3", PinState.LOW);    //pin 29 du header
+                t_outputIOs[3] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_11, "LED4", PinState.LOW);    //pin 26 du header
+
+                //Provision gpio pin 27,11,7,31 as an input pin with its internal pull down resistor enabled
+                t_inputIOs[0] = gpio.provisionDigitalInputPin(RaspiPin.GPIO_30, "Bac1", PinPullResistance.OFF); //pin 27 du header
+                t_inputIOs[1] = gpio.provisionDigitalInputPin(RaspiPin.GPIO_00, "Bac2", PinPullResistance.OFF); //pin 11 du header
+                t_inputIOs[2] = gpio.provisionDigitalInputPin(RaspiPin.GPIO_07, "Bac3", PinPullResistance.OFF); //pin 7 du header
+                t_inputIOs[3] = gpio.provisionDigitalInputPin(RaspiPin.GPIO_22, "Bac4", PinPullResistance.OFF); //pin 31 du header
+                */
+                //Pin  28,11,13 non-controlable
+            }catch(Exception ex){}
             /*
             String user = "admin";
             String password = "admin";
@@ -1595,7 +1616,184 @@ public class Interface_Usager extends javax.swing.JFrame {
                     tbPoids_Bac6.setText(Double.toString(0.00));
                     tbPoids_Bac7.setText(Double.toString(0.00));
                     tbPoids_Bac8.setText(Double.toString(0.00));
-                    tbPoids_Bac9.setText(Double.toString(0.00));                   
+                    tbPoids_Bac9.setText(Double.toString(0.00));
+                    
+                    /*
+                    t_outputIOs[bacActif].high(); //Allume la LED du bac courant
+
+                    if(t_inputIOs[0].isHigh()) //Bac #1
+                    {
+                        panelBorder1.setBackground(Color.yellow); //Couleur déclarant la détection d'une manipulation de la part d'un opérateur dans un bac
+                        if(bacActif != 1) //S'il ne s'agit pas du bac indiqué dans les instructions
+                        {
+                            panelCenter1.setBackground(Color.red);
+                            messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
+                            m_listeObjList.add("Ce n'est pas le bon bac!!!");
+                            m_listeObjList.add("Allez au bac #" + bacActif);
+                        }
+                        else
+                        {
+                            t_outputIOs[bacActif].low(); //Éteind la LED du bac courant
+                            numPageCourante++; //On incrémente la variable et on passe à l'étape suivante
+                            messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                            m_listeObjList.add("Poursuivez avec l'étape numéro " + numPageCourante);
+                        }
+                        while(t_inputIOs[0].isHigh()); //On attend que l'opérateur ait retiré sa main du bac avant de poursuivre l'assemblage
+                        panelBorder1.setBackground(Color.white);
+                        resetBac();
+                    }
+                    else if(t_inputIOs[1].isHigh()) //Bac #2
+                    {
+                        panelBorder2.setBackground(Color.yellow);
+                        if(bacActif != 2)
+                        {
+                            panelCenter2.setBackground(Color.red);
+                            messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
+                            m_listeObjList.add("Ce n'est pas le bon bac!!!");
+                            m_listeObjList.add("Allez au bac #" + bacActif);
+                        }
+                        else
+                        {
+                            t_outputIOs[bacActif].low();
+                            numPageCourante++;
+                            messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                            m_listeObjList.add("Poursuivez avec l'étape numéro " + numPageCourante);
+                        }
+                        while(t_inputIOs[1].isHigh());
+                        panelBorder2.setBackground(Color.white);
+                        resetBac();
+                    }
+                    else if(t_inputIOs[2].isHigh()) //Bac #3
+                    {
+                        panelBorder3.setBackground(Color.yellow);
+                        if(bacActif != 3)
+                        {
+                            panelCenter3.setBackground(Color.red);
+                            messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
+                            m_listeObjList.add("Ce n'est pas le bon bac!!!");
+                            m_listeObjList.add("Allez au bac #" + bacActif);
+                        }
+                        else
+                        {
+                            t_outputIOs[bacActif].low();
+                            numPageCourante++;
+                            messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                            m_listeObjList.add("Poursuivez avec l'étape numéro " + numPageCourante);
+                        }
+                        while(t_inputIOs[2].isHigh());
+                        panelBorder3.setBackground(Color.white);
+                        resetBac();
+                    }
+                    else if(t_inputIOs[3].isHigh()) //Bac #4
+                    {
+                        panelBorder4.setBackground(Color.yellow);
+                        if(bacActif != 4)
+                        {
+                            panelCenter4.setBackground(Color.red);
+                            messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
+                            m_listeObjList.add("Ce n'est pas le bon bac!!!");
+                            m_listeObjList.add("Allez au bac #" + bacActif);
+                        }
+                        else
+                        {
+                            t_outputIOs[bacActif].low();
+                            numPageCourante++;
+                            messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                            m_listeObjList.add("Poursuivez avec l'étape numéro " + numPageCourante);
+                        }
+                        while(t_inputIOs[3].isHigh());
+                        panelBorder4.setBackground(Color.white);
+                        resetBac();
+                    }
+                    else if(t_inputIOs[4].isHigh()) //Bac #5
+                    {
+                        panelBorder5.setBackground(Color.yellow);
+                        if(bacActif != 5)
+                        {
+                            panelCenter5.setBackground(Color.red);
+                            messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
+                            m_listeObjList.add("Ce n'est pas le bon bac!!!");
+                            m_listeObjList.add("Allez au bac #" + bacActif);
+                        }
+                        else
+                        {
+                            t_outputIOs[bacActif].low();
+                            numPageCourante++;
+                            messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                            m_listeObjList.add("Poursuivez avec l'étape numéro " + numPageCourante);
+                        }
+                        while(t_inputIOs[4].isHigh());
+                        panelBorder5.setBackground(Color.white);
+                        resetBac();
+                    }
+                    else if(t_inputIOs[5].isHigh()) //Bac #6
+                    {
+                        panelBorder6.setBackground(Color.yellow);
+                        if(bacActif != 6)
+                        {
+                            panelCenter6.setBackground(Color.red);
+                            messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
+                            m_listeObjList.add("Ce n'est pas le bon bac!!!");
+                            m_listeObjList.add("Allez au bac #" + bacActif);
+                        }
+                        else
+                        {
+                            t_outputIOs[bacActif].low();
+                            numPageCourante++;
+                            messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                            m_listeObjList.add("Poursuivez avec l'étape numéro " + numPageCourante);
+                        }
+                        while(t_inputIOs[5].isHigh());
+                        panelBorder6.setBackground(Color.white);
+                        resetBac();
+                    }
+                    else if(t_inputIOs[6].isHigh()) //Bac #7
+                    {
+                        panelBorder7.setBackground(Color.yellow);
+                        if(bacActif != 7)
+                        {
+                            panelCenter7.setBackground(Color.red);
+                            messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
+                            m_listeObjList.add("Ce n'est pas le bon bac!!!");
+                            m_listeObjList.add("Allez au bac #" + bacActif);
+                        }
+                        else
+                        {
+                            t_outputIOs[bacActif].low();
+                            numPageCourante++;
+                            messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                            m_listeObjList.add("Poursuivez avec l'étape numéro " + numPageCourante);
+                        }
+                        while(t_inputIOs[6].isHigh());
+                        panelBorder7.setBackground(Color.white);
+                        resetBac();
+                    }
+                    else if(t_inputIOs[7].isHigh()) //Bac #8
+                    {
+                        panelBorder8.setBackground(Color.yellow);
+                        if(bacActif != 8)
+                        {
+                            panelCenter8.setBackground(Color.red);
+                            messageBaseJsonObj.put("Message", new String[] { "Ce n'est pas le bon bac!!!", "Allez au bac #" + bacActif});
+                            m_listeObjList.add("Ce n'est pas le bon bac!!!");
+                            m_listeObjList.add("Allez au bac #" + bacActif);
+                        }
+                        else
+                        {
+                            t_outputIOs[bacActif].low();
+                            numPageCourante++;
+                            messageBaseJsonObj.put("Message", "Poursuivez avec l'étape numéro " + numPageCourante);
+                            m_listeObjList.add("Poursuivez avec l'étape numéro " + numPageCourante);
+                        }
+                        while(t_inputIOs[7].isHigh());
+                        panelBorder8.setBackground(Color.white);
+                        resetBac();
+                    }
+                    String DATA = messageBaseJsonObj.toString(2);
+                    Buffer msgErreur = new AsciiBuffer(DATA);
+                    UTF8Buffer topic = new UTF8Buffer(destination);
+                    connectionThread.publish(topic, msgErreur, QoS.AT_LEAST_ONCE, false);*/
+                    
                     
                     Thread.sleep(500);
                 }catch(Exception ex){}
@@ -1763,6 +1961,29 @@ public class Interface_Usager extends javax.swing.JFrame {
         tension_Origine0 = vRatioInput0.getVoltageRatio(); //Fait la calibration du niveau de tension du capteur #1
         tension_Origine1 = vRatioInput1.getVoltageRatio(); //Fait la calibration du niveau de tension du capteur #2
                 
+        /*
+        //Séquence test des GPIO's
+        System.out.println(t_inputIOs[2].isHigh());
+        System.out.println(t_inputIOs[2].isLow());
+        System.out.println(t_inputIOs[3].isHigh());
+        System.out.println(t_inputIOs[3].isLow());
+
+        System.out.println(t_outputIOs[0].isHigh());
+        System.out.println(t_outputIOs[0].isLow());
+        System.out.println(t_outputIOs[3].isHigh());
+        System.out.println(t_outputIOs[3].isLow());
+
+        t_outputIOs[0].high();
+        t_outputIOs[1].low();
+        t_outputIOs[2].low();
+        t_outputIOs[3].low();
+
+        System.out.println(t_outputIOs[0].isHigh());
+        System.out.println(t_outputIOs[1].isHigh());
+        System.out.println(t_outputIOs[2].isHigh());
+        System.out.println(t_outputIOs[3].isHigh());
+        */
+        
         Thread myThread = new Thread(runnable);
         myThread.start();
         
