@@ -20,6 +20,6 @@ MATERIAL NEEDED:
 	- 1 Isolated 12-bit Voltage Output Phidget
 	- 1 8x Voltage Input Phidget
 -(1x) Lunette VUFINE (lunette et/ou casque pour l'opérateur)
-VERSION: V2.8
-DATE: 15-02-20
+VERSION: V2.9
+DATE: 11-03-20
 AUTHORS: Jérémy Goulet
