@@ -175,7 +175,6 @@ public class UI_Base extends javax.swing.JFrame
         jLabel1 = new javax.swing.JLabel();
         d_etape0 = new javax.swing.JDialog();
         b_etape0_ok = new javax.swing.JButton();
-        b_etape0_cancel = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         t_bacs = new javax.swing.JFrame();
         panel15 = new java.awt.Panel();
@@ -346,8 +345,6 @@ public class UI_Base extends javax.swing.JFrame
             }
         });
 
-        b_etape0_cancel.setText("cancel");
-
         jLabel2.setText("Veuillez mettre les pièces dans leur bac respectifs puis appuyer sur 'ok'.");
 
         javax.swing.GroupLayout d_etape0Layout = new javax.swing.GroupLayout(d_etape0.getContentPane());
@@ -357,13 +354,11 @@ public class UI_Base extends javax.swing.JFrame
             .addGroup(d_etape0Layout.createSequentialGroup()
                 .addGroup(d_etape0Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(d_etape0Layout.createSequentialGroup()
-                        .addGap(157, 157, 157)
-                        .addComponent(b_etape0_ok, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30)
-                        .addComponent(b_etape0_cancel))
-                    .addGroup(d_etape0Layout.createSequentialGroup()
                         .addGap(43, 43, 43)
-                        .addComponent(jLabel2)))
+                        .addComponent(jLabel2))
+                    .addGroup(d_etape0Layout.createSequentialGroup()
+                        .addGap(206, 206, 206)
+                        .addComponent(b_etape0_ok, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(45, Short.MAX_VALUE))
         );
         d_etape0Layout.setVerticalGroup(
@@ -371,11 +366,9 @@ public class UI_Base extends javax.swing.JFrame
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, d_etape0Layout.createSequentialGroup()
                 .addContainerGap(52, Short.MAX_VALUE)
                 .addComponent(jLabel2)
-                .addGap(39, 39, 39)
-                .addGroup(d_etape0Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(b_etape0_ok)
-                    .addComponent(b_etape0_cancel))
-                .addGap(35, 35, 35))
+                .addGap(33, 33, 33)
+                .addComponent(b_etape0_ok)
+                .addGap(41, 41, 41))
         );
 
         t_bacs.setMinimumSize(new java.awt.Dimension(732, 300));
@@ -1320,7 +1313,6 @@ public class UI_Base extends javax.swing.JFrame
         );
 
         t_image.setMinimumSize(new java.awt.Dimension(1920, 1080));
-        t_image.setPreferredSize(new java.awt.Dimension(1600, 1106));
 
         l_image.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         l_image.setIcon(new javax.swing.ImageIcon(getClass().getResource("/terminal_base/images/0.PNG"))); // NOI18N
@@ -1727,7 +1719,8 @@ public class UI_Base extends javax.swing.JFrame
         {
             t_panelInterne[bacActif].setBackground(Color.red);    //Met en évidence le bac fautif.
             mqttPublish("Ce n'est pas le bon bac!!! Allez au bac #" + (BacCourant+1), "Base", String.valueOf(etape_courante));  //Publie le message d'erreur.
-            tb_affiche.add("Ce n'est pas le bon bac!!! Allez au bac #" + (BacCourant+1));
+            tb_affiche.add("Ce n'est pas le bon bac!!! Allez au bac #" + (BacCourant+1));   //Affiche le message d'erreur.
+            tb_affiche.select(tb_affiche.getItemCount()-1);  //Sélectionne le dernier message automatiquement.
             return false;
         }
         return true;
@@ -1741,6 +1734,7 @@ public class UI_Base extends javax.swing.JFrame
             if(nb_pieces < nb_pieces_temp-1)    //Si l'usager a pris trop de pièces, on lui en avertis.
             {
                 tb_affiche.add("Vous avez pris trop de pièces, veuillez n'en prendre qu'une pour terminer cette étape.");
+                tb_affiche.select(tb_affiche.getItemCount()-1);  //Sélectionne le dernier message automatiquement.
                 return false;
             }
             else if(nb_pieces == nb_pieces_temp)    //Si l'usager ne prend pas de pièces, aucun message n'est envoyé mais on ne change pas d'étape.
@@ -1851,6 +1845,7 @@ public class UI_Base extends javax.swing.JFrame
                 changeImage(etape_courante);
                 mqttPublish(messageBaseJsonObj);
                 tb_affiche.add(messageBaseJsonObj.getString("Message"));    //Affiche l'instruction dans la textbox.
+                tb_affiche.select(tb_affiche.getItemCount()-1);  //Sélectionne le dernier message automatiquement.
             }
         }catch(Exception ex) {System.out.println("[Error] logiqueEtape: "+ ex.getMessage());}
         return bacCourant;
@@ -2003,7 +1998,6 @@ public class UI_Base extends javax.swing.JFrame
     private javax.swing.JMenuItem b_Icommande;
     private javax.swing.JMenuItem b_Inv;
     private javax.swing.JMenuItem b_calibre;
-    private javax.swing.JButton b_etape0_cancel;
     private javax.swing.JButton b_etape0_ok;
     private javax.swing.JMenuItem b_etatBacs;
     private javax.swing.JMenuItem b_image;
