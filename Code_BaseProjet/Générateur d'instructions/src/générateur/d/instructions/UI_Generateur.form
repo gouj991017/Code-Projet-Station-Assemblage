@@ -285,6 +285,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="OK"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="b_okPieceMouseClicked"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -442,12 +445,18 @@
         <Property name="text" type="java.lang.String" value="Modifier"/>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="b_modifPiecesMouseClicked"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="b_suppPieces">
       <Properties>
         <Property name="text" type="java.lang.String" value="Supprimer pi&#xe8;ces"/>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="b_suppPiecesMouseClicked"/>
+      </Events>
     </Component>
     <Component class="java.awt.List" name="lb_etapes">
       <Events>
@@ -455,6 +464,9 @@
       </Events>
     </Component>
     <Component class="java.awt.List" name="lb_pieces">
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lb_piecesMouseClicked"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

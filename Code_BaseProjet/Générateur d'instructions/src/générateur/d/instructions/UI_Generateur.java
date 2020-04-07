@@ -181,6 +181,11 @@ public class UI_Generateur extends javax.swing.JFrame
         jLabel10.setText("Numéro du bac associé");
 
         b_okPiece.setText("OK");
+        b_okPiece.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                b_okPieceMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPieceLayout = new javax.swing.GroupLayout(jPiece.getContentPane());
         jPiece.getContentPane().setLayout(jPieceLayout);
@@ -267,13 +272,29 @@ public class UI_Generateur extends javax.swing.JFrame
 
         b_modifPieces.setText("Modifier");
         b_modifPieces.setEnabled(false);
+        b_modifPieces.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                b_modifPiecesMouseClicked(evt);
+            }
+        });
 
         b_suppPieces.setText("Supprimer pièces");
         b_suppPieces.setEnabled(false);
+        b_suppPieces.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                b_suppPiecesMouseClicked(evt);
+            }
+        });
 
         lb_etapes.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 lb_etapesMouseClicked(evt);
+            }
+        });
+
+        lb_pieces.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lb_piecesMouseClicked(evt);
             }
         });
 
@@ -356,6 +377,7 @@ public class UI_Generateur extends javax.swing.JFrame
 
     private void b_nouvEtapeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_b_nouvEtapeMouseClicked
         tb_numEtape.setText(String.valueOf(nb_etapes+1));
+        chargeCb_NomPieceEtape();   //Charge les éléments de cb_NomPieceEtape.
         jEtape.setVisible(true);    //Affichage de la fenêtre d'édition d'étape.
     }//GEN-LAST:event_b_nouvEtapeMouseClicked
 
@@ -381,10 +403,10 @@ public class UI_Generateur extends javax.swing.JFrame
             lb_etapes.add(l_Etape.get(index).numero + " - " + tb_nomEtape.getText(), index);
             modif = false;  //Remise à défaut de modif.
         }
-        jEtape.setVisible(false);
+        jEtape.setVisible(false);   //Fermeture de la boîte de dialogue
         b_modifEtape.setEnabled(false);
         b_suppEtape.setEnabled(false);
-        videDialogEtape();
+        videDialogEtape();  //Éfface les paramètres entrés.
     }//GEN-LAST:event_b_okEtapeMouseClicked
 
     private void lb_etapesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lb_etapesMouseClicked
@@ -417,6 +439,52 @@ public class UI_Generateur extends javax.swing.JFrame
         b_modifEtape.setEnabled(false);
         b_suppEtape.setEnabled(false);
     }//GEN-LAST:event_b_suppEtapeMouseClicked
+
+    private void b_modifPiecesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_b_modifPiecesMouseClicked
+        chargeDialogPiece();    //Charge les paramètres de la pièce séléctionnée.
+        jPiece.setVisible(true);    //Affichage de la fenêtre d'édition de pièces.
+        modif = true;
+    }//GEN-LAST:event_b_modifPiecesMouseClicked
+
+    private void b_suppPiecesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_b_suppPiecesMouseClicked
+        int index = lb_pieces.getSelectedIndex();
+        lb_pieces.remove(index); //On retire la pièce de la liste.
+        l_Piece.remove(index);
+        b_modifPieces.setEnabled(false);
+        b_suppPieces.setEnabled(false);
+    }//GEN-LAST:event_b_suppPiecesMouseClicked
+
+    private void b_okPieceMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_b_okPieceMouseClicked
+        if(!modif)
+        {
+            try
+            {
+            l_Piece.add(new Piece(l_Piece.size()+1, Integer.parseInt(tb_numBac.getText()), Double.parseDouble(tb_poidPiece.getText()), tb_nomPiece.getText()));   //Récupération des infos sur la pièce.
+            lb_pieces.add(tb_nomPiece.getText());   //Ajout de l'objet à la liste.
+            }catch(Exception ex){System.out.println("[Erreur] Impossible de créer la nouvelle pièce: " + ex.getMessage());} //Message d'erreur.
+        }
+        else
+        {
+            int index = lb_pieces.getSelectedIndex();
+            l_Piece.get(index).modifPiece(Integer.parseInt(tb_numBac.getText()), Double.parseDouble(tb_poidPiece.getText()), tb_nomPiece.getText());    //Récupération des infos sur la pièce.
+            lb_pieces.remove(index);    //On retire la pièce de la liste pour la remetre au même index
+            lb_pieces.add(tb_nomPiece.getText(), index);
+            modif = false;  //Remise à défaut de modif.
+        }
+        jPiece.setVisible(false);   //Fermeture de la boîte de dialogue
+        b_modifPieces.setEnabled(false);
+        b_suppPieces.setEnabled(false);
+        videDialogPiece();  //Éfface les paramètres entrés.
+    }//GEN-LAST:event_b_okPieceMouseClicked
+
+    private void lb_piecesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lb_piecesMouseClicked
+        try //Test d'obtention d'un index.
+        {
+            int test = lb_pieces.getSelectedIndex();
+            b_modifPieces.setEnabled(true);
+            b_suppPieces.setEnabled(true);
+        }catch(Exception ex){System.out.println("[Erreur] Aucun élément selectionné");}
+    }//GEN-LAST:event_lb_piecesMouseClicked
 
     /**
      * @param args the command line arguments
@@ -472,7 +540,8 @@ public class UI_Generateur extends javax.swing.JFrame
         tb_nbPieces.setText(String.valueOf(l_Etape.get(index).nb_pieces));
         tb_nomEtape.setText(l_Etape.get(index).nom);
         tb_numEtape.setText(String.valueOf(l_Etape.get(index).numero));
-        cb_nomPieceEtape.setSelectedItem(l_Etape.get(index).num_piece);
+        chargeCb_NomPieceEtape();   //Charge les éléments de cb_NomPieceEtape.
+        cb_nomPieceEtape.setSelectedIndex(l_Etape.get(index).num_piece);
     }
     
     private void videDialogPiece()
@@ -490,6 +559,15 @@ public class UI_Generateur extends javax.swing.JFrame
         tb_numBac.setText(String.valueOf(l_Piece.get(index).n_bac));
     }
 
+    private void chargeCb_NomPieceEtape()
+    {
+        for (int i=0; i<l_Piece.size(); i++)
+        {
+            cb_nomPieceEtape.addItem(l_Piece.get(i).nom);
+            l_Piece.get(i).numero = i;  //Mise à jour du numéro de la pièce. 
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem b_enregistrer;
     private javax.swing.JButton b_modifEtape;
