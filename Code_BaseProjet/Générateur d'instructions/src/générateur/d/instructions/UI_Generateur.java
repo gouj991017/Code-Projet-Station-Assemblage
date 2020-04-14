@@ -1,9 +1,20 @@
 package générateur.d.instructions;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
-import org.json.JSONObject;
+import javax.swing.JFileChooser;
+import jdk.nashorn.internal.parser.JSONParser;
+import org.json.*;
 import org.fusesource.mqtt.client.*;
 import org.fusesource.hawtbuf.*;
+import org.json.JSONArray;
 
 /**
  *
@@ -54,6 +65,8 @@ public class UI_Generateur extends javax.swing.JFrame
         tb_numBac = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         b_okPiece = new javax.swing.JButton();
+        jOuvrir_Fichier = new javax.swing.JFileChooser();
+        jSauver_Fichier = new javax.swing.JFileChooser();
         b_nouvEtape = new javax.swing.JButton();
         b_modifEtape = new javax.swing.JButton();
         b_suppEtape = new javax.swing.JButton();
@@ -69,7 +82,7 @@ public class UI_Generateur extends javax.swing.JFrame
         b_quitter = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
 
-        jEtape.setMinimumSize(new java.awt.Dimension(329, 300));
+        jEtape.setMinimumSize(new java.awt.Dimension(350, 360));
 
         tb_numEtape.setEditable(false);
 
@@ -169,7 +182,7 @@ public class UI_Generateur extends javax.swing.JFrame
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPiece.setMinimumSize(new java.awt.Dimension(266, 125));
+        jPiece.setMinimumSize(new java.awt.Dimension(270, 225));
 
         jLabel7.setText("Poid (g) de la pièce si applicable");
 
@@ -192,29 +205,27 @@ public class UI_Generateur extends javax.swing.JFrame
         jPieceLayout.setHorizontalGroup(
             jPieceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPieceLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPieceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPieceLayout.createSequentialGroup()
-                        .addContainerGap()
                         .addComponent(tb_poidPiece, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel7))
                     .addGroup(jPieceLayout.createSequentialGroup()
-                        .addGap(99, 99, 99)
-                        .addComponent(jLabel8))
-                    .addGroup(jPieceLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(tb_nomPiece, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPieceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel8)
+                            .addComponent(tb_nomPiece, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel9))
                     .addGroup(jPieceLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPieceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(b_okPiece, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tb_numBac, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPieceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel10)
                             .addGroup(jPieceLayout.createSequentialGroup()
-                                .addComponent(tb_numBac, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel10)))))
-                .addContainerGap(57, Short.MAX_VALUE))
+                                .addGap(10, 10, 10)
+                                .addComponent(b_okPiece, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(11, Short.MAX_VALUE))
         );
         jPieceLayout.setVerticalGroup(
             jPieceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -233,10 +244,17 @@ public class UI_Generateur extends javax.swing.JFrame
                 .addGroup(jPieceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tb_numBac, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(b_okPiece)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
+
+        jOuvrir_Fichier.setApproveButtonText("Ouvrir");
+        jOuvrir_Fichier.setToolTipText("Séléctionnez le fichier d'instructions à ouvrir");
+
+        jSauver_Fichier.setDialogType(javax.swing.JFileChooser.SAVE_DIALOG);
+        jSauver_Fichier.setApproveButtonText("Enregistrer");
+        jSauver_Fichier.setToolTipText("Enregistrez le fichier d'instruction");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -300,16 +318,29 @@ public class UI_Generateur extends javax.swing.JFrame
 
         m_fichier.setText("Fichier");
 
+        b_enregistrer.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         b_enregistrer.setText("Enregistrer");
+        b_enregistrer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_enregistrerActionPerformed(evt);
+            }
+        });
         m_fichier.add(b_enregistrer);
 
+        b_ouvrir.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         b_ouvrir.setText("Ouvrir");
+        b_ouvrir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_ouvrirActionPerformed(evt);
+            }
+        });
         m_fichier.add(b_ouvrir);
 
+        b_quitter.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
         b_quitter.setText("Quitter");
-        b_quitter.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                b_quitterMouseClicked(evt);
+        b_quitter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_quitterActionPerformed(evt);
             }
         });
         m_fichier.add(b_quitter);
@@ -381,10 +412,6 @@ public class UI_Generateur extends javax.swing.JFrame
         jEtape.setVisible(true);    //Affichage de la fenêtre d'édition d'étape.
     }//GEN-LAST:event_b_nouvEtapeMouseClicked
 
-    private void b_quitterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_b_quitterMouseClicked
-        System.exit(0); //Fin du programme.
-    }//GEN-LAST:event_b_quitterMouseClicked
-
     private void b_okEtapeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_b_okEtapeMouseClicked
         if(!modif)
         {
@@ -412,10 +439,13 @@ public class UI_Generateur extends javax.swing.JFrame
     private void lb_etapesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lb_etapesMouseClicked
         try //Test d'obtention d'un index.
         {
-            int test = lb_etapes.getSelectedIndex();
-            b_modifEtape.setEnabled(true);
-            b_suppEtape.setEnabled(true);
-        }catch(Exception ex){System.out.println("[Erreur] Aucun élément selectionné");}
+            int test = lb_etapes.getSelectedIndex();    //Si aucun items n'est séléctionné, l'index (test) vaut -1.
+            if(!(test<0))   //si un item est séléctionné, on permet de modifier ou suprimmer.
+            {
+                b_modifEtape.setEnabled(true);
+                b_suppEtape.setEnabled(true);
+            }
+        }catch(Exception ex){System.out.println("[Erreur] Aucun élément selectionné?");}
     }//GEN-LAST:event_lb_etapesMouseClicked
 
     private void b_modifEtapeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_b_modifEtapeMouseClicked
@@ -480,11 +510,98 @@ public class UI_Generateur extends javax.swing.JFrame
     private void lb_piecesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lb_piecesMouseClicked
         try //Test d'obtention d'un index.
         {
-            int test = lb_pieces.getSelectedIndex();
-            b_modifPieces.setEnabled(true);
-            b_suppPieces.setEnabled(true);
-        }catch(Exception ex){System.out.println("[Erreur] Aucun élément selectionné");}
+            int test = lb_pieces.getSelectedIndex();    //Si aucun items n'est séléctionné, l'index (test) vaut -1.
+            if(!(test<0))   //si un item est séléctionné, on permet de modifier ou suprimmer.
+            {
+                b_modifPieces.setEnabled(true);
+                b_suppPieces.setEnabled(true);
+            }
+        }catch(Exception ex){System.out.println("[Erreur] Aucun élément selectionné?");}
     }//GEN-LAST:event_lb_piecesMouseClicked
+
+    private void b_quitterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_quitterActionPerformed
+        System.exit(0); //Fin du programme
+    }//GEN-LAST:event_b_quitterActionPerformed
+
+    private void b_enregistrerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_enregistrerActionPerformed
+        //Extrait de code inspiré de stackoverflow: https://stackoverflow.com/questions/13905298/how-to-save-a-txt-file-using-jfilechooser
+        int returnVal = jSauver_Fichier.showSaveDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION)
+        {
+            File fileToSave = jSauver_Fichier.getSelectedFile();
+            try
+            {
+                JSONObject joSave = new JSONObject();
+                JSONArray jaEtapes = new JSONArray();
+                JSONArray jaPieces = new JSONArray();
+                PrintWriter pwSave = new PrintWriter(new File(fileToSave+""));
+                //Insertion en JSON.
+                for(int i = 0; i < l_Etape.size(); i++)
+                {
+                    pwSave.write(l_Etape.get(i).toJSON().toString()+" \r\n");   //Insère tous les éléments des étapes dans le JSON
+                }
+                for(int i = 0; i < l_Piece.size(); i++)
+                {
+                    pwSave.write(l_Piece.get(i).toJSON().toString()+" \r\n");   //Insère tous les éléments des pièces dans le JSON
+                }                
+                
+                pwSave.close(); //Fermeture du fichier.
+                System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+            }catch(Exception ex){System.out.println("[Erreur] Écriture du fichier impossible: "+ex.getMessage());}  //Message d'erreur.
+        }
+    }//GEN-LAST:event_b_enregistrerActionPerformed
+
+    private void b_ouvrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_ouvrirActionPerformed
+        //Extrait de code inspiré de la documentation de Netbeans: https://netbeans.org/kb/docs/java/gui-filechooser.html
+        int returnVal = jOuvrir_Fichier.showOpenDialog(this);
+        File fichierCharge;
+        if (returnVal == JFileChooser.APPROVE_OPTION)
+        {
+            fichierCharge = jOuvrir_Fichier.getSelectedFile();
+            try
+            {
+                JSONObject jotemp = new JSONObject();
+                FileReader frLoad = new FileReader(fichierCharge);
+                BufferedReader br = new BufferedReader(frLoad);
+                boolean redondance = false;
+                try //Extraction des étapes du JSON.
+                {
+                    l_Etape.clear();
+                    nb_etapes = 0;
+                    lb_etapes.removeAll();
+                    while(true)
+                    {
+                        jotemp = new JSONObject(br.readLine());   //Extraction du JSON des étapes.
+                        l_Etape.add(new Etape(jotemp.getInt("numero"), jotemp.getString("nom"), jotemp.getString("message"), jotemp.getInt("num_piece"), jotemp.getInt("nb_pieces")));   //Ajout de l'étape.
+                        lb_etapes.add(jotemp.getInt("numero") + " - " +jotemp.getString("nom"));    //Affiche l'étape sur l'interface.
+                        nb_etapes++;
+                        jotemp = new JSONObject();  //On efface le contenu du JSON.
+                    }
+                }catch(Exception ex){redondance = true;}    //Si la boucle échoue, on active la redondance.
+                
+                try //Extraction des pièces du JSON vers la liste.
+                {
+                    l_Piece.clear();
+                    lb_pieces.removeAll();
+                    while(true)
+                    {
+                        if(!redondance) //Si la redondance est activée, on n'extrait pas de nouvel élément.
+                        {
+                            jotemp = new JSONObject(br.readLine());   //Extraction du JSON des pièces.
+                        }else
+                        {
+                            redondance = false;
+                        }
+                        l_Piece.add(new Piece(jotemp.getInt("numero"), jotemp.getInt("n_bac"), jotemp.getDouble("poid"), jotemp.getString("nom"))); //Ajout de la pièce.
+                        lb_pieces.add(jotemp.getString("nom")); //Affiche la pièce sur l'interface.
+                    }
+                }catch(Exception ex){}
+                //Fermeture du fichier.
+                br.close();
+                frLoad.close();
+            }catch (Exception ex){System.out.println("[Erreur] Lecture du fichier impossible: "+ex.getMessage());}  //Message d'erreur.
+        }
+    }//GEN-LAST:event_b_ouvrirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -594,7 +711,9 @@ public class UI_Generateur extends javax.swing.JFrame
     private javax.swing.JLabel jLabel9;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JFileChooser jOuvrir_Fichier;
     private javax.swing.JDialog jPiece;
+    private javax.swing.JFileChooser jSauver_Fichier;
     private javax.swing.JScrollPane jScrollPane1;
     private java.awt.List lb_etapes;
     private java.awt.List lb_pieces;

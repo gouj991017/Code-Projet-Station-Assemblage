@@ -1,5 +1,7 @@
 package générateur.d.instructions;
 
+import org.json.JSONObject;
+
 /**
  *
  * @author Guim
@@ -24,5 +26,14 @@ public class Piece
         n_bac = _n_bac;
         poid = _poid;
         nom = _nom;
+    }
+    public JSONObject toJSON()
+    {
+        JSONObject jo = new JSONObject();
+        jo.put("nom", nom);
+        jo.put("numero", numero);
+        jo.put("n_bac", n_bac);
+        jo.put("poid", poid);
+        return jo;
     }
 }

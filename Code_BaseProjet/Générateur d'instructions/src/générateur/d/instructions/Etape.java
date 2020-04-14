@@ -1,5 +1,5 @@
 package générateur.d.instructions;
-
+import org.json.*;
 /**
  *
  * @author Guim
@@ -26,5 +26,15 @@ public class Etape
         message = _message;
         num_piece = _num_piece;
         nb_pieces = _nb_pieces;
+    }
+    public JSONObject toJSON()
+    {
+        JSONObject jo = new JSONObject();
+        jo.put("nom", nom);
+        jo.put("numero", numero);
+        jo.put("message", message);
+        jo.put("num_piece", num_piece);
+        jo.put("nb_pieces", nb_pieces);
+        return jo;
     }
 }
