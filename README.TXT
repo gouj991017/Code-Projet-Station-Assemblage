@@ -8,7 +8,8 @@ La LUNETTE ou CASQUE est composé d'un petit projecteur affichant diverses infor
 
 FOLDER OF PROJECT:
 -Le Dossier «Code_BaseProjet» contient deux versions fonctionnelles du code gérant la base de la station d'assemblage. Le fichier README du dossier vous donneras plus de détails sur les distinctions entre les deux versions.
--Le Dossier «Terminal_Casque» contient la version fonctionnel du code du casque dans lequel sera affiché les instructions de la station d'assemblage. De plus amples informations sont disponibles à l'intérieur du dossier.
+-Le Dossier «Interface_Client» contient la version fonctionnelle d'une application Node-Red servant à passer des commandes qui seront envoyées vers le code de la base. De plus amples informations sont disponibles à l'intérieur du dossier.
+-Le Dossier «Terminal_Casque» contient la version fonctionnelle du code du casque dans lequel sera affiché les instructions de la station d'assemblage. De plus amples informations sont disponibles à l'intérieur du dossier.
 -Le Dossier «Tests_Phidget» contient des codes de tests servant à tester la fonctionnalité des différents appareils Phidgets utilisé lors de la réalisation du projet. De plus amples informations sont disponibles à l'intérieur du dossier.
 MATERIAL NEEDED:
 -(1x) RaspBerry Pi Zéro W et (1x) RaspBerry Pi 3 / (OU 1x Raspberry Pi Zéro W et un ordinateur)
@@ -23,7 +24,7 @@ MATERIAL NEEDED:
 	- 1 Isolated 12-bit Voltage Output Phidget
 	- 1 8x Voltage Input Phidget
 -(1x) Lunette VUFINE (lunette et/ou casque pour l'opérateur)
-VERSION: V2.9
-DATE: 11-03-20
+VERSION: V3
+DATE: 17-04-20
 AUTHORS: Jérémy Goulet, Guillaume Beaudoin
 

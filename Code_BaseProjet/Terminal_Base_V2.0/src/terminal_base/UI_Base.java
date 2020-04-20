@@ -1487,6 +1487,12 @@ public class UI_Base extends javax.swing.JFrame
         {
             nb_etapes = l_Etape.size();
             etape_courante = 1;
+            
+            for (int i = 0; i < nb_etapes+1; i++) //Intégration des images du package à la liste d'images
+            {
+                l_images.add(new javax.swing.ImageIcon(getClass().getResource("/terminal_base/images/"+ i + EXT_IMAGE)));
+            }
+            
             logiqueEtape(true);
         }catch (Exception ex){}
     }//GEN-LAST:event_b_ouvrirActionPerformed
@@ -1688,7 +1694,10 @@ public class UI_Base extends javax.swing.JFrame
         {
             if (publish)
             {
-                changeImage(etape_courante);
+                if(etape_courante != 0) //À l'étape 0, aucune nouvelle image n'est chargée.
+                {
+                    changeImage(etape_courante);
+                }
                 mqttPublish(messageBaseJsonObj);
                 tb_affiche.add(messageBaseJsonObj.getString("Message"));    //Affiche l'instruction dans la textbox.
             }
