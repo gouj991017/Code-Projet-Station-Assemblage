@@ -1,24 +1,20 @@
 package générateur.d.instructions;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
 import javax.swing.JFileChooser;
-import jdk.nashorn.internal.parser.JSONParser;
 import org.json.*;
-import org.fusesource.mqtt.client.*;
-import org.fusesource.hawtbuf.*;
 import org.json.JSONArray;
 
 /**
- *
- * @author Guim
+ * @author Guillaume Beaudoin
+ * @brief Il s'agit d'un programme permettant de créer, modifier, ouvrir et sauvegarder des fichiers d'instructions pour execution dans
+    le programme "Terminal_Base_V2.0". Afin de créer un fichier d'instructions, il suffit de créer autant d'étapes et de pièces
+    que désiré et de les sauvegarder via le menu.
+   @version 2.0     Editor: Apache NetBeans IDE 11.3    System: dev: Windows 10 Familly
  */
 public class UI_Generateur extends javax.swing.JFrame
 {
@@ -604,6 +600,7 @@ public class UI_Generateur extends javax.swing.JFrame
     }//GEN-LAST:event_b_ouvrirActionPerformed
 
     /**
+     * @brief Main
      * @param args the command line arguments
      */
     public static void main(String args[])
@@ -641,6 +638,10 @@ public class UI_Generateur extends javax.swing.JFrame
         });
     }
     
+    /*
+     * @brief Vide les boîtes de texte de la fenêtre d'étape.
+     * @param aucun
+     */
     private void videDialogEtape()
     {
         tb_message.setText("");
@@ -650,6 +651,10 @@ public class UI_Generateur extends javax.swing.JFrame
         cb_nomPieceEtape.removeAllItems();  //Supprime tous les éléments
     }
     
+    /*
+     * @brief remplis les boîtes de texte de la fenêtre d'étape avec les informations de l'étape séléctionnée.
+     * @param aucun
+     */
     private void chargeDialogEtape()
     {
         int index = lb_etapes.getSelectedIndex();
@@ -661,6 +666,10 @@ public class UI_Generateur extends javax.swing.JFrame
         cb_nomPieceEtape.setSelectedIndex(l_Etape.get(index).num_piece);
     }
     
+    /*
+     * @brief Vide les boîtes de texte de la fenêtre de pièces.
+     * @param aucun
+     */
     private void videDialogPiece()
     {
         tb_nomPiece.setText("");
@@ -668,6 +677,10 @@ public class UI_Generateur extends javax.swing.JFrame
         tb_numBac.setText("");
     }
     
+    /*
+     * @brief remplis les boîtes de texte de la fenêtre de pièces avec les informations de la pièce séléctionnée.
+     * @param aucun
+     */
     private void chargeDialogPiece()
     {
         int index = lb_pieces.getSelectedIndex();
@@ -676,9 +689,13 @@ public class UI_Generateur extends javax.swing.JFrame
         tb_numBac.setText(String.valueOf(l_Piece.get(index).n_bac));
     }
 
+    /*
+     * @brief remplis la liste d'étapes.
+     * @param aucun
+     */
     private void chargeCb_NomPieceEtape()
     {
-        for (int i=0; i<l_Piece.size(); i++)
+        for (int i=0; i<l_Piece.size(); i++)    //Pour chaque étapes...
         {
             cb_nomPieceEtape.addItem(l_Piece.get(i).nom);
             l_Piece.get(i).numero = i;  //Mise à jour du numéro de la pièce. 

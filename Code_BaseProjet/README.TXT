@@ -7,6 +7,8 @@ FOLDER OF PROJECT:
 -Le dossier «Code_BlueJ» contient la première version fonctionnel du code de la base fait à partir de l'IDE BlueJ. Le code ne permet pas de générer d'interface. De plus amples informations sont disponibles à l'intérieur du dossier.
 -Le dossier «Code_NetBeans» contient la version la plus avancée du code de la base fait à partir de l'IDE NetBeans. Le code permet la génération d'une interface usager. De plus amples informations sont disponibles à l'intérieur du dossier.
 -Le dossier «Terminal_base» contient la version automatisée du code de la base fait à partir de l'IDE NetBeans. Le code permet la génération d'une interface usager plus complète que celle du dossier «Code_NetBeans» et offre des fonctionnalitées plus poussées. De plus amples informations sont disponibles à l'intérieur du dossier.
+-Le dossier «Générateur d'instructions» contient la première version fonctionnelle du code du générateur d'instructions fait à partir de l'IDE NetBeans. Le code permet la génération d'instructions personnalisées pour le code Terminal_base_V2.0 . De plus amples informations sont disponibles à l'intérieur du dossier.
+-Le dossier «Terminal_base_V2.0» contient une version du code de la base (Terminal_base) adaptée aux instructions du code générateur d'instructions fait à partit de l'IDE Netbeans. De plus amples informations sont disponibles à l'intérieur du dossier.
 MATERIAL NEEDED:
 -(1x) RaspBerry Pi Zéro W et (1x) RaspBerry Pi 3 / (OU 1x Raspberry Pi Zéro W et un ordinateur)
 -Des appareils Phidgets (capteurs infrarouges, capteur de poids, ports digital, etc...):
@@ -20,6 +22,6 @@ MATERIAL NEEDED:
 	- 1 Isolated 12-bit Voltage Output Phidget
 	- 1 8x Voltage Input Phidget
 -(1x) Lunette VUFINE (lunette et/ou casque pour l'opérateur)
-VERSION: V2.9
-DATE: 11-03-20
-AUTHORS: Jérémy Goulet
+VERSION: V3.0
+DATE: 20-04-20
+AUTHORS: Jérémy Goulet, Guillaume Beaudoin

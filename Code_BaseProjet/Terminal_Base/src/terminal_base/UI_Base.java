@@ -18,8 +18,11 @@ import org.fusesource.hawtbuf.UTF8Buffer;
 
 /**
  * @author Guillaume Beaudoin
- * @brief
- * @version 0.4     Editor: Apache NetBeans IDE 11.2    System: dev: Windows 10 Familly  
+ * @brief Il s'agit d'une version de code spécifique à la station d'assemblage. Hors de ce contexte, ce programme peut être mésadapté.
+    Contient le code nécessaire à la création et à la gestion de l'interface usager de la base. Ceci comprend une fenêtre principale
+    rapportant les messages d'étapes et le menu d'actions et quelques fenêtres secondaires présentant individuellement la commande à
+    assembler, l'image de l'étape, l'état des bacs et le nombre de pièces dans les bacs.
+ * @version 2.0     Editor: Apache NetBeans IDE 11.3    System: dev: Windows 10 Familly  dep: Raspbian
  */
 public class UI_Base extends javax.swing.JFrame
 {
@@ -175,6 +178,7 @@ public class UI_Base extends javax.swing.JFrame
         jLabel1 = new javax.swing.JLabel();
         d_etape0 = new javax.swing.JDialog();
         b_etape0_ok = new javax.swing.JButton();
+        b_etape0_cancel = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         t_bacs = new javax.swing.JFrame();
         panel15 = new java.awt.Panel();
@@ -345,6 +349,8 @@ public class UI_Base extends javax.swing.JFrame
             }
         });
 
+        b_etape0_cancel.setText("cancel");
+
         jLabel2.setText("Veuillez mettre les pièces dans leur bac respectifs puis appuyer sur 'ok'.");
 
         javax.swing.GroupLayout d_etape0Layout = new javax.swing.GroupLayout(d_etape0.getContentPane());
@@ -354,11 +360,13 @@ public class UI_Base extends javax.swing.JFrame
             .addGroup(d_etape0Layout.createSequentialGroup()
                 .addGroup(d_etape0Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(d_etape0Layout.createSequentialGroup()
-                        .addGap(43, 43, 43)
-                        .addComponent(jLabel2))
+                        .addGap(157, 157, 157)
+                        .addComponent(b_etape0_ok, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(30, 30, 30)
+                        .addComponent(b_etape0_cancel))
                     .addGroup(d_etape0Layout.createSequentialGroup()
-                        .addGap(206, 206, 206)
-                        .addComponent(b_etape0_ok, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(43, 43, 43)
+                        .addComponent(jLabel2)))
                 .addContainerGap(45, Short.MAX_VALUE))
         );
         d_etape0Layout.setVerticalGroup(
@@ -366,9 +374,11 @@ public class UI_Base extends javax.swing.JFrame
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, d_etape0Layout.createSequentialGroup()
                 .addContainerGap(52, Short.MAX_VALUE)
                 .addComponent(jLabel2)
-                .addGap(33, 33, 33)
-                .addComponent(b_etape0_ok)
-                .addGap(41, 41, 41))
+                .addGap(39, 39, 39)
+                .addGroup(d_etape0Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(b_etape0_ok)
+                    .addComponent(b_etape0_cancel))
+                .addGap(35, 35, 35))
         );
 
         t_bacs.setMinimumSize(new java.awt.Dimension(732, 300));
@@ -1313,6 +1323,7 @@ public class UI_Base extends javax.swing.JFrame
         );
 
         t_image.setMinimumSize(new java.awt.Dimension(1920, 1080));
+        t_image.setPreferredSize(new java.awt.Dimension(1600, 1106));
 
         l_image.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         l_image.setIcon(new javax.swing.ImageIcon(getClass().getResource("/terminal_base/images/0.PNG"))); // NOI18N
@@ -1577,6 +1588,7 @@ public class UI_Base extends javax.swing.JFrame
     }//GEN-LAST:event_b_imageActionPerformed
 
     /**
+     * @brief Main
      * @param args the command line arguments
      */
     public static void main(String args[])
@@ -1662,8 +1674,8 @@ public class UI_Base extends javax.swing.JFrame
             }catch(Exception ex){System.out.println("[Error] " + ex.getMessage());}
             nb_Bacs = nb_Hub * nb_BoxPerHub;    //Calcul du nombre de bacs.
         }catch(FileNotFoundException ex){System.out.println("[Error] Fichier de configuration introuvable");}
-        //Initialisation des objets "Box" pour le contôle des bacs.
         
+        //Initialisation des objets "Box" pour le contôle des bacs.
         for(int i=0; i<nb_Hub; i++)
         {
             for(int y=0; y<nb_BoxPerHub; y++)
@@ -1706,26 +1718,33 @@ public class UI_Base extends javax.swing.JFrame
     
     /*
     @brief: Met en évidence le bac nécessaire à l'accomplissement de l'étape en cours.
-    @variables: iBacActif: Contient le numéro du bac actuellement en cours d'utilisation
+    @param: iBacActif: Contient le numéro du bac actuellement en cours d'utilisation
     */
     private static void surligneBac(int iBacActif)
     {
         t_panelInterne[iBacActif].setBackground(Color.green);
     }
     
+    /*
+    @brief: Compare un numéro de bac passé en paramètre avec le bac actif pour déterminer si une erreur à été commise.
+    @param: BacCourant: Bac à comparer.
+    */
     private static boolean checkErreurBac(int BacCourant)
     {
         if(bacActif != BacCourant)
         {
             t_panelInterne[bacActif].setBackground(Color.red);    //Met en évidence le bac fautif.
             mqttPublish("Ce n'est pas le bon bac!!! Allez au bac #" + (BacCourant+1), "Base", String.valueOf(etape_courante));  //Publie le message d'erreur.
-            tb_affiche.add("Ce n'est pas le bon bac!!! Allez au bac #" + (BacCourant+1));   //Affiche le message d'erreur.
-            tb_affiche.select(tb_affiche.getItemCount()-1);  //Sélectionne le dernier message automatiquement.
+            tb_affiche.add("Ce n'est pas le bon bac!!! Allez au bac #" + (BacCourant+1));
             return false;
         }
         return true;
     }
     
+    /*
+    @brief: Compare le nombre de pièces dans le bac passé en paramètre avec le nombre de pièces atendu pour déterminer si une erreur à été commise.
+    @param: BacCourant: numéro de bac où on veut vérifier le poid.
+    */
     public static boolean checkErreurPoid(int BacCourant)
     {
         try
@@ -1734,7 +1753,6 @@ public class UI_Base extends javax.swing.JFrame
             if(nb_pieces < nb_pieces_temp-1)    //Si l'usager a pris trop de pièces, on lui en avertis.
             {
                 tb_affiche.add("Vous avez pris trop de pièces, veuillez n'en prendre qu'une pour terminer cette étape.");
-                tb_affiche.select(tb_affiche.getItemCount()-1);  //Sélectionne le dernier message automatiquement.
                 return false;
             }
             else if(nb_pieces == nb_pieces_temp)    //Si l'usager ne prend pas de pièces, aucun message n'est envoyé mais on ne change pas d'étape.
@@ -1754,7 +1772,7 @@ public class UI_Base extends javax.swing.JFrame
     }
     
     /*
-    @brief: 
+    @brief: Méthode déduisant le bac actif et construisant le message à transmettre au casque et à l'interface usager.
     @param: cmd: objet ObjCommande contenant les informations de la commande.
             publish: détermine si un message sera émit vers le casque ou non. À utiliser si on désire seulement recevoir la valeur de retour.
     @return: Position du bac où il faut prendre la pièce.
@@ -1845,12 +1863,15 @@ public class UI_Base extends javax.swing.JFrame
                 changeImage(etape_courante);
                 mqttPublish(messageBaseJsonObj);
                 tb_affiche.add(messageBaseJsonObj.getString("Message"));    //Affiche l'instruction dans la textbox.
-                tb_affiche.select(tb_affiche.getItemCount()-1);  //Sélectionne le dernier message automatiquement.
             }
         }catch(Exception ex) {System.out.println("[Error] logiqueEtape: "+ ex.getMessage());}
         return bacCourant;
     }
     
+    /*
+    @brief: Publie par MQTT le message d'étape destiné au casque.
+    @param: jsMessage: objet JSON contenant le message à transmettre au casque.
+    */
     private static void mqttPublish(JSONObject jsMessage)
     {
         try
@@ -1860,7 +1881,13 @@ public class UI_Base extends javax.swing.JFrame
             connection.publish(TOPIC_CASQUE, msgBacs, QoS.AT_LEAST_ONCE, false);
         }catch(Exception ex){}
     }
-    private static void mqttPublish(String message, String source, String numetape) //Surchatge
+    /*
+    @brief: (Surcharge) Publie par MQTT le message d'étape destiné au casque.
+    @param: message: le message à transmettre au casque.
+            source: source du message.
+            numetape: numéro de l'étape courante.
+    */
+    private static void mqttPublish(String message, String source, String numetape)
     {
         JSONObject jsMessage = new JSONObject();
         jsMessage.put("Source", source);
@@ -1876,10 +1903,10 @@ public class UI_Base extends javax.swing.JFrame
     
     /*
     @brief: Génère une suite d'instructions selon le type de base demandé.
-    @variables: iBase: Contient le type de base à utiliser
-                iCouleur: Contient la couleur du produit
-                iBacCourant: Contient le numéro du bac actuellement en cours d'utilisation
-                etape: Contient l'étape courante d'assemblage
+    @param: iBase: Contient le type de base à utiliser
+            iCouleur: Contient la couleur du produit
+            iBacCourant: Contient le numéro du bac actuellement en cours d'utilisation
+            etape: Contient l'étape courante d'assemblage
     */
     private static String baseProd(int iBase, String iCouleur, int iBacCourant)
     {
@@ -1889,10 +1916,10 @@ public class UI_Base extends javax.swing.JFrame
     
     /*
     @brief: Génère une suite d'instructions selon le type de base demandé.
-    @variables: iqteCrayon: Contient la quantité de port-crayon à utiliser
-                iCrayon: Contient le type de porte-crayon à utiliser
-                iBacCourant: Contient le numéro du bac actuellement en cours d'utilisation
-                etape: Contient l'étape courante d'assemblage
+    @param: iqteCrayon: Contient la quantité de port-crayon à utiliser
+            iCrayon: Contient le type de porte-crayon à utiliser
+            iBacCourant: Contient le numéro du bac actuellement en cours d'utilisation
+            etape: Contient l'étape courante d'assemblage
     */
     private static String crayonProd(int iqteCrayon, int iCrayon, int iBacCourant)
     {
@@ -1902,8 +1929,8 @@ public class UI_Base extends javax.swing.JFrame
     
     /*
     @brief: Génère une suite d'instructions selon le type de supports demandé.
-    @variables: iSupports: Contient le type de supports à utiliser
-                iBacCourant: Contient le numéro du bac actuellement en cours d'utilisation
+    @param: iSupports: Contient le type de supports à utiliser
+            iBacCourant: Contient le numéro du bac actuellement en cours d'utilisation
     */
     private static String supportsProd(int iSupports, int iBacCourant)
     {
@@ -1911,6 +1938,10 @@ public class UI_Base extends javax.swing.JFrame
         return statement;
     }
     
+    /*
+    @brief: Affiche une image dans l'onglet d'image.
+    @param: numImage: index de la liste d'image à afficher.
+    */
     private static void changeImage(int numImage)
     {
         try
@@ -1929,6 +1960,12 @@ public class UI_Base extends javax.swing.JFrame
         return rc;
     }
     
+    /*
+    @brief: (surcharge) Définition du code à executer dans le thread de réception MQTT.
+            Attend une commande sur le TOPIC_COMMANDE pour récupérer ses informations pour
+            les mettre dans l'ObjCommande.
+    @param: aucun
+    */
     static Runnable mqttRunnable = new Runnable()
     {
         @Override
@@ -1998,6 +2035,7 @@ public class UI_Base extends javax.swing.JFrame
     private javax.swing.JMenuItem b_Icommande;
     private javax.swing.JMenuItem b_Inv;
     private javax.swing.JMenuItem b_calibre;
+    private javax.swing.JButton b_etape0_cancel;
     private javax.swing.JButton b_etape0_ok;
     private javax.swing.JMenuItem b_etatBacs;
     private javax.swing.JMenuItem b_image;

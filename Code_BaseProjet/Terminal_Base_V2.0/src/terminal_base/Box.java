@@ -1,10 +1,10 @@
 package terminal_base;
 
 import com.phidget22.*; //Librairie du kit phidget.
-import java.util.logging.Level;
-import java.util.logging.Logger;
 /**
  * @author Guillaume Beaudoin
+ * @brief Classe pour l'objet "Box" représantant un bac de pièces et ses informations.
+ * @version 1.1
  */
 public class Box
 {
@@ -18,7 +18,7 @@ public class Box
     VoltageInput Ir2;
     VoltageRatioInput Cell;
     VoltageOutput DEL;
-
+    //Constructeur
     Box(int HubSerialNumber, int BoxNumber, VoltageInputVoltageChangeListener event, double trigger, int poidPiece)
     {
         try
@@ -84,6 +84,11 @@ public class Box
         System.out.println("[Info] Initialisation du bac #"+ (BoxNumber+1) +" du hub "+ HubSerialNumber +" terminée.");
     }
 
+    /*
+    brief: Retourne l'état du capteur IR.
+    param: aucuns
+    return: (boolean) état du capteur IR.
+    */
     public boolean update_IR()
     {
         boolean temp = false;
@@ -99,7 +104,7 @@ public class Box
     
     /*
     brief: Si les 2 cellules sont initialisés, on retourne une moyenne des poids, sinon on retourne la valeur du capteur initialisé si présent.
-    args: (double) weightConvertionRatio: le ratio de convertion en V/V*10e-5 par gramme.
+    param: (double) weightConvertionRatio: le ratio de convertion en V/V*10e-5 par gramme.
     return: (int) Nombre.
     */
     int getItemCount(double weightConvertionRatio)
@@ -125,6 +130,10 @@ public class Box
         return 0;
     }
     
+    /*
+    brief: Ferme les objets Phidgets.
+    param: aucuns
+    */
     void stop()
     {
         try
@@ -136,6 +145,10 @@ public class Box
         }catch(PhidgetException ex){}
     }
     
+    /*
+    brief: Calibre les cellules de charge.
+    param: aucuns
+    */
     void calibrer()
     {
         try

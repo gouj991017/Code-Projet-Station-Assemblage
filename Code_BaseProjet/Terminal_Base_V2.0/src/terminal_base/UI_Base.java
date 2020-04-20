@@ -11,7 +11,6 @@ import org.fusesource.mqtt.client.Topic;
 import org.json.JSONObject;
 import java.util.*;
 import java.io.*;
-import java.util.concurrent.TimeUnit;
 import javax.swing.JFileChooser;
 import org.fusesource.hawtbuf.AsciiBuffer;
 import org.fusesource.hawtbuf.Buffer;
@@ -19,8 +18,12 @@ import org.fusesource.hawtbuf.UTF8Buffer;
 
 /**
  * @author Guillaume Beaudoin
- * @brief
- * @version 0.4     Editor: Apache NetBeans IDE 11.2    System: dev: Windows 10 Familly  
+ * @brief Il s'agit d'une version de code adaptable selon le fichier d'instruction ouvert. Le contenu des étapes (nombre de pièce à prendre,
+    bac où aller chercher la pièce, nom de la pièce et message affiché) n'est pas déterminé par ce programme-ci.
+    Contient le code nécessaire à la création et à la gestion de l'interface usager de la base. Ceci comprend une fenêtre principale
+    rapportant les messages d'étapes et le menu d'actions et quelques fenêtres secondaires présentant individuellement l'image de
+    l'étape, l'état des bacs et le nombre de pièces dans les bacs.
+ * @version 1.0     Editor: Apache NetBeans IDE 11.3    System: dev: Windows 10 Familly  
  */
 public class UI_Base extends javax.swing.JFrame
 {
@@ -199,22 +202,6 @@ public class UI_Base extends javax.swing.JFrame
         panelBorder10 = new java.awt.Panel();
         panelCenter10 = new java.awt.Panel();
         label42 = new java.awt.Label();
-        t_commande = new javax.swing.JFrame();
-        panel16 = new java.awt.Panel();
-        label43 = new java.awt.Label();
-        label44 = new java.awt.Label();
-        label45 = new java.awt.Label();
-        label46 = new java.awt.Label();
-        label47 = new java.awt.Label();
-        label48 = new java.awt.Label();
-        label49 = new java.awt.Label();
-        textField12 = new java.awt.TextField();
-        tbProduit = new java.awt.TextField();
-        tbBase = new java.awt.TextField();
-        tbCouleur = new java.awt.TextField();
-        tbCrayon = new java.awt.TextField();
-        tbSupports = new java.awt.TextField();
-        tbQuantite = new java.awt.TextField();
         t_inv = new javax.swing.JFrame();
         panel17 = new java.awt.Panel();
         textField13 = new java.awt.TextField();
@@ -276,7 +263,6 @@ public class UI_Base extends javax.swing.JFrame
         jMenu2 = new javax.swing.JMenu();
         b_calibre = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
-        b_Icommande = new javax.swing.JMenuItem();
         b_etatBacs = new javax.swing.JMenuItem();
         b_Inv = new javax.swing.JMenuItem();
         b_image = new javax.swing.JMenuItem();
@@ -846,131 +832,6 @@ public class UI_Base extends javax.swing.JFrame
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
-        t_commande.setMinimumSize(new java.awt.Dimension(480, 350));
-
-        label43.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
-        label43.setText("Infos Commande");
-
-        label44.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        label44.setText("Choix du produit");
-
-        label45.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        label45.setText("Choix de la base");
-
-        label46.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        label46.setText("Couleur");
-
-        label47.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        label47.setText("Type porte crayon");
-
-        label48.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        label48.setText("Choix des supports");
-
-        label49.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        label49.setText("Quantité");
-
-        textField12.setText("textField1");
-
-        tbProduit.setEditable(false);
-        tbProduit.setName("tbProduit"); // NOI18N
-
-        tbBase.setEditable(false);
-        tbBase.setName("tbBase"); // NOI18N
-
-        tbCouleur.setEditable(false);
-        tbCouleur.setName("tbCrayon"); // NOI18N
-
-        tbCrayon.setEditable(false);
-        tbCrayon.setName("tbSupports"); // NOI18N
-
-        tbSupports.setEditable(false);
-        tbSupports.setName("tbQuantite"); // NOI18N
-
-        tbQuantite.setEditable(false);
-        tbQuantite.setName("tbCouleur"); // NOI18N
-
-        javax.swing.GroupLayout panel16Layout = new javax.swing.GroupLayout(panel16);
-        panel16.setLayout(panel16Layout);
-        panel16Layout.setHorizontalGroup(
-            panel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panel16Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(label44, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label49, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label48, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label47, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label45, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label46, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(75, 75, 75)
-                .addGroup(panel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(tbSupports, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
-                    .addComponent(tbProduit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(tbQuantite, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(tbCrayon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(tbCouleur, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(tbBase, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel16Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(label43, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(124, 124, 124))
-        );
-        panel16Layout.setVerticalGroup(
-            panel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panel16Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(label43, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(40, 40, 40)
-                .addGroup(panel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(tbSupports, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(panel16Layout.createSequentialGroup()
-                        .addGroup(panel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(panel16Layout.createSequentialGroup()
-                                .addGroup(panel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(label44, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(tbProduit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(label45, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(tbBase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(label46, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tbCouleur, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(label47, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tbCrayon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(label48, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(label49, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tbQuantite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(20, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout t_commandeLayout = new javax.swing.GroupLayout(t_commande.getContentPane());
-        t_commande.getContentPane().setLayout(t_commandeLayout);
-        t_commandeLayout.setHorizontalGroup(
-            t_commandeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 430, Short.MAX_VALUE)
-            .addGroup(t_commandeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(t_commandeLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(panel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addContainerGap()))
-        );
-        t_commandeLayout.setVerticalGroup(
-            t_commandeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 307, Short.MAX_VALUE)
-            .addGroup(t_commandeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(t_commandeLayout.createSequentialGroup()
-                    .addGap(3, 3, 3)
-                    .addComponent(panel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-        );
-
         t_inv.setMinimumSize(new java.awt.Dimension(500, 444));
 
         textField13.setText("textField2");
@@ -1458,14 +1319,6 @@ public class UI_Base extends javax.swing.JFrame
 
         jMenu3.setText("Onglets");
 
-        b_Icommande.setText("Infos Commande");
-        b_Icommande.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_IcommandeActionPerformed(evt);
-            }
-        });
-        jMenu3.add(b_Icommande);
-
         b_etatBacs.setText("État des bacs");
         b_etatBacs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1572,10 +1425,6 @@ public class UI_Base extends javax.swing.JFrame
         d_etape0.setVisible(false);
     }//GEN-LAST:event_b_etape0_okActionPerformed
 
-    private void b_IcommandeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_IcommandeActionPerformed
-        t_commande.setVisible(true);
-    }//GEN-LAST:event_b_IcommandeActionPerformed
-
     private void b_etatBacsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_etatBacsActionPerformed
         t_bacs.setVisible(true);
     }//GEN-LAST:event_b_etatBacsActionPerformed
@@ -1643,6 +1492,7 @@ public class UI_Base extends javax.swing.JFrame
     }//GEN-LAST:event_b_ouvrirActionPerformed
 
     /**
+     * @brief Main
      * @param args the command line arguments
      */
     public static void main(String args[])
@@ -1760,13 +1610,17 @@ public class UI_Base extends javax.swing.JFrame
     
     /*
     @brief: Met en évidence le bac nécessaire à l'accomplissement de l'étape en cours.
-    @variables: iBacActif: Contient le numéro du bac actuellement en cours d'utilisation
+    @param: iBacActif: Contient le numéro du bac actuellement en cours d'utilisation
     */
     private static void surligneBac(int iBacActif)
     {
         t_panelInterne[iBacActif].setBackground(Color.green);
     }
     
+    /*
+    @brief: Compare un numéro de bac passé en paramètre avec le bac actif pour déterminer si une erreur à été commise.
+    @param: BacCourant: Bac à comparer.
+    */
     private static boolean checkErreurBac(int BacCourant)
     {
         if(bacActif != BacCourant)
@@ -1779,6 +1633,10 @@ public class UI_Base extends javax.swing.JFrame
         return true;
     }
     
+    /*
+    @brief: Compare le nombre de pièces dans le bac passé en paramètre avec le nombre de pièces atendu pour déterminer si une erreur à été commise.
+    @param: BacCourant: numéro de bac où on veut vérifier le poid.
+    */
     public static boolean checkErreurPoid(int BacCourant)
     {
         int nb_pieces_etape = l_Etape.get(etape_courante).num_piece;
@@ -1807,9 +1665,8 @@ public class UI_Base extends javax.swing.JFrame
     }
     
     /*
-    @brief: 
-    @param: cmd: objet ObjCommande contenant les informations de la commande.
-            publish: détermine si un message sera émit vers le casque ou non. À utiliser si on désire seulement recevoir la valeur de retour.
+    @brief: Méthode déduisant le bac actif et construisant le message à transmettre au casque et à l'interface usager.
+    @param: publish: détermine si un message sera émit vers le casque ou non. À utiliser si on désire seulement recevoir la valeur de retour.
     @return: Position du bac où il faut prendre la pièce.
     */
     public static int logiqueEtape(boolean publish)
@@ -1839,6 +1696,10 @@ public class UI_Base extends javax.swing.JFrame
         return bacCourant;
     }
     
+    /*
+    @brief: Publie par MQTT le message d'étape destiné au casque.
+    @param: jsMessage: objet JSON contenant le message à transmettre au casque.
+    */
     private static void mqttPublish(JSONObject jsMessage)
     {
         try
@@ -1848,6 +1709,12 @@ public class UI_Base extends javax.swing.JFrame
             connection.publish(TOPIC_CASQUE, msgBacs, QoS.AT_LEAST_ONCE, false);
         }catch(Exception ex){}
     }
+    /*
+    @brief: (Surcharge) Publie par MQTT le message d'étape destiné au casque.
+    @param: message: le message à transmettre au casque.
+            source: source du message.
+            numetape: numéro de l'étape courante.
+    */
     private static void mqttPublish(String message, String source, String numetape) //Surchatge
     {
         JSONObject jsMessage = new JSONObject();
@@ -1861,7 +1728,11 @@ public class UI_Base extends javax.swing.JFrame
             connection.publish(TOPIC_CASQUE, msgBacs, QoS.AT_LEAST_ONCE, false);
         }catch(Exception ex){}
     }
-        
+    
+    /*
+    @brief: Affiche une image dans l'onglet d'image.
+    @param: numImage: index de la liste d'image à afficher.
+    */
     private static void changeImage(int numImage)
     {
         try
@@ -1881,7 +1752,6 @@ public class UI_Base extends javax.swing.JFrame
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem b_Icommande;
     private javax.swing.JMenuItem b_Inv;
     private javax.swing.JMenuItem b_calibre;
     private javax.swing.JButton b_etape0_cancel;
@@ -1920,13 +1790,6 @@ public class UI_Base extends javax.swing.JFrame
     private java.awt.Label label40;
     private java.awt.Label label41;
     private java.awt.Label label42;
-    private java.awt.Label label43;
-    private java.awt.Label label44;
-    private java.awt.Label label45;
-    private java.awt.Label label46;
-    private java.awt.Label label47;
-    private java.awt.Label label48;
-    private java.awt.Label label49;
     private java.awt.Label label50;
     private java.awt.Label label51;
     private java.awt.Label label52;
@@ -1937,7 +1800,6 @@ public class UI_Base extends javax.swing.JFrame
     private java.awt.Label label57;
     private java.awt.Label label9;
     private java.awt.Panel panel15;
-    private java.awt.Panel panel16;
     public java.awt.Panel panel17;
     private java.awt.Panel panel18;
     private java.awt.Panel panel19;
@@ -1971,12 +1833,8 @@ public class UI_Base extends javax.swing.JFrame
     public static java.awt.Panel panelCenter8;
     public static java.awt.Panel panelCenter9;
     public javax.swing.JFrame t_bacs;
-    private javax.swing.JFrame t_commande;
     private static javax.swing.JFrame t_image;
     private javax.swing.JFrame t_inv;
-    private static java.awt.TextField tbBase;
-    private static java.awt.TextField tbCouleur;
-    private static java.awt.TextField tbCrayon;
     private static java.awt.TextField tbEtapes;
     private static java.awt.TextField tbPoids_Bac1;
     private static java.awt.TextField tbPoids_Bac10;
@@ -1988,11 +1846,7 @@ public class UI_Base extends javax.swing.JFrame
     private static java.awt.TextField tbPoids_Bac7;
     private static java.awt.TextField tbPoids_Bac8;
     private static java.awt.TextField tbPoids_Bac9;
-    private static java.awt.TextField tbProduit;
-    private static java.awt.TextField tbQuantite;
-    private static java.awt.TextField tbSupports;
     private static java.awt.List tb_affiche;
-    private java.awt.TextField textField12;
     private java.awt.TextField textField13;
     private java.awt.TextField textField14;
     private java.awt.TextField textField15;
