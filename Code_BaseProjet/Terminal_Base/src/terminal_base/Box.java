@@ -8,6 +8,9 @@ import com.phidget22.*; //Librairie du kit phidget.
  */
 public class Box
 {
+    //Constantes
+    final int DELAIS_INIT = 100;    //Valeur par défaut: 4000.
+    //Variables membres.
     double TRIGGER_IR = 1.5;   //Constante de trigger pour les capteurs infrarouges.
     int poidItem = 100;
     double erreurcell = 1.0;
@@ -43,7 +46,7 @@ public class Box
             //Ir1.setIsHubPortDevice(true);   //Le type d'objet VoltageInput doit avoir un paramètre IsPortDevice mis à 'true' si connecté directement au hub.    (À RETIRER EN VERSION FINALE)
             Ir1.setIsRemote(true);  //Le hub VINT est sans-fil et requiert ce paramètre pour chaque channel connectés.
             Ir1.addVoltageChangeListener(event);    //Association de l'event.
-            Ir1.open(5000); //Timout de 5s.
+            Ir1.open(DELAIS_INIT); //Timout de 5s.
             Ir1.setVoltageChangeTrigger(TRIGGER_IR);
         }catch(Exception ex){System.out.println("[Error] Capteur IR1 non initialisé: " + ex.getMessage());}
         try
@@ -54,7 +57,7 @@ public class Box
             //Ir2.setIsHubPortDevice(true);   //Le type d'objet VoltageInput doit avoir un paramètre IsPortDevice mis à 'true' si connecté directement au hub.    (À RETIRER EN VERSION FINALE)
             Ir2.setIsRemote(true);  //Le hub VINT est sans-fil et requiert ce paramètre pour chaque channel connectés.
             Ir2.addVoltageChangeListener(event);    //Association de l'event.
-            Ir2.open(5000); //Timout de 5s.
+            Ir2.open(DELAIS_INIT); //Timout de 5s.
             Ir2.setVoltageChangeTrigger(TRIGGER_IR);
         }catch(Exception ex){System.out.println("[Error] Capteur IR2 non initialisé: " + ex.getMessage());}
         try
@@ -70,7 +73,7 @@ public class Box
             }
             Cell.setChannel(BoxNumber%2);
             Cell.setIsRemote(true);  //Le hub VINT est sans-fil et requiert ce paramètre pour chaque channel connectés.
-            Cell.open(5000); //Timout de 5s.
+            Cell.open(DELAIS_INIT); //Timout de 5s.
         }catch(Exception ex){System.out.println("[Error] Capteur CF non initialisé: " + ex.getMessage());}
         try
         {
@@ -78,7 +81,7 @@ public class Box
             DEL.setHubPort(1);
             DEL.setChannel(BoxNumber);
             DEL.setIsRemote(true);  //Le hub VINT est sans-fil et requiert ce paramètre pour chaque channel connectés.
-            DEL.open(5000); //Timout de 5s.
+            DEL.open(DELAIS_INIT); //Timout de 5s.
         }catch(Exception ex){System.out.println("[Error] DEL non initialisé: " + ex.getMessage());}
         calibrer();
         System.out.println("[Info] Initialisation du bac #"+ (BoxNumber+1) +" du hub "+ HubSerialNumber +" terminée.");

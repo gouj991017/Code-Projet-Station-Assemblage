@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import org.fusesource.hawtbuf.AsciiBuffer;
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.UTF8Buffer;
+import org.json.JSONArray;
 
 /**
  * @author Guillaume Beaudoin
@@ -42,7 +43,8 @@ public class UI_Base extends javax.swing.JFrame
     //Constantes.
     static final int NB_BACS_INTERFACE = 10; //Nombre de bacs portrayé dans l'interface usager.
     static final String EXT_IMAGE = ".png";
-    
+    static final UTF8Buffer TOPIC_CASQUE = new UTF8Buffer("/com/station_reponse"); //Topic de communication vers le casque.
+    static final UTF8Buffer TOPIC_COMMANDE = new UTF8Buffer("/com/station_requete_message"); //Topic de récéption de la commande.
     //Variables globales.
     static ObjCommande commande;
     static List<Box> l_Box = new ArrayList<Box>();  //Liste d'objets de bacs.
@@ -55,8 +57,6 @@ public class UI_Base extends javax.swing.JFrame
     static int etape_courante = 0;
     static int bacActif = 0;
     static BlockingConnection connection;
-    static final UTF8Buffer TOPIC_CASQUE = new UTF8Buffer("/com/station_reponse"); //Topic de communication vers le casque.
-    static final UTF8Buffer TOPIC_COMMANDE = new UTF8Buffer("/com/station_requete_message"); //Topic de récéption de la commande.
     static MQTT mqtt = new MQTT(); //Objet MQTT pour la communication.
     static double weightConvertionRatio = 0.0203; //Valeur par défaut: 0.0203v/v*10e-5 / g.
     static int nb_pieces_temp;
@@ -1985,31 +1985,32 @@ public class UI_Base extends javax.swing.JFrame
                     if (message.getPayload() != null)
                     {
                         String str = new String(message.getPayload());  //Réception du message.
-                        JSONObject joTemp = new JSONObject(str);
+                        JSONArray jaTemp = new JSONArray(str);  //Le message reçu est un JSONArray de longueur 1.
+                        JSONObject joTemp = (JSONObject)jaTemp.get(0);  //Récupération du JSONObject.
                         String couleur = "";
                         String produit = "";
                         int nb_crayon = 1;  //Minimum de porte crayons.
-                        if(joTemp.getInt("Couleur") == 1)
+                        if(joTemp.getInt("first_couleur") == 1)
                         {
                             couleur = "blanc";
                         }
-                        else if(joTemp.getInt("Couleur") == 2)
+                        else if(joTemp.getInt("first_couleur") == 2)
                         {
                             couleur = "noir";
                         }
                         
-                        if(joTemp.getInt("Produit") == 1) //Porte-cellulaire
+                        if(joTemp.getInt("first_produit") == 1) //Porte-cellulaire
                         {
                             produit = "Porte-cellulaire";
                         }
-                        else if(joTemp.getInt("Produit") == 2) //Porte-carte d'affaire
+                        else if(joTemp.getInt("first_produit") == 2) //Porte-carte d'affaire
                         {
                             produit = "Porte-carte d'affaire";
                         }
                         
-                        nb_crayon = joTemp.getInt("Base");  //La base de type 1 possède 1 porte-crayon et la base de type 2 possède 2 porte-crayon.
+                        nb_crayon = joTemp.getInt("first_base");  //La base de type 1 possède 1 porte-crayon et la base de type 2 possède 2 porte-crayon.
                         
-                        commande = new ObjCommande(joTemp.getInt("Quantite"), joTemp.getInt("Base"), joTemp.getInt("Crayon"), joTemp.getInt("Supports"), couleur, nb_crayon);   //Création de l'objet commande.
+                        commande = new ObjCommande(joTemp.getInt("first_quantite"), joTemp.getInt("first_base"), joTemp.getInt("first_crayon"), joTemp.getInt("first_supports"), couleur, nb_crayon);   //Création de l'objet commande.
                         System.out.println("[Info] Commande reçue :");
                         System.out.println(joTemp.toString(1)); //Affichage de la commande.
                         

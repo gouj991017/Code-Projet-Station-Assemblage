@@ -1,0 +1,5 @@
+{"nb_pieces":1,"image":"1.png","numero":1,"num_piece":0,"message":"1","nom":"setup jo"} 
+{"nb_pieces":1,"image":"plan.png","numero":2,"num_piece":1,"message":"2","nom":"setup mama"} 
+{"nb_pieces":0,"image":"","numero":3,"num_piece":2,"message":"3","nom":"JO MAMA"} 
+{"numero":0,"n_bac":0,"nom":"jo","poid":1} 
+{"numero":1,"n_bac":1,"nom":"mama","poid":2} 

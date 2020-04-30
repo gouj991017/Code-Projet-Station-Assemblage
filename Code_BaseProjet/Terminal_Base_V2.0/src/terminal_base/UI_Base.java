@@ -11,6 +11,9 @@ import org.fusesource.mqtt.client.Topic;
 import org.json.JSONObject;
 import java.util.*;
 import java.io.*;
+import java.util.concurrent.TimeUnit;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import org.fusesource.hawtbuf.AsciiBuffer;
 import org.fusesource.hawtbuf.Buffer;
@@ -29,13 +32,14 @@ public class UI_Base extends javax.swing.JFrame
 {
     //Constantes.
     static final int NB_BACS_INTERFACE = 10; //Nombre de bacs portrayé dans l'interface usager.
-    static final String EXT_IMAGE = ".png";
-    
+    static final int AUCUN_BACCOURANT = -1;
+    static final UTF8Buffer TOPIC_CASQUE = new UTF8Buffer("/com/station_reponse"); //Topic de communication vers le casque.
+    static final UTF8Buffer TOPIC_COMMANDE = new UTF8Buffer("/com/station_requete_message"); //Topic de récéption de la commande (Wake on MQTT).
     //Variables globales.
     static List<Etape> l_Etape = new ArrayList<Etape>();
     static List<Piece> l_Piece = new ArrayList<Piece>();
     static List<Box> l_Box = new ArrayList<Box>();  //Liste d'objets de bacs.
-    static List<javax.swing.ImageIcon> l_images = new ArrayList<javax.swing.ImageIcon>();  //Liste d'images.
+    static String default_path = "";
     static Panel[] t_panelInterne = new Panel[NB_BACS_INTERFACE];   //Tableau des panels internes pour l'état des bacs.
     static Panel[] t_panelExterne = new Panel[NB_BACS_INTERFACE];   //Tableau des panels externes pour l'état des bacs.
     static TextField[] t_tfPoid = new TextField[NB_BACS_INTERFACE]; //Tableau de textfields affichant le poid des bacs.
@@ -44,8 +48,6 @@ public class UI_Base extends javax.swing.JFrame
     static int etape_courante = 0;
     static int bacActif = 0;
     static BlockingConnection connection;
-    static final UTF8Buffer TOPIC_CASQUE = new UTF8Buffer("/com/station_reponse"); //Topic de communication vers le casque.
-    static final UTF8Buffer TOPIC_COMMANDE = new UTF8Buffer("/com/station_requete_message"); //Topic de récéption de la commande.
     static MQTT mqtt = new MQTT(); //Objet MQTT pour la communication.
     static double weightConvertionRatio = 0.0203; //Valeur par défaut: 0.0203v/v*10e-5 / g.
     static int nb_pieces_temp;
@@ -106,7 +108,6 @@ public class UI_Base extends javax.swing.JFrame
         connection = mqtt.blockingConnection();
         //Setup dynamique de la taille du panneau d'image et de la fenêtre.
         UI_Base.t_image.setSize(UI_Base.t_image.getPreferredSize());
-        
     }
     /*
         Méthode d'intérruption (event) des capteurs IR.
@@ -119,33 +120,36 @@ public class UI_Base extends javax.swing.JFrame
             {
                 if(etape_courante != 0) //La logique d'étape n'est active que si l'étape vaut plus que 0.
                 {
-                    int bacCourant = l_Piece.get(l_Etape.get(etape_courante-1).num_piece).n_bac;   //Récupération du bac courant.
-                    if(e.getVoltage() > l_Box.get(0).TRIGGER_IR)  //Si niveau haut...
+                    int bacCourant = logiqueEtape(false);   //Récupération du bac courant.
+                    if(bacCourant != AUCUN_BACCOURANT)  //Si il n'y a pas de bac où aller chercher les pièces, la logique est innactive.
                     {
-                        nb_pieces_temp = 0; //Remise à zero.
-                        bacActif = 0;   //Remise à zero.
-                        while(!l_Box.get(bacActif).update_IR()) {bacActif++;}  //Recherche de la boîte concernée.
-                        t_panelExterne[bacActif].setBackground(Color.yellow);//Allumer le bac concerné en jaune.
-                        if(checkErreurBac(bacCourant))    //Vérification bon bac.
+                        if(e.getVoltage() > l_Box.get(0).TRIGGER_IR)  //Si niveau haut...
                         {
-                            erreur = true;  //Bon bac.
-                            try
-                            {   //Ligne plus suceptible de causer des exeptions (durant le développement).
-                                nb_pieces_temp = l_Box.get(bacActif).getItemCount(weightConvertionRatio);  //Sauvegarde le nombre de pièces pour une comparaison ultérieure.
-                            }catch (Exception ex){System.out.println("[Error] Impossible de récupérer le nombre d'items: "+ ex.getMessage());}
+                            nb_pieces_temp = 0; //Remise à zero.
+                            bacActif = 0;   //Remise à zero.
+                            while(!l_Box.get(bacActif).update_IR()) {bacActif++;}  //Recherche de la boîte concernée.
+                            t_panelExterne[bacActif].setBackground(Color.yellow);//Allumer le bac concerné en jaune.
+                            if(checkErreurBac(bacCourant))    //Vérification bon bac.
+                            {
+                                erreur = true;  //Bon bac.
+                                try
+                                {   //Ligne plus suceptible de causer des exeptions (durant le développement).
+                                    nb_pieces_temp = l_Box.get(bacActif).getItemCount(weightConvertionRatio);  //Sauvegarde le nombre de pièces pour une comparaison ultérieure.
+                                }catch (Exception ex){System.out.println("[Error] Impossible de récupérer le nombre d'items: "+ ex.getMessage());}
+                            }
                         }
-                    }
-                    else    //Si niveau bas...
-                    {
-                        if(checkErreurPoid(bacCourant) && erreur) //Vérification du bon nombre de pièces pigés et si une erreur a d'abord été commise.
+                        else    //Si niveau bas...
                         {
-                            //Bonne étape, prochine étape + message.
-                            etape_courante++;
-                            resetBac(); //Remise des panels internes à défault (blanc).
-                            logiqueEtape(true);
+                            if(checkErreurPoid(bacCourant) && erreur) //Vérification du bon nombre de pièces pigés et si une erreur a d'abord été commise.
+                            {
+                                //Bonne étape, prochine étape + message.
+                                etape_courante++;
+                                resetBac(); //Remise des panels internes à défault (blanc).
+                                logiqueEtape(true);
+                            }
+                            t_panelExterne[bacActif].setBackground(Color.white);    //Dé-jauner le bac.
+                            erreur = false; //Remise à défaut.
                         }
-                        t_panelExterne[bacActif].setBackground(Color.white);    //Dé-jauner le bac.
-                        erreur = false; //Remise à défaut.
                     }
                 }
             }catch(Exception ex){}
@@ -1196,6 +1200,7 @@ public class UI_Base extends javax.swing.JFrame
 
         jOuvrir_Fichier.setApproveButtonText("Ouvrir");
         jOuvrir_Fichier.setApproveButtonToolTipText("Choisissez le fichier d'instruction");
+        jOuvrir_Fichier.setCurrentDirectory(new java.io.File("D:\\Users"));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -1378,7 +1383,7 @@ public class UI_Base extends javax.swing.JFrame
     }//GEN-LAST:event_formWindowClosing
 
     private void button_NextMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_NextMouseClicked
-        if (etape_courante < nb_etapes)
+        if (etape_courante < nb_etapes && etape_courante > 0)
         {
             etape_courante++;
             tbEtapes.setText(Integer.toString(etape_courante+1));          
@@ -1388,7 +1393,8 @@ public class UI_Base extends javax.swing.JFrame
     }//GEN-LAST:event_button_NextMouseClicked
 
     private void button_PreviousMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_PreviousMouseClicked
-        if (etape_courante > 1) {
+        if (etape_courante > 1 && etape_courante > 0)
+        {
             etape_courante--;
             tbEtapes.setText(Integer.toString(etape_courante));
             resetBac();
@@ -1410,10 +1416,13 @@ public class UI_Base extends javax.swing.JFrame
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void b_quitterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_quitterActionPerformed
-        for (int i = 0; i < nb_Bacs; i++)
-        {   //Fermeture des connections avec les phidgets.
-            l_Box.get(i).stop();
-        }
+        try
+        {
+            for (int i = 0; i < nb_Bacs; i++)
+            {   //Fermeture des connections avec les phidgets.
+                l_Box.get(i).stop();
+            }
+        }catch(Exception ex){}
         System.exit(0);
     }//GEN-LAST:event_b_quitterActionPerformed
 
@@ -1456,7 +1465,7 @@ public class UI_Base extends javax.swing.JFrame
                     while(true)
                     {
                         jotemp = new JSONObject(br.readLine());   //Extraction du JSON des étapes.
-                        l_Etape.add(new Etape(jotemp.getInt("numero"), jotemp.getString("nom"), jotemp.getString("message"), jotemp.getInt("num_piece"), jotemp.getInt("nb_pieces")));   //Ajout de l'étape.
+                        l_Etape.add(new Etape(jotemp.getInt("numero"), jotemp.getString("nom"), jotemp.getString("message"), jotemp.getInt("num_piece"), jotemp.getInt("nb_pieces"),jotemp.getString("image")));   //Ajout de l'étape.
                         nb_etapes++;
                         jotemp = new JSONObject();  //On efface le contenu du JSON.
                     }
@@ -1487,12 +1496,6 @@ public class UI_Base extends javax.swing.JFrame
         {
             nb_etapes = l_Etape.size();
             etape_courante = 1;
-            
-            for (int i = 0; i < nb_etapes+1; i++) //Intégration des images du package à la liste d'images
-            {
-                l_images.add(new javax.swing.ImageIcon(getClass().getResource("/terminal_base/images/"+ i + EXT_IMAGE)));
-            }
-            
             logiqueEtape(true);
         }catch (Exception ex){}
     }//GEN-LAST:event_b_ouvrirActionPerformed
@@ -1503,6 +1506,7 @@ public class UI_Base extends javax.swing.JFrame
      */
     public static void main(String args[])
     {
+        Thread thread_Recep_MQTT = new Thread(mqttRunnable);    //Thread de réception MQTT.
         ArrayList<Integer> l_NumSerie = new ArrayList<Integer>(); //Liste de numéros de série.
         int nb_Hub = 0;
         int nb_BoxPerHub = 4;   //Valeur par défaut: 4 bacs par hub.
@@ -1551,13 +1555,16 @@ public class UI_Base extends javax.swing.JFrame
             {
                 boolean lectureFinie = false;
                 // Lecture des données du fichier config.
-                while(!brFluxDonnees.readLine().trim().equals("NUMBOXPERHUB ="));  //Attente de NUMBOXPERHUB.
+                while(!brFluxDonnees.readLine().trim().equals("Nombre de bac par hub ="));  //Attente de Nombre de bac par hub.
                 nb_BoxPerHub = new Integer(brFluxDonnees.readLine()).intValue();    //Lecture du nombre de bacs/hub.
+                
+                while(!brFluxDonnees.readLine().trim().equals("Répertoire par défaut du programme ="));  //Attente de Répertoire par défaut du programme.
+                default_path = brFluxDonnees.readLine();    //Lecture du répertoire par défaut.
                 
                 while(!brFluxDonnees.readLine().trim().equals("WeigthConvertionRatio ="));  //Attente de WeigthConvertionRatio.
                 weightConvertionRatio = new Double(brFluxDonnees.readLine()).doubleValue();    //Lecture du ratio de conversion de poid.
                 
-                while(!brFluxDonnees.readLine().trim().equals("TRIGGER_IR ="));  //Attente de TRIGGER_IR.
+                while(!brFluxDonnees.readLine().trim().equals("Valeur de trigger du capteur IR ="));  //Attente de Valeur de trigger du capteur IR.
                 param_trigger = new Double(brFluxDonnees.readLine()).doubleValue();    //Lecture du paramètre de trigger.
                 
                 while(!brFluxDonnees.readLine().trim().equals("Hubs ="));  //Attente de Hubs.
@@ -1573,8 +1580,6 @@ public class UI_Base extends javax.swing.JFrame
             }catch(Exception ex){System.out.println("[Error] : " + ex.getMessage());}
             nb_Bacs = nb_Hub * nb_BoxPerHub;    //Calcul du nombre de bacs.
         }catch(FileNotFoundException ex){System.out.println("[Error] Fichier de configuration introuvable");}
-        
-        logiqueEtape(true);   //Charge l'étape 0.
         //Initialisation des objets "Box" pour le contôle des bacs.
         for(int i=0; i<nb_Hub; i++)
         {
@@ -1586,6 +1591,9 @@ public class UI_Base extends javax.swing.JFrame
         
         d_etape0.setVisible(true);  //Affiche la boîte de dialogue pour commencer le programme.
         b_ouvrir.setEnabled(true);  //Permet d'ouvrir un fichier d'instructions.
+        thread_Recep_MQTT.start();
+        
+        logiqueEtape(true); //Chargement de l'étape 0.
         
         while(true) //Boucle infinie
         {
@@ -1645,7 +1653,7 @@ public class UI_Base extends javax.swing.JFrame
     */
     public static boolean checkErreurPoid(int BacCourant)
     {
-        int nb_pieces_etape = l_Etape.get(etape_courante).num_piece;
+        int nb_pieces_etape = l_Etape.get(etape_courante-1).num_piece;
         try
         {
             int nb_pieces = l_Box.get(BacCourant).getItemCount(weightConvertionRatio);
@@ -1685,8 +1693,14 @@ public class UI_Base extends javax.swing.JFrame
             messageBaseJsonObj.put("Message", "Debut de la communication. Suivez attentivement les instructions de votre guide a l'etape indiquee");
         }else
         {
-            bacCourant = l_Piece.get(l_Etape.get(etape_courante-1).num_piece).n_bac;    //Déterminer le bac courant.
-            surligneBac(bacCourant);    //Surligner le bac courant
+            if(l_Etape.get(etape_courante-1).num_piece == l_Piece.size()) //Option "Aucune" pièce (nombre de pièces+1)
+            {
+                bacCourant = AUCUN_BACCOURANT;    //Aucun bac courant.
+            }else
+            {
+                bacCourant = l_Piece.get(l_Etape.get(etape_courante-1).num_piece).n_bac;    //Déterminer le bac courant.
+                surligneBac(bacCourant);    //Surligner le bac courant
+            }
             messageBaseJsonObj.put("Message", l_Etape.get(etape_courante-1).message);   //Récupérer le message à envoyer.
         }
         messageBaseJsonObj.put("Numetape", etape_courante);
@@ -1694,11 +1708,14 @@ public class UI_Base extends javax.swing.JFrame
         {
             if (publish)
             {
-                if(etape_courante != 0) //À l'étape 0, aucune nouvelle image n'est chargée.
+                if(etape_courante == 0)
                 {
-                    changeImage(etape_courante);
+                    changeImage("0.png");   //À l'étape 0, on charge l'image par défaut.
+                }else
+                {
+                    changeImage(l_Etape.get(etape_courante-1).image); //Change l'image selon l'étape.
                 }
-                mqttPublish(messageBaseJsonObj);
+                mqttPublish(messageBaseJsonObj);    //Envoi du message vers le casque.
                 tb_affiche.add(messageBaseJsonObj.getString("Message"));    //Affiche l'instruction dans la textbox.
             }
         }catch(Exception ex) {System.out.println("[Error] logiqueEtape: "+ ex.getMessage());}
@@ -1715,7 +1732,7 @@ public class UI_Base extends javax.swing.JFrame
         {
             Buffer msgBacs = new AsciiBuffer(jsMessage.toString(2));
             connection.connect();
-            connection.publish(TOPIC_CASQUE, msgBacs, QoS.AT_LEAST_ONCE, false);
+            connection.publish(TOPIC_CASQUE, msgBacs, QoS.AT_LEAST_ONCE, false);    //Envoi du message.
         }catch(Exception ex){}
     }
     /*
@@ -1742,16 +1759,100 @@ public class UI_Base extends javax.swing.JFrame
     @brief: Affiche une image dans l'onglet d'image.
     @param: numImage: index de la liste d'image à afficher.
     */
-    private static void changeImage(int numImage)
+    private static void changeImage(String image)
     {
         try
         {
-            //Affichage d'une nouvelle image.
-            l_image.setIcon(l_images.get(numImage));
-            //Correction dynamique de la taille de la fenêtre d'image.
-            t_image.setSize(UI_Base.t_image.getSize());
+            ImageIcon iI_image = new ImageIcon();
+            if(!image.equals(""))   //Si image est null, on ne tente pas de 
+            {
+                //Affichage d'une nouvelle image.
+                File f_image = new File(default_path +"/src/terminal_base/images/"+ image);
+                iI_image = new ImageIcon(ImageIO.read(f_image));
+                l_image.setIcon(iI_image);
+                //Correction dynamique de la taille de la fenêtre d'image.
+                t_image.setSize(UI_Base.t_image.getSize());
+            }else
+            {
+                File f_image = new File(default_path +"/src/terminal_base/images/0.png");
+                iI_image = new ImageIcon(ImageIO.read(f_image));
+                l_image.setIcon(iI_image);
+            }
         }catch(Exception ex){System.out.println("[Erreur] Changement d'image impossible: " + ex.getMessage());}
     }
+    
+    /*
+    @brief: (surcharge) Définition du code à executer dans le thread de réception MQTT.
+            Attend une commande sur le TOPIC_COMMANDE pour récupérer les infos du fichier concerné.
+    @param: aucun
+    */
+    static Runnable mqttRunnable = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            try
+            {
+                Topic[] topics = {new Topic(TOPIC_COMMANDE, QoS.AT_LEAST_ONCE)};
+                connection.subscribe(topics);   //Souscription...
+            }catch(Exception ex){System.out.println("[Error] Erreur de souscription au topic de commande: "+ ex.getMessage());} //Message d'érreur.
+            System.out.println("Écoute MQTT...");
+            while(true)
+            {
+                try
+                {
+                    Message message = connection.receive();
+                    if (message.getPayload() != null)
+                    {
+                        String str = new String(message.getPayload());  //Réception du message.
+                        JSONObject joTemp = new JSONObject(str);
+                        try
+                        {
+                            JSONObject jotemp = new JSONObject();
+                            FileReader frLoad = new FileReader("src/terminal_base/instructions/"+joTemp.getString("fichier"));
+                            BufferedReader br = new BufferedReader(frLoad);
+                            boolean redondance = false;
+                            try //Extraction des étapes du JSON.
+                            {
+                                l_Etape.clear();
+                                nb_etapes = 0;
+                                while(true)
+                                {
+                                    jotemp = new JSONObject(br.readLine());   //Extraction du JSON des étapes.
+                                    l_Etape.add(new Etape(jotemp.getInt("numero"), jotemp.getString("nom"), jotemp.getString("message"), jotemp.getInt("num_piece"), jotemp.getInt("nb_pieces"),jotemp.getString("image")));   //Ajout de l'étape.
+                                    nb_etapes++;
+                                    jotemp = new JSONObject();  //On efface le contenu du JSON.
+                                }
+                            }catch(Exception ex){redondance = true;}    //Si la boucle échoue, on active la redondance.
+
+                            try //Extraction des pièces du JSON vers la liste.
+                            {
+                                l_Piece.clear();
+                                while(true)
+                                {
+                                    if(!redondance) //Si la redondance est activée, on n'extrait pas de nouvel élément.
+                                    {
+                                        jotemp = new JSONObject(br.readLine());   //Extraction du JSON des pièces.
+                                    }else
+                                    {
+                                        redondance = false;
+                                    }
+                                    l_Piece.add(new Piece(jotemp.getInt("numero"), jotemp.getInt("n_bac"), jotemp.getDouble("poid"), jotemp.getString("nom"))); //Ajout de la pièce.
+                                    l_Box.get(jotemp.getInt("n_bac")).poidItem = jotemp.getDouble("poid");  //Configuration du poid des bacs.
+                                }
+                            }catch(Exception ex){}
+                            //Fermeture du fichier.
+                            br.close();
+                            frLoad.close();
+                        }catch (Exception ex){System.out.println("[Erreur] Lecture du fichier impossible: "+ex.getMessage());}  //Message d'erreur.
+                        nb_etapes = l_Etape.size();
+                        etape_courante = 1;
+                        logiqueEtape(true);   //Chargement de l'étape 1.
+                    }
+                }catch(Exception ex){System.out.println("[Error] Erreur de réception de la commande: "+ ex.getMessage());}  //Message d'erreur.
+            }
+        }
+    };
     
     private static String env(String key, String defaultValue) {
         String rc = System.getenv(key);

@@ -1,11 +1,13 @@
 Auteur: Guillaume Beaudoin
 ATTENTION: Ne pas renommer les paramètres ni changer leur emplacement dans le fichier.
 
-NUMBOXPERHUB =
+Nombre de bac par hub =
 2
+Répertoire par défaut du programme =
+D:/Users/Guim/Documents/Cegep/Projet/Clone github (Code)/Code_BaseProjet/Terminal_Base_V2.0
 WeigthConvertionRatio =
 0.0203
-TRIGGER_IR =
+Valeur de trigger du capteur IR =
 1.5
 Hubs =
 597862

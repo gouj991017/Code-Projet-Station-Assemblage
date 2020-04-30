@@ -16,13 +16,33 @@ import org.json.JSONArray;
     que désiré et de les sauvegarder via le menu.
    @version 2.0     Editor: Apache NetBeans IDE 11.3    System: dev: Windows 10 Familly
  */
+
+//Extrait de code adapté de la documentation de Netbeans IDE: https://netbeans.org/kb/docs/java/gui-filechooser.html#config
+class ImageFilter extends javax.swing.filechooser.FileFilter
+{
+    @Override
+    public boolean accept(File file) {
+        // Allow only directories, or files with ".png" extension
+        return file.isDirectory() || file.getAbsolutePath().endsWith(".png");
+    }
+    @Override
+    public String getDescription() {
+        // This description will be displayed in the dialog,
+        // hard-coded = ugly, should be done via I18N
+        return "Fichiers d'image (*.png)";
+    }
+} 
+
 public class UI_Generateur extends javax.swing.JFrame
 {
-    //Variables globales
+    //Constantes:
+    final String TEXT_LABEL_IMAGE = "Image choisie: ";
+    //Variables globales:
     List<Etape> l_Etape = new ArrayList<Etape>();   //Liste des étapes.
     List<Piece> l_Piece = new ArrayList<Piece>();   //Liste des pièces.
     boolean modif = false;
     int nb_etapes = 0;
+    String image_courante = "";
 
     /** Creates new form UI_Generateur */
     public UI_Generateur() {
@@ -52,6 +72,8 @@ public class UI_Generateur extends javax.swing.JFrame
         jLabel6 = new javax.swing.JLabel();
         cb_nomPieceEtape = new javax.swing.JComboBox<>();
         b_okEtape = new javax.swing.JButton();
+        lab_image = new javax.swing.JLabel();
+        b_choisirImage = new javax.swing.JButton();
         jPiece = new javax.swing.JDialog();
         tb_nomPiece = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
@@ -63,6 +85,8 @@ public class UI_Generateur extends javax.swing.JFrame
         b_okPiece = new javax.swing.JButton();
         jOuvrir_Fichier = new javax.swing.JFileChooser();
         jSauver_Fichier = new javax.swing.JFileChooser();
+        tb_nomEtape1 = new javax.swing.JTextField();
+        jOuvrir_Image = new javax.swing.JFileChooser();
         b_nouvEtape = new javax.swing.JButton();
         b_modifEtape = new javax.swing.JButton();
         b_suppEtape = new javax.swing.JButton();
@@ -78,7 +102,7 @@ public class UI_Generateur extends javax.swing.JFrame
         b_quitter = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
 
-        jEtape.setMinimumSize(new java.awt.Dimension(350, 360));
+        jEtape.setMinimumSize(new java.awt.Dimension(350, 385));
 
         tb_numEtape.setEditable(false);
 
@@ -106,6 +130,16 @@ public class UI_Generateur extends javax.swing.JFrame
             }
         });
 
+        lab_image.setText("Image choisie:");
+        lab_image.setToolTipText("");
+
+        b_choisirImage.setText("Choisir une image");
+        b_choisirImage.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                b_choisirImageMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout jEtapeLayout = new javax.swing.GroupLayout(jEtape.getContentPane());
         jEtape.getContentPane().setLayout(jEtapeLayout);
         jEtapeLayout.setHorizontalGroup(
@@ -116,9 +150,11 @@ public class UI_Generateur extends javax.swing.JFrame
                         .addGap(135, 135, 135)
                         .addComponent(jLabel6))
                     .addGroup(jEtapeLayout.createSequentialGroup()
-                        .addGap(123, 123, 123)
-                        .addComponent(b_okEtape, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(129, Short.MAX_VALUE))
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel5)))
+                .addContainerGap(41, Short.MAX_VALUE))
             .addGroup(jEtapeLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jEtapeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -140,13 +176,16 @@ public class UI_Generateur extends javax.swing.JFrame
                             .addGroup(jEtapeLayout.createSequentialGroup()
                                 .addComponent(tb_nbPieces, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel4)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jEtapeLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel5)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                                .addComponent(jLabel4))
+                            .addGroup(jEtapeLayout.createSequentialGroup()
+                                .addComponent(b_choisirImage)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(lab_image)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGroup(jEtapeLayout.createSequentialGroup()
+                .addGap(140, 140, 140)
+                .addComponent(b_okEtape, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jEtapeLayout.setVerticalGroup(
             jEtapeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -169,13 +208,19 @@ public class UI_Generateur extends javax.swing.JFrame
                 .addGroup(jEtapeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tb_nbPieces, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
                 .addGroup(jEtapeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(b_okEtape)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jEtapeLayout.createSequentialGroup()
+                        .addGap(49, 49, 49)
+                        .addComponent(jLabel5))
+                    .addGroup(jEtapeLayout.createSequentialGroup()
+                        .addGroup(jEtapeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(b_choisirImage)
+                            .addComponent(lab_image))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                        .addComponent(b_okEtape))))
         );
 
         jPiece.setMinimumSize(new java.awt.Dimension(270, 225));
@@ -246,11 +291,18 @@ public class UI_Generateur extends javax.swing.JFrame
         );
 
         jOuvrir_Fichier.setApproveButtonText("Ouvrir");
+        jOuvrir_Fichier.setCurrentDirectory(new java.io.File("D:\\Users"));
         jOuvrir_Fichier.setToolTipText("Séléctionnez le fichier d'instructions à ouvrir");
 
         jSauver_Fichier.setDialogType(javax.swing.JFileChooser.SAVE_DIALOG);
         jSauver_Fichier.setApproveButtonText("Enregistrer");
+        jSauver_Fichier.setCurrentDirectory(new java.io.File("D:\\Users"));
         jSauver_Fichier.setToolTipText("Enregistrez le fichier d'instruction");
+
+        jOuvrir_Image.setApproveButtonText("Ouvrir");
+        jOuvrir_Image.setApproveButtonToolTipText("");
+        jOuvrir_Image.setCurrentDirectory(new java.io.File("D:\\Users"));
+        jOuvrir_Image.setFileFilter(new ImageFilter());
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -413,7 +465,7 @@ public class UI_Generateur extends javax.swing.JFrame
         {
             try
             {
-            l_Etape.add(new Etape(Integer.parseInt(tb_numEtape.getText()), tb_nomEtape.getText(), tb_message.getText(), cb_nomPieceEtape.getSelectedIndex(), Integer.parseInt(tb_nbPieces.getText())));   //Récupération des infos sur l'étape.
+            l_Etape.add(new Etape(Integer.parseInt(tb_numEtape.getText()), tb_nomEtape.getText(), tb_message.getText(), cb_nomPieceEtape.getSelectedIndex(), Integer.parseInt(tb_nbPieces.getText()), image_courante));   //Récupération des infos sur l'étape.
             nb_etapes++;
             lb_etapes.add(nb_etapes + " - " + tb_nomEtape.getText());
             }catch(Exception ex){System.out.println("[Erreur] Impossible de créer la nouvelle étape: " + ex.getMessage());} //Message d'erreur.
@@ -421,7 +473,7 @@ public class UI_Generateur extends javax.swing.JFrame
         else
         {
             int index = lb_etapes.getSelectedIndex();
-            l_Etape.get(index).modifEtape(tb_nomEtape.getText(), tb_message.getText(), cb_nomPieceEtape.getSelectedIndex(), Integer.parseInt(tb_nbPieces.getText())); //Récupération des infos sur l'étape.
+            l_Etape.get(index).modifEtape(tb_nomEtape.getText(), tb_message.getText(), cb_nomPieceEtape.getSelectedIndex(), Integer.parseInt(tb_nbPieces.getText()), image_courante); //Récupération des infos sur l'étape.
             lb_etapes.remove(index);    //On retire l'étape de la liste pour la remetre au même index
             lb_etapes.add(l_Etape.get(index).numero + " - " + tb_nomEtape.getText(), index);
             modif = false;  //Remise à défaut de modif.
@@ -568,7 +620,7 @@ public class UI_Generateur extends javax.swing.JFrame
                     while(true)
                     {
                         jotemp = new JSONObject(br.readLine());   //Extraction du JSON des étapes.
-                        l_Etape.add(new Etape(jotemp.getInt("numero"), jotemp.getString("nom"), jotemp.getString("message"), jotemp.getInt("num_piece"), jotemp.getInt("nb_pieces")));   //Ajout de l'étape.
+                        l_Etape.add(new Etape(jotemp.getInt("numero"), jotemp.getString("nom"), jotemp.getString("message"), jotemp.getInt("num_piece"), jotemp.getInt("nb_pieces"), jotemp.getString("image")));   //Ajout de l'étape.
                         lb_etapes.add(jotemp.getInt("numero") + " - " +jotemp.getString("nom"));    //Affiche l'étape sur l'interface.
                         nb_etapes++;
                         jotemp = new JSONObject();  //On efface le contenu du JSON.
@@ -598,6 +650,19 @@ public class UI_Generateur extends javax.swing.JFrame
             }catch (Exception ex){System.out.println("[Erreur] Lecture du fichier impossible: "+ex.getMessage());}  //Message d'erreur.
         }
     }//GEN-LAST:event_b_ouvrirActionPerformed
+
+    private void b_choisirImageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_b_choisirImageMouseClicked
+        //Extrait de code inspiré de la documentation de Netbeans: https://netbeans.org/kb/docs/java/gui-filechooser.html
+        int returnVal = jOuvrir_Fichier.showOpenDialog(this);
+        File fichierCharge;
+        if (returnVal == JFileChooser.APPROVE_OPTION)
+        {
+            fichierCharge = jOuvrir_Fichier.getSelectedFile();  //Récuperation du nom du fichier.
+            //Enregistrement du nom du fichier.
+            lab_image.setText(TEXT_LABEL_IMAGE + fichierCharge.getName());
+            image_courante = fichierCharge.getName();
+        }
+    }//GEN-LAST:event_b_choisirImageMouseClicked
 
     /**
      * @brief Main
@@ -649,6 +714,8 @@ public class UI_Generateur extends javax.swing.JFrame
         tb_nomEtape.setText("");
         tb_numEtape.setText("");
         cb_nomPieceEtape.removeAllItems();  //Supprime tous les éléments
+        image_courante = "";
+        lab_image.setText(TEXT_LABEL_IMAGE);
     }
     
     /*
@@ -664,6 +731,8 @@ public class UI_Generateur extends javax.swing.JFrame
         tb_numEtape.setText(String.valueOf(l_Etape.get(index).numero));
         chargeCb_NomPieceEtape();   //Charge les éléments de cb_NomPieceEtape.
         cb_nomPieceEtape.setSelectedIndex(l_Etape.get(index).num_piece);
+        image_courante = l_Etape.get(index).image;
+        lab_image.setText(TEXT_LABEL_IMAGE + image_courante);
     }
     
     /*
@@ -700,9 +769,11 @@ public class UI_Generateur extends javax.swing.JFrame
             cb_nomPieceEtape.addItem(l_Piece.get(i).nom);
             l_Piece.get(i).numero = i;  //Mise à jour du numéro de la pièce. 
         }
+        cb_nomPieceEtape.addItem("Aucune"); //Option pour aucune pièce associée.
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton b_choisirImage;
     private javax.swing.JMenuItem b_enregistrer;
     private javax.swing.JButton b_modifEtape;
     private javax.swing.JButton b_modifPieces;
@@ -729,15 +800,18 @@ public class UI_Generateur extends javax.swing.JFrame
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JFileChooser jOuvrir_Fichier;
+    private javax.swing.JFileChooser jOuvrir_Image;
     private javax.swing.JDialog jPiece;
     private javax.swing.JFileChooser jSauver_Fichier;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lab_image;
     private java.awt.List lb_etapes;
     private java.awt.List lb_pieces;
     private javax.swing.JMenu m_fichier;
     private javax.swing.JTextArea tb_message;
     private javax.swing.JTextField tb_nbPieces;
     private javax.swing.JTextField tb_nomEtape;
+    private javax.swing.JTextField tb_nomEtape1;
     private javax.swing.JTextField tb_nomPiece;
     private javax.swing.JTextField tb_numBac;
     private javax.swing.JTextField tb_numEtape;
