@@ -1,4 +1,4 @@
-TITLE: Code de la base possédant un interface usager plus complèt que "Code_NetBeans".
+TITLE: Code de la base possédant un interface usager plus complet que "Code_NetBeans".
 DESCRIPTION: S'occupe des fonctions expliquées dans le «README.TXT» précédant.
 Il s'agit d'une version de code spécifique à la station d'assemblage. Hors de ce contexte, ce programme peut être mésadapté.
 Contient le code nécessaire à la création et à la gestion de l'interface usager de la base. Ceci comprend une fenêtre principale
