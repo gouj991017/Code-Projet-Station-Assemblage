@@ -1698,7 +1698,7 @@ public class UI_Base extends javax.swing.JFrame
                 bacCourant = AUCUN_BACCOURANT;    //Aucun bac courant.
             }else
             {
-                bacCourant = l_Piece.get(l_Etape.get(etape_courante-1).num_piece).n_bac;    //Déterminer le bac courant.
+                bacCourant = (l_Piece.get(l_Etape.get(etape_courante-1).num_piece).n_bac)-1;    //Déterminer le bac courant.
                 surligneBac(bacCourant);    //Surligner le bac courant
             }
             messageBaseJsonObj.put("Message", l_Etape.get(etape_courante-1).message);   //Récupérer le message à envoyer.
