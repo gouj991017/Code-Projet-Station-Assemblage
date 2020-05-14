@@ -9,7 +9,7 @@ import com.phidget22.*; //Librairie du kit phidget.
 public class Box
 {
     //Constantes
-    final int DELAIS_INIT = 100;    //Valeur par défaut: 4000.
+    final int DELAIS_INIT = 4000;    //Valeur par défaut: 4000.
     //Variables membres.
     double TRIGGER_IR = 1.5;   //Variable de trigger pour les capteurs infrarouges.
     double poidItem = 1;
